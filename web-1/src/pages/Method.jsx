@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "../components/Icons.jsx";
 
 // Fill in once the repository is public; the page shows a marked placeholder until then.
-const REPO_URL = null;
+const REPO_URL = "https://github.com/bcalford/bench_forecast";
 
 const SECTIONS = [
   { id: "architecture", label: "Architecture" },

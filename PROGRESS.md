@@ -17,7 +17,7 @@ Last updated: 2026-10-08. Read this first when resuming.
 | `#/reader` | `src/pages/Reasoning.jsx` | Per-justice reasoning; brief chips open passages; own-opinion citations (real cases, paraphrased) |
 | `#/scorecard` | `src/pages/Scorecard.jsx` | Synthetic sample season (`src/sampleSeason.js`) vs OT2026 live (empty) |
 | `#/new` | `src/pages/NewCase.jsx` | Filing form; sample briefs; recusal bench; invite code `BF-XXXX-XXXX`; `DAILY_CAP_REACHED` flag; `#/new/edit` prefills |
-| `#/method` | `src/pages/Method.jsx` | Pipeline as designed; `REPO_URL` constant is a placeholder (null) |
+| `#/method` | `src/pages/Method.jsx` | Pipeline as designed; `REPO_URL` points at github.com/bcalford/bench_forecast |
 
 Shared: `src/components/Bench.jsx`, `SeatMark.jsx`, `Chrome.jsx` (masthead, logo, LockSeal, footer), `Icons.jsx`; data in `src/data.js`, `src/runDraft.js`; all styles in `src/base.css`.
 
