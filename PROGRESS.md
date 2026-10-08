@@ -65,5 +65,15 @@ Re-critique 2026-10-08 (round 4): **29/40** (third run at 29), snapshot `.impecc
 - Live mode config: `web-1/.impeccable/live/config.json`. Restart with `/impeccable live`.
 - Run locally: `cd web-1 && npm install && npm run dev` (Vite on :5173). `npx vite build` then `npx vite preview` serves `dist/`.
 
-## Later
-- Backend per `spec.md`: Next.js, Supabase (pgvector), Inngest, Voyage, Claude Opus/Sonnet.
+## Backend (started 2026-10-08)
+Decisions: Next.js app in `web/` (spec layout inside it); `web-1/` stays as the design reference until phase 5; hosted Supabase project (no local Docker).
+
+Phase 1 (scaffold) — code done, not yet connected:
+- `web/`: Next.js 15.5 + React 19, TypeScript, ESLint; deps `@supabase/supabase-js`, `inngest` (v4: triggers go in the options object), `zod`
+- `lib/env.ts`, `lib/supabase.ts` (anon + service-role clients), `inngest/client.ts`, `inngest/predictCase.ts` (five stubbed steps), `app/api/inngest`, `app/api/health`
+- `supabase/migrations/20261008000001_init.sql`: all ten spec tables, pgvector (1024-d, HNSW cosine), `match_passages()`, RLS (public read on roster/forecasts/outcomes/scores only), Realtime on predictions + justice_votes
+- `data/justices/<slug>/roster.json` (9) → `npm run seed:build` → `supabase/seed.sql`
+- Verified: typecheck, lint, production build; `/api/health` gives a clear missing-env error; `/api/inngest` registers 1 function in dev mode
+- ✅ Connected 2026-10-08: hosted Supabase project; migration + seed applied via the SQL editor; `/api/health` → `{"ok":true,"justices":9}`; RLS verified (anon can read the roster but cannot see invite codes or insert anywhere; code format check enforced); `match_passages()` callable. Keys use Supabase's new names: publishable key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`, secret key → `SUPABASE_SERVICE_ROLE_KEY`.
+- Fixed: `/api/health` used to report ok with a null count when the table was missing.
+- ⏭ Next: phase 2, corpus ingestion (CourtListener opinions, supremecourt.gov argument transcripts) and Voyage embeddings, then a retrieval sanity check per justice.
