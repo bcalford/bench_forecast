@@ -7,7 +7,7 @@ Last updated: 2026-10-08 (after first push). Read this first when resuming.
 - Visual world: **"The Bench"**. Nine seats in true bench order, vote by shape not hue, brass only for the opinion author and the lock seal, bench-green band, Public Sans + Source Serif 4 (self-hosted via @fontsource).
 - Product truth: `PRODUCT.md`. Design rules: `DESIGN.md` + `.impeccable/design.json`. Spec and decisions: `spec.md`, `decisions.md`.
 - No backend yet. All data is sample or synthetic and labeled as such.
-- **Git:** repo on `main`, pushed to https://github.com/bcalford/bench_forecast (`origin`, tracking). Commits: `25ef4a6` initial, `aa40a91` Method page repo link. Commit/push only when asked.
+- **Git:** repo on `main`, pushed to https://github.com/bcalford/bench_forecast (`origin`, tracking). Commits: `4fd7c73` initial, `98fd899` Method page repo link, `ec479b6` PROGRESS update (history rewritten 2026-10-08 to drop Claude co-author trailers). Commit/push only when asked.
 - `.gitignore` keeps out `node_modules/`, `dist/`, `.claude/settings.local.json`, the Impeccable engine binary (re-downloaded by the launcher), `.impeccable/review/` screenshots and caches, and `harvey_all.css` (scraped Harvey stylesheet, research only, never commit).
 
 ## Pages (hash routes)
