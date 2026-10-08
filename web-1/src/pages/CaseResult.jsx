@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { justices, sampleCase, byslug, ownCitations } from "../data.js";
-import { getDraft } from "../runDraft.js";
+import { getDraft, setDraft, SAMPLE_DRAFT } from "../runDraft.js";
 import Bench, { BenchLegend } from "../components/Bench.jsx";
 import SeatMark from "../components/SeatMark.jsx";
 import { LockSeal } from "../components/Chrome.jsx";
-import { ArrowRight, Chevron, Replay } from "../components/Icons.jsx";
+import { ArrowRight, Chevron, Lock, Replay } from "../components/Icons.jsx";
 
 // Order the demo replay reports agents finishing in; the least certain vote lands last.
 const ARRIVAL = ["kagan", "thomas", "alito", "roberts", "jackson", "gorsuch", "sotomayor", "kavanaugh", "barrett"];
@@ -69,7 +69,7 @@ function JusticeRow({ j, v, isAuthor, open, onToggle, reason, recused }) {
         <SeatMark vote={v} isAuthor={isAuthor} size={36} />
         <span className="jrow-name">
           <span>{j.name}</span>
-          <span className="jrow-role">{isAuthor ? "Writes the majority opinion" : v.role}</span>
+          <span className="jrow-role">{v.role}</span>
         </span>
         <span className="jrow-vote">To {v.side.toLowerCase()}</span>
         <span className="jrow-conf">
@@ -103,6 +103,11 @@ function decide(recused) {
   const winners = sitting.filter((j) => side(j.slug) === winning).sort((a, b) => a.seniority - b.seniority);
   const author = tie ? null : asPredicted && winners.some((j) => j.slug === p.author) ? p.author : winners[0].slug;
 
+  // If the predicted dissent writer is recused, the most senior sitting dissenter writes instead.
+  const dissenters = sitting.filter((j) => side(j.slug) !== winning).sort((a, b) => a.seniority - b.seniority);
+  const writerSits = dissenters.some((j) => sampleCase.votes[j.slug].role === "Dissent");
+  const dissentWriter = asPredicted && !writerSits && dissenters.length ? dissenters[0].slug : null;
+
   const votes = Object.fromEntries(
     justices.map((j) => {
       const base = sampleCase.votes[j.slug];
@@ -110,8 +115,9 @@ function decide(recused) {
       let role = base.role;
       if (tie) role = `Votes to ${s.toLowerCase()}`;
       else if (!asPredicted) role = s === winning ? "Joins majority" : "Dissents";
-      else if (j.slug === author) role = "Majority opinion";
-      else if (base.role === "Majority opinion") role = "Joins majority";
+      else if (j.slug === author) role = "Writes for the Court";
+      else if (base.role === "Writes for the Court") role = "Joins majority";
+      else if (j.slug === dissentWriter) role = "Dissent";
       return [j.slug, { ...base, side: s, role, vote: s === (winning ?? "Reverse") ? "majority" : "minority" }];
     })
   );
@@ -128,7 +134,7 @@ function decide(recused) {
 
   const winnersSlugs = new Set(winners.map((j) => j.slug));
   const losers = sitting.filter((j) => !tie && !winnersSlugs.has(j.slug));
-  const concurring = asPredicted ? sitting.filter((j) => sampleCase.votes[j.slug].role === "Concurrence") : [];
+  const concurring = sitting.filter((j) => votes[j.slug].role === "Concurrence");
   return {
     votes, tie, author, outcome, holding, rationale, concurring, losers,
     tally: tie ? [reverse.length, affirm.length] : [winners.length, losers.length],
@@ -136,9 +142,13 @@ function decide(recused) {
   };
 }
 
-export default function CaseResult({ run = false }) {
+export default function CaseResult({ run = false, sample = false }) {
   const c = sampleCase;
-  const draft = run ? getDraft() : null;
+  const [draft] = useState(() => {
+    if (!run) return null;
+    if (sample) setDraft(SAMPLE_DRAFT);
+    return getDraft();
+  });
   const recused = useMemo(() => new Set(draft?.recused ?? []), [draft]);
   const d = useMemo(() => decide(recused), [recused]);
   const order = ARRIVAL.filter((s) => !recused.has(s));
@@ -163,7 +173,7 @@ export default function CaseResult({ run = false }) {
     return (
       <main id="main" className="wrap empty-run">
         <h1 className="section-h">No case filed yet</h1>
-        <p className="muted">File a case first, or try the sample briefs, and the forecast runs here.</p>
+        <p className="muted">File a case first, or watch the Hartwell sample run, and the forecast runs here.</p>
         <a className="text-link is-strong" href="#/new">Forecast a case <ArrowRight /></a>
       </main>
     );
@@ -174,6 +184,11 @@ export default function CaseResult({ run = false }) {
   const deliberating = arrived !== null;
   const done = !run || (stage === "voting" && !deliberating) || stage === "done";
   const sealed = done && !deliberating;
+  // The outcome's last word travels with the tally so "6–3" never sits alone on a line.
+  const outcomeHead = d.outcome.slice(0, d.outcome.lastIndexOf(" ") + 1);
+  const outcomeLast = d.outcome.slice(d.outcome.lastIndexOf(" ") + 1);
+  // The rest of the briefing (history, each side's argument) lives on the reader.
+  const question = c.summary.find((s) => s.heading === "Question presented").body;
   const showVotes = stage !== "reading" && stage !== "summary";
   const seatsArrived = showVotes ? arrived : new Set();
 
@@ -231,7 +246,7 @@ export default function CaseResult({ run = false }) {
     ? stage === "reading" ? "Reading the briefs…" : "Briefing summarized. Each justice's agent is now reasoning."
     : deliberating
       ? "Each seat fills as that justice's agent returns its vote."
-      : `${byslug[selected].name} · ${sel.role}${selected === d.author ? " · writes for the Court" : ""} · ${Math.round(sel.confidence * 100)}% confidence`;
+      : `${byslug[selected].name} · ${sel.role} · ${Math.round(sel.confidence * 100)}% confidence in this vote`;
 
   return (
     <main id="main">
@@ -254,7 +269,7 @@ export default function CaseResult({ run = false }) {
               <p className="docket-line">
                 {draft
                   ? <>{draft.docket ? `No. ${draft.docket}` : "Not yet docketed"} · {draft.term} · {draft.mode === "description" ? "From a plain-English description (less reliable)" : `${draft.briefCount} briefs filed`}</>
-                  : <>No. {c.docket} · {c.term} · On writ of certiorari to the {c.lowerCourt}</>}
+                  : <>No. {c.docket} · {c.term}<span className="wide-only"> · On writ of certiorari to the {c.lowerCourt}</span></>}
               </p>
               <h1 id="case-title" className="case-title">{title}</h1>
               <p className="case-outcome">
@@ -263,9 +278,12 @@ export default function CaseResult({ run = false }) {
                 ) : deliberating ? (
                   <>Deliberating, {arrived.size} of {order.length} votes in, <span className="num">{inMaj}–{inMin}</span></>
                 ) : (
-                  <>Predicted: {d.outcome}, <span className="num">{inMaj}–{inMin}</span></>
+                  <>Predicted: {outcomeHead}<span className="nowrap">{outcomeLast}, <span className="num">{inMaj}–{inMin}</span></span></>
                 )}
               </p>
+              {!run && (
+                <a className="outcome-run" href="#/run/sample"><Replay /> Watch it run</a>
+              )}
             </div>
             <LockSeal lockedAt={lockedAt} phase={phase} open={!sealed} justLocked={justLocked} />
           </div>
@@ -289,11 +307,13 @@ export default function CaseResult({ run = false }) {
               ))}
             </div>
             <p className="bench-caption">{caption}</p>
-            <button type="button" className="ghost-btn" onClick={() => replay()} disabled={!done || deliberating}>
-              <Replay /> Replay the run
-            </button>
+            {run && (
+              <button type="button" className="ghost-btn" onClick={() => replay()} disabled={!done || deliberating}>
+                <Replay /> Watch it run again
+              </button>
+            )}
           </div>
-          <BenchLegend />
+          <BenchLegend collapsible />
         </div>
       </section>
 
@@ -328,7 +348,7 @@ export default function CaseResult({ run = false }) {
                 <div><dt>Holding</dt><dd className="reading">{d.holding}</dd></div>
                 {d.author && (
                   <div>
-                    <dt>Opinion of the Court</dt>
+                    <dt>Writes for the Court</dt>
                     <dd>
                       <strong>{byslug[d.author].name}</strong>
                       <span className="dd-note">{d.rationale}</span>
@@ -357,34 +377,47 @@ export default function CaseResult({ run = false }) {
               <div className="reading-col">
                 <h3>Facts</h3>
                 <p className="reading">{c.facts}</p>
-                {c.summary.map((s) => (
-                  <div key={s.heading}>
-                    <h3>{s.heading}</h3>
-                    <p className="reading">{s.body}</p>
-                  </div>
-                ))}
-                {done && (
-                  <a className="text-link is-strong" href="#/reader">
-                    Read every justice's full reasoning <ArrowRight />
-                  </a>
-                )}
+                <h3>Question presented</h3>
+                <p className="reading">{question}</p>
               </div>
+              <div className="facts-col">
               <dl className="facts-dl">
                 <div><dt>Petitioner</dt><dd>{c.petitioner}</dd></div>
                 <div><dt>Respondent</dt><dd>{c.respondent}</dd></div>
-                {run ? (
-                  <div><dt>Phase</dt><dd>{phase}</dd></div>
-                ) : (
+                {!run && (
                   <>
                     <div><dt>Granted</dt><dd className="num">{c.granted}</dd></div>
                     <div><dt>Argument</dt><dd className="num">{c.argued}</dd></div>
                   </>
                 )}
-                <div><dt>Decision</dt><dd className="awaiting">Awaiting the Court</dd></div>
               </dl>
+              <details className="terms">
+                <summary>What the court terms mean</summary>
+                <dl>
+                  <div><dt>Certiorari</dt><dd>The Court's order agreeing to review a lower court's decision.</dd></div>
+                  <div><dt>Reverse, affirm, vacate</dt><dd>Overturn the decision below, leave it standing, or set it aside and send the case back.</dd></div>
+                  <div><dt>Concurrence</dt><dd>An opinion by a justice who agrees with the result but writes separately to give other reasons.</dd></div>
+                  <div><dt>Dissent</dt><dd>An opinion by a justice who disagrees with the majority's result.</dd></div>
+                  <div><dt>Recused</dt><dd>Sitting out the case, usually because of a conflict of interest; that justice casts no vote.</dd></div>
+                </dl>
+              </details>
+              </div>
             </div>
           )}
         </section>
+
+        {sealed && (
+          <section className="closing" aria-label="Lock and next step">
+            <Lock className="closing-icon" />
+            <p className="closing-text">
+              <strong>Locked <time className="num">{lockedAt}</time>, {phase.toLowerCase()}.</strong>{" "}
+              Awaiting the Court; the forecast is scored against its decision.
+            </p>
+            <a className="text-link is-strong" href="#/reader">
+              Read every justice's full reasoning <ArrowRight />
+            </a>
+          </section>
+        )}
       </div>
     </main>
   );

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { benchOrder, byslug } from "../data.js";
 import SeatMark from "./SeatMark.jsx";
 
@@ -52,14 +53,14 @@ function groupLabels(votes, pos, recused) {
 
 const NO_ONE = new Set();
 
-export default function Bench({ votes, author, arrangement = "bench", arrived = null, selected, onSelect, interactive = true, describe, label = "Predicted votes, in bench seating order", recused = NO_ONE, caption }) {
+export default function Bench({ votes, author, arrangement = "bench", arrived = null, selected, onSelect, interactive = true, describe, label = "Predicted votes, in bench seating order", recused = NO_ONE, caption, neutral = false }) {
   const pos = layout(votes, arrangement, recused);
   const isPending = (slug) => arrived !== null && !arrived.has(slug);
 
   return (
     <div className={`bench is-${arrangement}`}>
       {arrangement === "split" && arrived === null && (
-        <div className="bench-groups" aria-hidden="true">
+        <div className="bench-groups">
           {groupLabels(votes, pos, recused).map((g) => (
             <span key={g.key} className="bench-group" style={{ "--x": `${g.x}%` }}>
               {g.label} <b>{g.count}</b>
@@ -84,7 +85,7 @@ export default function Bench({ votes, author, arrangement = "bench", arrived = 
             : `${j.name}: ${v.role}, ${Math.round(v.confidence * 100)}% confidence${isAuthor ? ", predicted opinion author" : ""}`;
           const inner = (
             <>
-              <SeatMark key={out ? "out" : pending ? "pending" : "voted"} vote={v} isAuthor={isAuthor} pending={pending} recused={out} />
+              <SeatMark key={out ? "out" : pending ? "pending" : "voted"} vote={v} isAuthor={isAuthor} pending={pending} recused={out} neutral={neutral} />
               <span className="seat-name"><span className="full">{j.last}</span><span className="short" aria-hidden="true">{j.last.slice(0, 3)}</span></span>
               <span className="seat-conf">{caption ? caption(j, v, out) : out ? "Recused" : pending ? "…" : `${Math.round(v.confidence * 100)}%`}</span>
             </>
@@ -110,20 +111,31 @@ export default function Bench({ votes, author, arrangement = "bench", arrived = 
   );
 }
 
-export function BenchLegend() {
+export function BenchLegend({ collapsible = false }) {
   const sample = { vote: "majority", role: "Joins majority", confidence: 0.75 };
-  return (
+  // Open by default on wide screens; on phones the key folds away so the bench and tally lead.
+  const [wide] = useState(() => typeof window === "undefined" || window.matchMedia("(min-width: 701px)").matches);
+  const list = (
     <ul className="bench-legend">
-      <li><SeatMark vote={sample} size={22} showConfidence={false} /> Majority</li>
-      <li><SeatMark vote={{ ...sample, vote: "minority" }} size={22} showConfidence={false} /> Dissent</li>
+      <li>
+        <SeatMark vote={sample} size={22} showConfidence={false} /> Majority
+        <SeatMark vote={{ ...sample, vote: "minority" }} size={22} showConfidence={false} /> Dissent
+      </li>
       <li>
         <SeatMark vote={{ ...sample, role: "Concurrence" }} size={22} showConfidence={false} />
         <SeatMark vote={{ ...sample, vote: "minority", role: "Dissent" }} size={22} showConfidence={false} />
-        Writes separately (majority, dissent)
+        Center mark: writes an opinion
       </li>
-      <li><SeatMark vote={{ ...sample, role: "Majority opinion" }} isAuthor size={22} showConfidence={false} /> Opinion author</li>
-      <li><SeatMark vote={sample} size={22} /> Arc: how confident</li>
+      <li><SeatMark vote={{ ...sample, role: "Writes for the Court" }} isAuthor size={22} showConfidence={false} /> Writes for the Court</li>
+      <li><SeatMark vote={sample} size={22} /> Arc and %: confidence in that justice's vote</li>
     </ul>
+  );
+  if (!collapsible) return list;
+  return (
+    <details className="bench-key" open={wide}>
+      <summary>Key to the marks</summary>
+      {list}
+    </details>
   );
 }
 
@@ -144,5 +156,5 @@ export function TallyMarks({ tally: [maj, min] }) {
 export const describeSelected = (slug, votes, author) => {
   const j = byslug[slug];
   const v = votes[slug];
-  return `${j.name} · ${v.role}${slug === author ? " · writes for the Court" : ""} · ${Math.round(v.confidence * 100)}% confidence`;
+  return `${j.name} · ${v.role} · ${Math.round(v.confidence * 100)}% confidence in this vote`;
 };

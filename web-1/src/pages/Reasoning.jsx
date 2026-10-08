@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { justices, sampleCase, byslug, voteWord, ownCitations, briefPassages } from "../data.js";
 import SeatMark from "../components/SeatMark.jsx";
 import { LockSeal } from "../components/Chrome.jsx";
-import { ArrowLeft } from "../components/Icons.jsx";
+import { ArrowLeft, CheckMark } from "../components/Icons.jsx";
 
 // "[Pet. Br. 14]" becomes a chip that opens the cited brief passage below the paragraph.
 function withCitations(text, slug, openCite, setOpenCite) {
@@ -24,12 +24,6 @@ function withCitations(text, slug, openCite, setOpenCite) {
   });
 }
 
-const CheckMark = () => (
-  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-    <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" strokeWidth="1.3" />
-    <path d="M4.8 8.2 7 10.4l4.2-4.6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
 
 function BriefPassage({ cite: openCite, slug, last }) {
   // Keep the last passage mounted while the panel closes, so it slides shut instead of vanishing.
@@ -110,7 +104,7 @@ export default function Reasoning({ focus }) {
             <a className="back-link" href="#/case"><ArrowLeft /> <cite className="case-name">{c.title}</cite></a>
             <h1 id="reader-h" className="reader-title">The reasoning</h1>
             <p className="docket-line">
-              No. {c.docket} · Predicted {p.outcome.toLowerCase()}, <span className="num">{p.majority}–{p.minority}</span> · Opinion by {byslug[p.author].last}
+              No. {c.docket} · Predicted {p.outcome.toLowerCase()}, <span className="num">{p.majority}–{p.minority}</span> · {byslug[p.author].last} writes for the Court
             </p>
           </div>
           <LockSeal lockedAt={c.lockedAt} phase="Before argument" compact />
@@ -125,7 +119,7 @@ export default function Reasoning({ focus }) {
                 <a href={`#${t.id}`} onClick={(e) => jump(e, t.id)} aria-current={active === t.id ? "true" : undefined}>
                   {t.j ? (
                     <>
-                      <SeatMark vote={c.votes[t.j.slug]} isAuthor={t.j.slug === p.author} size={18} showConfidence={false} />
+                      <SeatMark vote={c.votes[t.j.slug]} isAuthor={t.j.slug === p.author} size={22} showConfidence={false} />
                       {t.j.last}
                     </>
                   ) : (
@@ -167,7 +161,7 @@ export default function Reasoning({ focus }) {
                   <div>
                     <h2>{j.name}</h2>
                     <p className="rsec-meta">
-                      {isAuthor ? "Writes the majority opinion" : v.role} · {voteWord(v)} ·{" "}
+                      {v.role} · {voteWord(v)} ·{" "}
                       <span className="num">{Math.round(v.confidence * 100)}%</span> confidence
                     </p>
                   </div>

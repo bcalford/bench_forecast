@@ -112,6 +112,23 @@ function Calibration({ votes }) {
   );
 }
 
+// Column heads for wide screens; each row keeps its own labels for screen readers and phones.
+function LedgerHead() {
+  return (
+    <div className="ledger-head" aria-hidden="true">
+      <span>No.</span><span>Case</span><span>Forecast</span><span>Court</span><span>Outcome · votes</span>
+    </div>
+  );
+}
+
+function MarksKey() {
+  return (
+    <p className="marks-key" aria-hidden="true">
+      <CaseMarks hits={[true]} label="" /> Right <CaseMarks hits={[false]} label="" /> Missed
+    </p>
+  );
+}
+
 function Ledger({ cases, focus, onClear }) {
   return (
     <section className="ledger" aria-labelledby="ledger-h">
@@ -123,6 +140,7 @@ function Ledger({ cases, focus, onClear }) {
           </p>
         )}
       </div>
+      <LedgerHead />
       <ol className="ledger-list">
         {cases.map((c) => {
           const v = focus && c.votes.find((x) => x.slug === focus);
@@ -168,8 +186,9 @@ function PendingLedger() {
       <div className="docket-head">
         <h2 id="ledger-h" className="section-h">Locked, waiting to be scored</h2>
       </div>
+      <LedgerHead />
       <ol className="ledger-list">
-        {recentCases.map((c) => (
+        {recentCases.filter((c) => c.href).map((c) => (
           <li key={c.docket} className="ledger-row is-pending">
             <span className="ledger-no num">{c.docket}</span>
             <span className="ledger-case">
@@ -192,8 +211,9 @@ function PendingLedger() {
   );
 }
 
-export default function Scorecard() {
-  const [source, setSource] = useState("sample");
+export default function Scorecard({ focus: routeFocus }) {
+  // Opens on the honest live view; "#/scorecard/sample" opens the sample-season preview.
+  const [source, setSource] = useState(routeFocus === "sample" ? "sample" : "live");
   const [focus, setFocus] = useState(null);
   const sample = source === "sample";
   const cases = sample ? sampleSeason : [];
@@ -253,7 +273,7 @@ export default function Scorecard() {
               </p>
             </div>
             <div className="segmented" role="group" aria-label="Which results to show">
-              {[["sample", "Sample season"], ["live", "OT2026 (live)"]].map(([key, label]) => (
+              {[["live", "OT2026 (live)"], ["sample", "Preview a sample season"]].map(([key, label]) => (
                 <button key={key} type="button" aria-pressed={source === key} onClick={() => { setSource(key); setFocus(null); }}>
                   {label}
                 </button>
@@ -271,6 +291,7 @@ export default function Scorecard() {
           <ol className="record">
             {records.map((r) => <RecordLine key={r.measure} {...r} />)}
           </ol>
+          {n > 0 && <MarksKey />}
         </div>
       </section>
 
@@ -283,6 +304,7 @@ export default function Scorecard() {
           <div className="score-bench">
             <Bench
               votes={perJustice}
+              neutral
               arrived={sample ? null : new Set()}
               selected={focus}
               onSelect={(slug) => setFocus((f) => (f === slug ? null : slug))}

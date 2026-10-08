@@ -30,10 +30,33 @@ Running one step at a time, user reviews between steps.
 3. ✅ `/impeccable shape method` + build — Method page, nav = Sample forecast · Scorecard · Method · Forecast a case
 4. ✅ `/impeccable adapt` — numbers kept on phones, slim seal, contents strips fade/auto-scroll
 5. ✅ `/impeccable harden` — single live announcement, calibration chart semantics, AA contrast, "Summary only" rows, Edit/File-another on run, long-title wrapping
-6. ⏭ **Next: `/impeccable distill`** — trim `#/case` briefing to Facts + Question presented; end with a closing strip restating the lock and leading to `#/reader`
-7. `/impeccable polish` — seat glyph: outline seats on scorecard, outline/struck on `#/new`, checkmarks in filing checklist; phase on `#/reader` seal; Forecast/Court as column headers; key for author strip; readable sample IDs (S-101); static "Term" field; off-system black segmented toggle
-8. `/impeccable document` — record seat-glyph rules, small type sizes (11–12.5px), system monospace for code, newer colors in DESIGN.md (clears detector advisories)
-Then re-run `/impeccable critique` to compare against 27/40.
+6. ✅ `/impeccable distill` — `#/case` briefing cut to Facts + Question presented (history and both sides' arguments stay on `#/reader`); Phase/Decision rows dropped from the facts list; new ruled closing strip restates the lock (time, phase, "Awaiting the Court") and links to `#/reader`
+7. ✅ `/impeccable polish` — neutral hairline seats (`neutral` prop on Bench/SeatMark) on scorecard and `#/new`, so a filled seat only ever means majority; checkmarks in the filing checklist (shared `CheckMark` icon); phase shown on the compact `#/reader` seal; ledger column heads on wide screens (row labels kept for phones and screen readers); Right/Missed key under the scorecard record; sample IDs read "Sample 1–16"; Term marked "Set automatically"; light segmented control pressed = ink hairline frame instead of solid black
+8. ✅ `/impeccable document` — merged into DESIGN.md (not rewritten): One Meaning per Seat rule (hairline, deliberating, recused states; checkmark for status; Right/Missed key), Caption 12.5px / Micro 11px floors, Code role (system monospace for literal code only), 7 new color tokens (field-line, placeholder, field-white, selection-wash, tip-muted, bench-green-deep/-idle), light segmented control, inputs, file button, closing strip, checkmark; phone layout corrected to match adapt. Sidecar `.impeccable/design.json` regenerated. Detector advisories: 0.
+Re-critique 2026-10-08: **29/40** (was 27), snapshot `.impeccable/critique/2026-10-08T13-14-08Z__web-1-src.md`. Detector 0 anti-patterns, 0 advisories.
+
+## Second fix plan (user chose: surface the run first, take on everything) — all done 2026-10-08
+1. ✅ onboard — `#/run/sample` starts the sample run in one click (`SAMPLE_DRAFT` in `runDraft.js`); home hero leads with "Watch a forecast run"; `#/case` band offers "Watch it run from the briefs"; `#/new` band: "Run the Hartwell sample" plus "Fill the form with it" (scrolls to and focuses submit, with a status note)
+2. ✅ harden — errors tied to fields (`aria-describedby`, `aria-invalid` on file inputs), focused error summary with jump links, focus moves to `<main>` after every in-app navigation
+3. ✅ adapt — 44px-tall masthead links, edge-to-edge benches on phones (seats ~43x82), docket line and legend fold on phones, outcome's last word stays with the tally (band still fills most of the first phone screen)
+4. ✅ distill — home steps grid and scorecard section replaced by one "Made in the open / Scored in public" pair
+5. ✅ polish — disabled field controls at 40% opacity + not-allowed; masthead current = frame + 2px bottom, no fill; Method fan dot no longer brass; reader citation key 58ch; fictional docket numbers (25-2104…) in the sample ledger; docket placeholder 25-0000; legend reworded (Writes a concurrence / Writes the dissent / Writes for the Court); reader contents marks 22px
+
+Re-critique 2026-10-08 (round 3): **29/40** (held), snapshot `.impeccable/critique/2026-10-08T13-26-54Z__web-1-src.md`. Detector clean. Consistency fell to 2, partly from the onboarding pass adding sample labels.
+
+## Third fix plan (user chose: one sample vocabulary first, everything incl. minors, remove dead docket rows) — done 2026-10-08
+1. ✅ clarify — sample is "Hartwell sample" / "Watch … run" everywhere; author is "Writes for the Court" everywhere (data role renamed); percent reads "confidence in this vote"; "What the court terms mean" glossary on `#/case`
+2. ✅ harden — home docket shows only cases with a page (Hartwell); form errors re-validate live after the first attempt, summary count updates, summary announced by focus (no live re-announce)
+3. ✅ distill — `#/case` key down to 4 items; "Watch it run" under the outcome; `#/new` band uses two ghost buttons so submit stays the strongest action
+4. ✅ adapt — one-row 56px phone masthead (logo only + short labels); segmented, Choose PDF, text links at 44px; padded hit areas for inline links, cite chips, back link, footer link; contents strips get a chevron cue
+5. ✅ polish — pressed toggle stays legible when disabled; checklist only checks what the visitor did; recused dissent writer hands the dissent to the senior dissenter; GitHub link in the footer; By-vote group labels readable by screen readers
+- Not fixed: the "double hairline" under the masthead only appears on some loads in headless Chromium and no element draws it; looks like a rendering seam, unconfirmed in a real browser.
+
+Re-critique 2026-10-08 (round 4): **29/40** (third run at 29), snapshot `.impeccable/critique/2026-10-08T13-40-12Z__web-1-src.md`. User chose to stop design rounds: fixed only the P1, then move to the backend.
+- ✅ Recusal decision bug: `concurring` now comes from the re-derived roles (a promoted author is never also listed as concurring). Checked Kagan / Roberts+Thomas / Roberts+Kagan.
+- ✅ Scorecard opens on "OT2026 (live)"; "Preview a sample season" is the second option; `#/scorecard/sample` (home link) opens the preview.
+- ✅ Phone masthead shows the "Bench Forecast" name again (two rows, 95px).
+- Left open from round 4 (not scheduled): scorecard seat shapes reuse the arc for accuracy and the dashed ring for "no cases"; Method page's green code panel and boxed callout break the one-field/hairline rules; focus stays on the seat after selecting it; hero buttons stack at 1440; holding drops "remanded".
 
 ## Open items and cautions
 - Own-opinion citation summaries in `src/data.js` (`ownCitations`) were written from memory; verify against the real opinions before showing to legal experts.

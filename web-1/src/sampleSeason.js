@@ -57,7 +57,7 @@ function buildCase(i, rand) {
       : predMajority[Math.floor(rand() * predMajority.length)].slug;
 
   return {
-    docket: `S-${101 + i}`,
+    docket: `25-${2104 + i * 13}`,
     title: TITLES[i],
     phase: i % 3 === 0 ? "Before argument" : "After argument",
     locked: LOCKED[i],

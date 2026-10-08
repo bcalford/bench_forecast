@@ -1,9 +1,9 @@
 
 const NAV = [
-  { view: "case", label: "Sample forecast", short: "Sample", also: ["reader"] },
+  { view: "case", label: "Hartwell sample", short: "Sample", also: ["reader"] },
   { view: "scorecard", label: "Scorecard" },
   { view: "method", label: "Method" },
-  { view: "new", label: "Forecast a case", primary: true, also: ["run"] },
+  { view: "new", label: "Forecast a case", short: "Forecast", primary: true, also: ["run"] },
 ];
 
 // The mark: one seat. A vote (the disk) under a seat back drawn three-quarters round
@@ -25,7 +25,7 @@ export function Masthead({ view }) {
       <div className="wrap masthead-row">
         <a className="wordmark" href="#/home" aria-label="Bench Forecast, home">
           <Logo />
-          Bench Forecast
+          <span className="wordmark-text">Bench Forecast</span>
         </a>
         <nav className="masthead-nav" aria-label="Primary">
           {NAV.map((n) => (
@@ -57,7 +57,7 @@ export function LockSeal({ lockedAt, phase, compact = false, open = false, justL
         ) : (
           <>
             <time className="lock-seal-time">{lockedAt}</time>
-            {!compact && <div className="lock-seal-phase">{phase}</div>}
+            <div className="lock-seal-phase">{phase}</div>
           </>
         )}
       </div>
@@ -71,6 +71,7 @@ export function Footer() {
       <div className="wrap footer-row">
         <p>Prediction for educational purposes, not legal advice.</p>
         <p>Cases shown are fictional sample data. Bench Forecast, 2026.</p>
+        <a className="footer-link" href="https://github.com/bcalford/bench_forecast">Source on GitHub</a>
       </div>
     </footer>
   );

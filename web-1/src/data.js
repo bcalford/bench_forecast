@@ -26,8 +26,6 @@ export const sampleCase = {
   respondent: "Department of Commerce",
   facts:
     "A federal fisheries rule requires certain commercial vessels to carry, and pay for, government-appointed monitors. Hartwell Fisheries challenged the rule, arguing the statute never authorized the agency to shift monitoring costs onto the regulated industry. The D.C. Circuit upheld the rule, deferring to the agency's reading of an ambiguous provision.",
-  question:
-    "Whether a statute's silence on industry-funded monitoring permits the agency to impose those costs, and how much weight courts owe the agency's interpretation.",
   prediction: {
     winner: "Hartwell Fisheries",
     majority: 6,
@@ -40,7 +38,7 @@ export const sampleCase = {
       "The statute does not authorize the agency to require vessels to fund their own monitors; the judgment below is reversed.",
   },
   votes: {
-    roberts: { vote: "majority", role: "Majority opinion", confidence: 0.86 },
+    roberts: { vote: "majority", role: "Writes for the Court", confidence: 0.86 },
     thomas: { vote: "majority", role: "Concurrence", confidence: 0.93 },
     alito: { vote: "majority", role: "Joins majority", confidence: 0.9 },
     sotomayor: { vote: "minority", role: "Joins dissent", confidence: 0.84 },
@@ -96,7 +94,7 @@ export const benchOrder = (() => {
   return [...left.reverse(), bySeniority[0], ...right];
 })();
 
-const WRITING_ROLES = new Set(["Majority opinion", "Concurrence", "Dissent"]);
+const WRITING_ROLES = new Set(["Writes for the Court", "Concurrence", "Dissent"]);
 export const writesSeparately = (vote) => WRITING_ROLES.has(vote.role);
 export const voteWord = (vote) => (vote.vote === "majority" ? "To reverse" : "To affirm");
 

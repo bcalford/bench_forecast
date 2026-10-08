@@ -8,7 +8,8 @@ const BACK = `M ${32 - R_ARC} 32 A ${R_ARC} ${R_ARC} 0 0 1 ${32 + R_ARC} 32`;
 // One justice's seat. Shape carries the vote, never hue:
 // filled = majority, open ring = dissent, inner cut/dot = writes separately,
 // brass = predicted opinion author. The half arc above is confidence.
-export default function SeatMark({ vote, isAuthor = false, pending = false, recused = false, size = 64, showConfidence = true }) {
+// Neutral: a hairline seat with no vote in it, for pages that show a justice, not a vote.
+export default function SeatMark({ vote, isAuthor = false, pending = false, recused = false, neutral = false, size = 64, showConfidence = true }) {
   const cls = ["seat-mark", isAuthor && "is-author", pending && "is-pending", recused && "is-recused"].filter(Boolean).join(" ");
 
   // Recused: the seat stands empty and is struck through; it takes no part in the tally.
@@ -40,7 +41,9 @@ export default function SeatMark({ vote, isAuthor = false, pending = false, recu
           <path d={BACK} className="sm-conf" strokeDasharray={`${vote.confidence * HALF} ${HALF}`} />
         </>
       )}
-      {majority ? (
+      {neutral ? (
+        <circle cx="32" cy="32" r="18.5" className="sm-seat" />
+      ) : majority ? (
         <>
           <circle cx="32" cy="32" r="20" className="sm-fill" />
           {separate && <circle cx="32" cy="32" r="9" className="sm-cut" />}
