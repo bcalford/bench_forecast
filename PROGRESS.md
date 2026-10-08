@@ -1,12 +1,14 @@
 # Bench Forecast — progress and handoff
 
-Last updated: 2026-10-08. Read this first when resuming.
+Last updated: 2026-10-08 (after first push). Read this first when resuming.
 
 ## Where things stand
 - **`web-1/` is the live prototype** (React 18 + Vite). The old three-clone prototype (`web/`) was deleted on 2026-10-08.
 - Visual world: **"The Bench"**. Nine seats in true bench order, vote by shape not hue, brass only for the opinion author and the lock seal, bench-green band, Public Sans + Source Serif 4 (self-hosted via @fontsource).
 - Product truth: `PRODUCT.md`. Design rules: `DESIGN.md` + `.impeccable/design.json`. Spec and decisions: `spec.md`, `decisions.md`.
-- No backend yet. All data is sample or synthetic and labeled as such. No git repo yet.
+- No backend yet. All data is sample or synthetic and labeled as such.
+- **Git:** repo on `main`, pushed to https://github.com/bcalford/bench_forecast (`origin`, tracking). Commits: `25ef4a6` initial, `aa40a91` Method page repo link. Commit/push only when asked.
+- `.gitignore` keeps out `node_modules/`, `dist/`, `.claude/settings.local.json`, the Impeccable engine binary (re-downloaded by the launcher), `.impeccable/review/` screenshots and caches, and `harvey_all.css` (scraped Harvey stylesheet, research only, never commit).
 
 ## Pages (hash routes)
 | Route | File | Notes |
@@ -36,9 +38,9 @@ Then re-run `/impeccable critique` to compare against 27/40.
 ## Open items and cautions
 - Own-opinion citation summaries in `src/data.js` (`ownCitations`) were written from memory; verify against the real opinions before showing to legal experts.
 - Not visually verified by hand: brief-chip passage panel, screen-reader announcements, `#/new/edit` prefill.
-- `web-1/PRODUCT.md` and `web-1/DESIGN.md` are symlinks to the root files (needed because there is no git root).
+- `web-1/PRODUCT.md` and `web-1/DESIGN.md` are symlinks to the root files. They were needed before the repo existed; with the git root now at `supreme-court-app/`, Impeccable finds the root files on its own, so the symlinks can be removed if they cause confusion.
 - Live mode config: `web-1/.impeccable/live/config.json`. Restart with `/impeccable live`.
-- Dev servers this session: Vite dev on :5173 and `vite preview` on :4317 (serves `web-1/dist`, rebuild with `npx vite build`).
+- Run locally: `cd web-1 && npm install && npm run dev` (Vite on :5173). `npx vite build` then `npx vite preview` serves `dist/`.
 
 ## Later
 - Backend per `spec.md`: Next.js, Supabase (pgvector), Inngest, Voyage, Claude Opus/Sonnet.
