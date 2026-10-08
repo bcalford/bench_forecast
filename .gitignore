@@ -1,0 +1,23 @@
+# Dependencies and builds
+node_modules/
+dist/
+
+# OS / editor
+.DS_Store
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# Impeccable engine binary (re-downloaded by the launcher or `npx impeccable update`)
+.claude/skills/impeccable/scripts/bin/
+
+# Impeccable working files (screenshots, session state, caches)
+.impeccable/review/
+.impeccable/questions/
+.impeccable/config.local.json
+**/.impeccable/hook.cache.json
+web-1/.impeccable/live/*
+!web-1/.impeccable/live/config.json
+
+# Scraped third-party stylesheet used only for research; not ours to redistribute
+harvey_all.css

@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-08T00:00:00Z",
+  "title": "Design System: Bench Forecast",
+  "extensions": {
+    "colorMeta": {
+      "bench-green": { "role": "primary", "displayName": "Bench Green", "canonical": "#1f3d34", "cssVar": "--green", "tonalRamp": ["oklch(15% 0.04 172.4)", "oklch(25% 0.04 172.4)", "oklch(35% 0.04 172.4)", "oklch(45% 0.04 172.4)", "oklch(55% 0.04 172.4)", "oklch(65% 0.04 172.4)", "oklch(80% 0.04 172.4)", "oklch(95% 0.04 172.4)"] },
+      "bench-green-line": { "role": "primary", "displayName": "Bench Green Line", "canonical": "#33584c", "cssVar": "--green-line", "tonalRamp": ["oklch(15% 0.047 171.3)", "oklch(25% 0.047 171.3)", "oklch(35% 0.047 171.3)", "oklch(45% 0.047 171.3)", "oklch(55% 0.047 171.3)", "oklch(65% 0.047 171.3)", "oklch(80% 0.047 171.3)", "oklch(95% 0.047 171.3)"] },
+      "green-ink": { "role": "primary", "displayName": "Green Ink", "canonical": "#2a5547", "cssVar": "--green-ink", "tonalRamp": ["oklch(15% 0.054 170.3)", "oklch(25% 0.054 170.3)", "oklch(35% 0.054 170.3)", "oklch(45% 0.054 170.3)", "oklch(55% 0.054 170.3)", "oklch(65% 0.054 170.3)", "oklch(80% 0.054 170.3)", "oklch(95% 0.054 170.3)"] },
+      "brass": { "role": "secondary", "displayName": "Brass", "canonical": "#c9a24c", "cssVar": "--brass", "tonalRamp": ["oklch(15% 0.114 84.8)", "oklch(25% 0.114 84.8)", "oklch(35% 0.114 84.8)", "oklch(45% 0.114 84.8)", "oklch(55% 0.114 84.8)", "oklch(65% 0.114 84.8)", "oklch(80% 0.114 84.8)", "oklch(95% 0.114 84.8)"] },
+      "brass-ink": { "role": "secondary", "displayName": "Brass Ink", "canonical": "#7d5f17", "cssVar": "--brass-ink", "tonalRamp": ["oklch(15% 0.094 84.4)", "oklch(25% 0.094 84.4)", "oklch(35% 0.094 84.4)", "oklch(45% 0.094 84.4)", "oklch(55% 0.094 84.4)", "oklch(65% 0.094 84.4)", "oklch(80% 0.094 84.4)", "oklch(95% 0.094 84.4)"] },
+      "on-green": { "role": "neutral", "displayName": "On-Green Paper", "canonical": "#edf0ea", "cssVar": "--on-green", "tonalRamp": ["oklch(15% 0.009 128.6)", "oklch(25% 0.009 128.6)", "oklch(35% 0.009 128.6)", "oklch(45% 0.009 128.6)", "oklch(55% 0.009 128.6)", "oklch(65% 0.009 128.6)", "oklch(80% 0.009 128.6)", "oklch(95% 0.009 128.6)"] },
+      "on-green-muted": { "role": "neutral", "displayName": "On-Green Muted", "canonical": "#b9c4bc", "cssVar": "--on-green-2", "tonalRamp": ["oklch(15% 0.016 154.4)", "oklch(25% 0.016 154.4)", "oklch(35% 0.016 154.4)", "oklch(45% 0.016 154.4)", "oklch(55% 0.016 154.4)", "oklch(65% 0.016 154.4)", "oklch(80% 0.016 154.4)", "oklch(95% 0.016 154.4)"] },
+      "ground": { "role": "neutral", "displayName": "Ground", "canonical": "#f6f6f4", "cssVar": "--ground", "tonalRamp": ["oklch(15% 0.003 106.4)", "oklch(25% 0.003 106.4)", "oklch(35% 0.003 106.4)", "oklch(45% 0.003 106.4)", "oklch(55% 0.003 106.4)", "oklch(65% 0.003 106.4)", "oklch(80% 0.003 106.4)", "oklch(95% 0.003 106.4)"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#1a1c1e", "cssVar": "--ink", "tonalRamp": ["oklch(15% 0.005 248)", "oklch(25% 0.005 248)", "oklch(35% 0.005 248)", "oklch(45% 0.005 248)", "oklch(55% 0.005 248)", "oklch(65% 0.005 248)", "oklch(80% 0.005 248)", "oklch(95% 0.005 248)"] },
+      "ink-muted": { "role": "neutral", "displayName": "Ink Muted", "canonical": "#4b5157", "cssVar": "--ink-2", "tonalRamp": ["oklch(15% 0.013 248.1)", "oklch(25% 0.013 248.1)", "oklch(35% 0.013 248.1)", "oklch(45% 0.013 248.1)", "oklch(55% 0.013 248.1)", "oklch(65% 0.013 248.1)", "oklch(80% 0.013 248.1)", "oklch(95% 0.013 248.1)"] },
+      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "#d8dbd7", "cssVar": "--rule", "tonalRamp": ["oklch(15% 0.006 137.8)", "oklch(25% 0.006 137.8)", "oklch(35% 0.006 137.8)", "oklch(45% 0.006 137.8)", "oklch(55% 0.006 137.8)", "oklch(65% 0.006 137.8)", "oklch(80% 0.006 137.8)", "oklch(95% 0.006 137.8)"] },
+      "cite-wash": { "role": "neutral", "displayName": "Cite Wash", "canonical": "#e5ebe6", "cssVar": "--cite-bg", "tonalRamp": ["oklch(15% 0.009 150.7)", "oklch(25% 0.009 150.7)", "oklch(35% 0.009 150.7)", "oklch(45% 0.009 150.7)", "oklch(55% 0.009 150.7)", "oklch(65% 0.009 150.7)", "oklch(80% 0.009 150.7)", "oklch(95% 0.009 150.7)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Home page title on the green field; max 13ch, balanced." },
+      "headline": { "displayName": "Headline", "purpose": "Case title (italic, as a case name) and reader title; max 18ch, balanced." },
+      "outcome": { "displayName": "Outcome", "purpose": "Predicted-outcome sentence under the case title; tally never wraps." },
+      "title": { "displayName": "Title", "purpose": "Section headings on the ground, sitting on a 1px ink rule; 24px in the reader." },
+      "reading": { "displayName": "Reading", "purpose": "Serif reasoning prose, holdings and briefing; max 68ch; 17px in rows and under 700px." },
+      "body": { "displayName": "Body", "purpose": "UI default text." },
+      "label": { "displayName": "Label", "purpose": "Definition terms, seat names, lock-seal head; sentence case, tabular figures." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default easing: bench glide (0.75s), rail and label fades (0.4s), seat lift (0.3s), chevron (0.25s), arrow nudge (0.2s)." },
+      { "name": "ease-snap", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Seat snapping in during Replay (scale 0.8 to 1, 0.34s)." },
+      { "name": "reduced-motion", "value": "0.01ms", "purpose": "All animations and transitions collapse under prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "960px", "purpose": "Grids collapse to one column; reader TOC becomes a horizontal sticky strip." },
+      { "name": "phone", "value": "700px", "purpose": "Compact bench (30px marks, short names), stacked case head, reflowed docket rows." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Primary action on the green field; square, with a trailing arrow that nudges on hover.",
+      "html": "<div class=\"ds-field\"><a class=\"ds-btn-solid\" href=\"#\">Open the sample case <svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 10h12M11.5 5.5 16 10l-4.5 4.5\"/></svg></a></div>",
+      "css": ".ds-field { background: #1f3d34; padding: 24px; font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; } .ds-btn-solid { display: inline-flex; align-items: center; gap: 8px; background: #edf0ea; color: #1f3d34; text-decoration: none; font-size: 15.5px; font-weight: 650; padding: 13px 18px; border-radius: 0; transition: background 0.2s; } .ds-btn-solid svg { transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-solid:hover { background: #ffffff; } .ds-btn-solid:hover svg { transform: translateX(3px); } .ds-btn-solid:focus-visible { outline: 2px solid #edf0ea; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action on the green field, e.g. Replay the run.",
+      "html": "<div class=\"ds-field\"><button type=\"button\" class=\"ds-btn-ghost\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4.5 10a5.5 5.5 0 1 0 1.6-3.9\"/><path d=\"M4.5 3.5v3h3\"/></svg> Replay the run</button></div>",
+      "css": ".ds-field { background: #1f3d34; padding: 24px; font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; } .ds-btn-ghost { display: inline-flex; align-items: center; gap: 8px; background: none; border: 1px solid #33584c; color: #edf0ea; font: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 0; cursor: pointer; transition: border-color 0.2s; } .ds-btn-ghost:hover:not(:disabled) { border-color: #b9c4bc; } .ds-btn-ghost:disabled { color: #b9c4bc; cursor: progress; } .ds-btn-ghost:focus-visible { outline: 2px solid #edf0ea; outline-offset: 3px; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "chip",
+      "refersTo": "segmented-option",
+      "description": "Two-option arrangement switch on the green field; pressed option inverts.",
+      "html": "<div class=\"ds-field\"><div class=\"ds-seg\" role=\"group\" aria-label=\"Arrange seats\"><button type=\"button\" aria-pressed=\"true\">As seated</button><button type=\"button\" aria-pressed=\"false\">By vote</button></div></div>",
+      "css": ".ds-field { background: #1f3d34; padding: 24px; font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; } .ds-seg { display: inline-flex; border: 1px solid #33584c; } .ds-seg button { background: none; border: 0; color: #b9c4bc; font: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; cursor: pointer; transition: background 0.2s, color 0.2s; } .ds-seg button:hover { color: #edf0ea; } .ds-seg button[aria-pressed=\"true\"] { background: #edf0ea; color: #1f3d34; } .ds-seg button:focus-visible { outline: 2px solid #edf0ea; outline-offset: 3px; }"
+    },
+    {
+      "name": "Masthead Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Wordmark plus text links on the green field; current page underlined.",
+      "html": "<header class=\"ds-mast\"><a class=\"ds-word\" href=\"#\"><svg width=\"26\" height=\"14\" viewBox=\"0 0 26 14\" aria-hidden=\"true\"><circle cx=\"1\" cy=\"8.72\" r=\"1.5\"/><circle cx=\"4\" cy=\"5.78\" r=\"1.5\"/><circle cx=\"7\" cy=\"3.68\" r=\"1.5\"/><circle cx=\"10\" cy=\"2.42\" r=\"1.5\"/><circle cx=\"13\" cy=\"2\" r=\"1.5\"/><circle cx=\"16\" cy=\"2.42\" r=\"1.5\"/><circle cx=\"19\" cy=\"3.68\" r=\"1.5\"/><circle cx=\"22\" cy=\"5.78\" r=\"1.5\"/><circle cx=\"25\" cy=\"8.72\" r=\"1.5\"/></svg>Bench Forecast</a><nav class=\"ds-nav\"><a href=\"#\">Forecasts</a><a href=\"#\" aria-current=\"page\">Sample case</a><a href=\"#\">Reasoning</a></nav></header>",
+      "css": ".ds-mast { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 64px; padding: 0 24px; background: #1f3d34; color: #edf0ea; border-bottom: 1px solid #33584c; font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; } .ds-word { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; letter-spacing: -0.01em; color: inherit; text-decoration: none; white-space: nowrap; } .ds-word svg { fill: #b9c4bc; } .ds-nav { display: flex; gap: 32px; } .ds-nav a { font-size: 14.5px; font-weight: 500; color: #b9c4bc; text-decoration: none; padding: 6px 0; border-bottom: 2px solid transparent; white-space: nowrap; } .ds-nav a:hover { color: #edf0ea; } .ds-nav a[aria-current=\"page\"] { color: #edf0ea; border-bottom-color: #edf0ea; } .ds-nav a:focus-visible, .ds-word:focus-visible { outline: 2px solid #edf0ea; outline-offset: 3px; }"
+    },
+    {
+      "name": "Lock Seal",
+      "kind": "card",
+      "refersTo": "lock-seal",
+      "description": "Brass-bordered proof that the forecast was locked before the decision.",
+      "html": "<div class=\"ds-field\"><div class=\"ds-seal\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"4\" y=\"9\" width=\"12\" height=\"8.5\" rx=\"1.5\"/><path d=\"M6.75 9V6.5a3.25 3.25 0 0 1 6.5 0V9\"/></svg><div><div class=\"ds-seal-head\">Locked</div><time class=\"ds-seal-time\">Oct 8, 2026, 9:14 AM ET</time><div class=\"ds-seal-phase\">Before argument</div></div></div></div>",
+      "css": ".ds-field { background: #1f3d34; padding: 24px; font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; } .ds-seal { display: inline-flex; gap: 12px; align-items: flex-start; border: 1px solid #c9a24c; padding: 14px 18px 14px 14px; color: #edf0ea; min-width: 220px; } .ds-seal svg { color: #c9a24c; flex: none; margin-top: 1px; } .ds-seal-head { font-size: 13.5px; font-weight: 700; color: #c9a24c; } .ds-seal-time { display: block; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 2px; } .ds-seal-phase { font-size: 13.5px; color: #b9c4bc; margin-top: 2px; }"
+    },
+    {
+      "name": "Seat Mark Set",
+      "kind": "custom",
+      "refersTo": "seat-mark",
+      "description": "The vote vocabulary: majority, dissent, writes separately, opinion author, with the half-arc confidence gauge. Shape carries the vote, never hue.",
+      "html": "<div class=\"ds-field\"><ul class=\"ds-marks\"><li><svg class=\"ds-sm\" width=\"64\" height=\"64\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M 3 32 A 29 29 0 0 1 61 32\" class=\"ds-track\"/><path d=\"M 3 32 A 29 29 0 0 1 61 32\" class=\"ds-conf\" stroke-dasharray=\"82 91.1\"/><circle cx=\"32\" cy=\"32\" r=\"20\" class=\"ds-fill\"/></svg>Majority</li><li><svg class=\"ds-sm\" width=\"64\" height=\"64\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M 3 32 A 29 29 0 0 1 61 32\" class=\"ds-track\"/><path d=\"M 3 32 A 29 29 0 0 1 61 32\" class=\"ds-conf\" stroke-dasharray=\"76 91.1\"/><circle cx=\"32\" cy=\"32\" r=\"18.5\" class=\"ds-ring\"/></svg>Dissent</li><li><svg class=\"ds-sm\" width=\"64\" height=\"64\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M 3 32 A 29 29 0 0 1 61 32\" class=\"ds-track\"/><path d=\"M 3 32 A 29 29 0 0 1 61 32\" class=\"ds-conf\" stroke-dasharray=\"85 91.1\"/><circle cx=\"32\" cy=\"32\" r=\"20\" class=\"ds-fill\"/><circle cx=\"32\" cy=\"32\" r=\"9\" class=\"ds-cut\"/></svg>Concurs</li><li><svg class=\"ds-sm is-author\" width=\"64\" height=\"64\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M 3 32 A 29 29 0 0 1 61 32\" class=\"ds-track\"/><path d=\"M 3 32 A 29 29 0 0 1 61 32\" class=\"ds-conf\" stroke-dasharray=\"78 91.1\"/><circle cx=\"32\" cy=\"32\" r=\"20\" class=\"ds-fill\"/><circle cx=\"32\" cy=\"32\" r=\"9\" class=\"ds-cut\"/></svg>Author</li></ul></div>",
+      "css": ".ds-field { background: #1f3d34; padding: 24px; font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; } .ds-marks { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; color: #edf0ea; font-size: 13.5px; font-weight: 600; } .ds-marks li { display: flex; flex-direction: column; align-items: center; gap: 6px; } .ds-sm { overflow: visible; transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); } .ds-marks li:hover .ds-sm { transform: translateY(-4px); } .ds-fill { fill: #edf0ea; } .ds-cut { fill: #1f3d34; } .ds-ring { fill: none; stroke: #edf0ea; stroke-width: 3; } .ds-track { fill: none; stroke: rgba(237, 240, 234, 0.17); stroke-width: 2; } .ds-conf { fill: none; stroke: #edf0ea; stroke-width: 2.25; stroke-linecap: round; } .ds-sm.is-author .ds-fill { fill: #c9a24c; } .ds-sm.is-author .ds-conf { stroke: #c9a24c; }"
+    },
+    {
+      "name": "Justice Row",
+      "kind": "custom",
+      "refersTo": "justice-row",
+      "description": "Ruled disclosure row on the ground: mark, name and role, vote, confidence bar, chevron.",
+      "html": "<div class=\"ds-ground\"><div class=\"ds-jrow\"><button type=\"button\" class=\"ds-jrow-head\" aria-expanded=\"false\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><circle cx=\"32\" cy=\"32\" r=\"20\" fill=\"#1a1c1e\"/></svg><span class=\"ds-jname\"><span>Samuel A. Alito, Jr.</span><span class=\"ds-jrole\">Joins majority</span></span><span class=\"ds-jvote\">Reverse</span><span class=\"ds-jconf\"><span class=\"ds-scale\"><span style=\"width:90%\"></span></span>90%</span><svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"#4b5157\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m6 8 4 4 4-4\"/></svg></button></div></div>",
+      "css": ".ds-ground { background: #f6f6f4; color: #1a1c1e; padding: 24px; font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; } .ds-jrow { border-bottom: 1px solid #d8dbd7; } .ds-jrow-head { display: grid; grid-template-columns: 36px minmax(0, 1fr) 64px 132px 18px; align-items: center; gap: 16px; width: 100%; padding: 14px 0; background: none; border: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; } .ds-jrow-head:hover .ds-jname > span:first-child { text-decoration: underline; text-underline-offset: 0.22em; } .ds-jrow-head:focus-visible { outline: 2px solid #2a5547; outline-offset: 3px; } .ds-jname { display: flex; flex-direction: column; } .ds-jname > span:first-child { font-size: 16px; font-weight: 600; } .ds-jrole { font-size: 14px; color: #4b5157; } .ds-jvote { font-size: 14.5px; font-weight: 600; } .ds-jconf { display: flex; align-items: center; gap: 10px; font-size: 14px; font-variant-numeric: tabular-nums; } .ds-scale { position: relative; flex: 1; height: 3px; background: #d8dbd7; } .ds-scale span { position: absolute; inset: 0 auto 0 0; background: #1a1c1e; }"
+    },
+    {
+      "name": "Text Link",
+      "kind": "button",
+      "refersTo": "text-link",
+      "description": "Green-ink link on the ground with a trailing arrow.",
+      "html": "<div class=\"ds-ground\"><a class=\"ds-tlink\" href=\"#\">Full reasoning and citations <svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 10h12M11.5 5.5 16 10l-4.5 4.5\"/></svg></a></div>",
+      "css": ".ds-ground { background: #f6f6f4; color: #1a1c1e; padding: 24px; font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; } .ds-tlink { display: inline-flex; align-items: center; gap: 6px; color: #2a5547; font-size: 15px; font-weight: 600; text-decoration: none; text-underline-offset: 0.22em; text-decoration-thickness: 1px; } .ds-tlink svg { transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-tlink:hover { text-decoration: underline; } .ds-tlink:hover svg { transform: translateX(3px); } .ds-tlink:focus-visible { outline: 2px solid #2a5547; outline-offset: 3px; }"
+    },
+    {
+      "name": "Citation Chip in Reading Prose",
+      "kind": "chip",
+      "refersTo": "cite-chip",
+      "description": "Inline sans citation inside serif reasoning; the system's only rounded corner.",
+      "html": "<div class=\"ds-ground\"><p class=\"ds-reading\">Where Congress specified cost-shifting for some fisheries but not others, he is likely to read that contrast as meaningful.<cite class=\"ds-cite\">Pet. Br. 14</cite></p></div>",
+      "css": ".ds-ground { background: #f6f6f4; color: #1a1c1e; padding: 24px; } .ds-reading { font-family: 'Source Serif 4 Variable', 'Source Serif 4', Georgia, serif; font-size: 18px; line-height: 1.62; max-width: 68ch; margin: 0; text-wrap: pretty; } .ds-cite { font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif; font-style: normal; font-size: 12.5px; font-weight: 650; color: #2a5547; background: #e5ebe6; padding: 2px 6px; margin-left: 2px; white-space: nowrap; border-radius: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Bench Seating Chart",
+    "overview": "The vote is shown where the justices actually sit. One deep bench-green field owns the top of every page (masthead plus a band holding the page's headline object), and below it a calm, cool off-white reading ground carries ruled lists and long-form text. The signature object is the bench: nine authored seat marks on a shallow curve in true seating order (Chief center, seniority alternating outward), which can glide into a majority | dissent split.\n\nThe register is a court reporter's, not a dashboard's. Structure comes from hairline rules and typographic weight, never from cards, shadows, or fills. Vote meaning is carried by shape, never by hue: the system has exactly one chromatic accent, brass, and it marks only the opinion author and the lock seal. Density is moderate: generous column gaps (72px) and section breaks (88 to 96px), tight 14px row rhythm inside lists.\n\nConfirmed rejections, carried from PRODUCT.md brand commitments: no AI-startup look (dark mode, neon, gradients, sparkle icons), no red/blue partisan coding, no scoreboard or betting-odds feel.",
+    "keyCharacteristics": [
+      "One green field at the top of each page; light reading ground below.",
+      "Shape carries the vote (filled, ring, inner cut, inner dot); color never does.",
+      "Brass is reserved for two meanings: opinion author and the lock.",
+      "Hairline rules as the only structure; square corners throughout.",
+      "Public Sans with tabular figures runs the frame; Source Serif 4 sets reasoning prose."
+    ],
+    "rules": [
+      { "name": "The Shape Not Hue Rule", "body": "A vote is encoded by seat-mark shape: filled disc = majority, open ring = dissent, inner cut or inner dot = writes separately, half-arc above = confidence. No color, anywhere, distinguishes majority from dissent.", "section": "colors" },
+      { "name": "The Two Meanings of Brass Rule", "body": "Brass means \"opinion author\" or \"locked before decision\". It is never decoration, never a link color, never a hover state.", "section": "colors" },
+      { "name": "The One Field Rule", "body": "Each page has one green field, at the top. The light ground never hosts a green panel, and the green field never hosts a light card.", "section": "colors" },
+      { "name": "The Tabular Figures Rule", "body": "Every number that can change or be compared (tallies, confidence percents, timestamps, docket numbers) is set with tabular lining figures.", "section": "typography" },
+      { "name": "The Serif Means Reasoning Rule", "body": "Source Serif 4 is used only for explanatory prose (reasoning, holdings, facts). Headings, labels, controls and citation chips stay in Public Sans, even inside serif paragraphs.", "section": "typography" },
+      { "name": "The Italic Case Name Rule", "body": "Case names are italic wherever they appear, in titles and in running text.", "section": "typography" },
+      { "name": "The Hairline Only Rule", "body": "Structure is 1px rules: `rule` between rows, `ink` under section headings, `bench-green-line` inside the field. No cards, no shadows, no filled panels as containers.", "section": "elevation" },
+      { "name": "The Lift Not Shadow Rule", "body": "The only elevation cue is translation: a seat mark moves up 4px on hover or selection. Nothing casts a shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** open every page with the green field (masthead plus band) and continue on the ground.",
+      "**Do** encode votes with seat-mark shape only: filled, ring, inner cut, inner dot, brass for author.",
+      "**Do** set every comparable number with tabular lining figures.",
+      "**Do** separate content with 1px hairlines and put a 1px ink rule under each section heading.",
+      "**Do** keep reasoning prose in Source Serif 4 at 17 to 18px, max 68ch.",
+      "**Do** keep corners square; the citation chip's 2px is the only radius.",
+      "**Do** use `brass-ink` instead of `brass` whenever the author mark sits on the light ground."
+    ],
+    "donts": [
+      "**Don't** color-code majority and dissent, and never use red or blue for justices or blocs.",
+      "**Don't** use brass for anything other than the opinion author and the lock.",
+      "**Don't** add box-shadows, cards, gradients, glows or dark mode.",
+      "**Don't** place green panels on the light ground or light cards inside the green field.",
+      "**Don't** use serif for headings, labels, controls or chips.",
+      "**Don't** draw the confidence gauge as a full ring; it is a half-arc above the mark so it cannot read as a loading spinner."
+    ]
+  }
+}
