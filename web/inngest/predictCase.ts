@@ -12,6 +12,8 @@ import {
   loadArgumentTurns, loadBriefs, loadPrediction, lockPrediction, recordSpend, saveSummary, saveVote, setStage,
 } from "@/lib/pipeline";
 import type { BriefingSummary, JusticeOpinion } from "@/lib/schemas";
+import { refundFiling } from "@/lib/gate";
+import { serviceClient } from "@/lib/supabase";
 
 type Event = { data: { predictionId: string } };
 
@@ -23,6 +25,7 @@ export const predictCase = inngest.createFunction(
     onFailure: async ({ event, error }) => {
       const predictionId = (event.data.event as Event).data.predictionId;
       await setStage(predictionId, "failed", { error: error.message.slice(0, 500) });
+      await refundFiling(serviceClient(), predictionId); // a pipeline error shouldn't cost the filer a run; no-op for owner runs
     },
   },
   async ({ event, step }) => {
