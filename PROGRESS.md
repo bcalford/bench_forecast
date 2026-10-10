@@ -94,7 +94,7 @@ First full forecast (phase 4 CLI), 2026-10-10 — FCC v. Consumers' Research, br
 
 Step 2 — pipeline wired into Inngest (2026-10-10), verified end to end:
 - Migration 7: `predictions.stage` (queued → summarizing → retrieving → deliberating → clerk → locked/failed), `as_of`, `error`; `cases.argued_on`; private Storage bucket `briefs`.
-- `inngest/predictCase.ts`: retryable steps (summarize; embed queries; retrieve per justice sequentially; first justice alone to warm the cache, then eight in parallel; clerk-and-lock); each vote saved as it lands (`justice_votes`, citations enriched with case/label/url); every model call in `spend_ledger`; failures set stage `failed` + `error`. `lib/pipeline.ts` holds the DB/storage helpers; `lib/roster.generated.ts` bundles roster, profiles and voting records (`npm run roster:build` after editing a profile). `app/api/inngest` has `maxDuration = 300` (Vercel Hobby caps at 60 s: production needs Pro or another host).
+- `inngest/predictCase.ts`: retryable steps (summarize; embed queries; retrieve per justice sequentially; first justice alone to warm the cache, then eight in parallel; clerk-and-lock); each vote saved as it lands (`justice_votes`, citations enriched with case/label/url); every model call in `spend_ledger`; failures set stage `failed` + `error`. `lib/pipeline.ts` holds the DB/storage helpers; `lib/roster.generated.ts` bundles roster, profiles and voting records (`npm run roster:build` after editing a profile). `app/api/inngest` has `maxDuration = 300` (fits Vercel Hobby with Fluid compute, 300 s per step; decisions.md Q26).
 - `scripts/try/enqueue.ts` files a case like the form will (upload briefs, create case + prediction, send event). Run with `npm run dev` + `npm run inngest:dev`.
 - Test: FCC v. Consumers' Research through the job: locked Reversed 6–3, Kagan writing, same nine sides as the CLI run; 4 min; $2.25 (10 Opus calls incl. clerk, 1 Sonnet); no flagged votes.
 
@@ -104,7 +104,7 @@ Phase 5 — UI ported to Next.js on real data (2026-10-10, uncommitted at time o
 - Filing is closed in production (`lib/filing.ts` `filingOpen()`; `FILING_OPEN=1` overrides) until phase 6 adds invite codes and the daily cap.
 - `cases.decided_before_cutoff` now drives a "Not a fair test" label (run page, home rows, featured card); set true for the FCC v. Consumers' Research backtest.
 - Verified: tsc, lint, `next build`, all routes 200 (unknown run 404), signed upload + missing-upload rejection. Browser pass (2026-10-10) over every route: renders clean. Fixed there: duplicate React keys on the reasoning page (a justice can cite one passage twice; keys are now passage + index) and the decision panel's "Judgment below" label, renamed "Judgment" (it showed the predicted result, not the lower court's). Not yet verified: a live filing through the form watching Realtime (costs ~$2.30).
-- ⏭ Next: phase 6 (invite codes, daily cap, deploy).
+- ⏭ Next: phase 6 (invite codes, daily cap, deploy on Vercel Hobby with Fluid compute on; Q26).
 
 Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.
 - `lib/clerk-rules.ts` (+tests), `lib/schemas.ts` (+citation checker, tests), `lib/models.ts` (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10), `lib/claude.ts` (streamed structured output with `betaZodOutputFormat`, server-side refusal fallbacks, cost per call, stream-started hook), `lib/briefs.ts` (local text extraction; decisions.md Q22), `lib/agents/{summarizer,justice,clerk}.ts`, `lib/retrieval.ts`, `lib/embedding.ts`.
