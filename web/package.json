@@ -9,23 +9,29 @@
     "lint": "eslint",
     "seed:build": "node scripts/build-seed.mjs",
     "typecheck": "tsc --noEmit",
-    "inngest:dev": "npx --yes inngest-cli@latest dev -u http://localhost:3000/api/inngest"
+    "inngest:dev": "npx --yes inngest-cli@latest dev -u http://localhost:3000/api/inngest",
+    "test": "tsx --test lib/*.test.ts scripts/**/*.test.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.1",
     "@supabase/supabase-js": "^2.117.3",
     "inngest": "^4.22.0",
     "next": "15.5.27",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "unpdf": "^1.8.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.27",
+    "pg": "^8.23.1",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

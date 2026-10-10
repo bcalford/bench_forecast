@@ -76,4 +76,24 @@ Phase 1 (scaffold) — code done, not yet connected:
 - Verified: typecheck, lint, production build; `/api/health` gives a clear missing-env error; `/api/inngest` registers 1 function in dev mode
 - ✅ Connected 2026-10-08: hosted Supabase project; migration + seed applied via the SQL editor; `/api/health` → `{"ok":true,"justices":9}`; RLS verified (anon can read the roster but cannot see invite codes or insert anywhere; code format check enforced); `match_passages()` callable. Keys use Supabase's new names: publishable key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`, secret key → `SUPABASE_SERVICE_ROLE_KEY`.
 - Fixed: `/api/health` used to report ok with a null count when the table was missing.
-- ⏭ Next: phase 2, corpus ingestion (CourtListener opinions, supremecourt.gov argument transcripts) and Voyage embeddings, then a retrieval sanity check per justice.
+
+Phase 2 (corpus) — done 2026-10-10.
+- Opinions OT2011–OT2025 (851 slip/preliminary-print opinions + 513 U.S. Reports cases), all argument transcripts OT2011–OT2025, SCDB voting records (decisions.md Q23). Lower-court opinions deferred to v2 (Q24: CourtListener now allows 125 requests/day).
+- Splitter fixes after the profile review flagged misattributions: footnote-free page text (`scripts/ingest/pdf-text.ts`: drops smaller text below the last body line, keeps inline small caps), openers must end at the role ("Justice X, dissenting in part." — not "…dissenting in part, renews a debate"), short-form openers ("Thomas, J., concurring."), syllabus spill skipped. Verified on BNSF, Husted, Hughes, Dimaya, Brnovich, Ruan, Consumers' Research, Obergefell.
+- Volume dates: fallback to the "Cite as … (year)" line; fixed in place by `fix-volume-dates.ts`.
+- All passages embedded (voyage-law-2). Ingest calls retry transient network/database errors (`lib/retry.ts`).
+- Search: IVFFlat index + iterative scan (migration 6, Q25); retrieval check passes for all nine. HNSW and exact search did not work on this instance.
+- Direct DB access for migrations: `scripts/db/sql.ts` with `DATABASE_URL` (session pooler) in `.env.local`.
+- Profiles regenerated from the cleaned library ($5.55); 4 source notes left (Alito/Waetzig is a false alarm: the PDF says Alito wrote it; Sotomayor/Barr v. AAPC: opener "concurring in the judgment with respect to severability…" not yet matched — fix ROLE_WORDS and re-split vol 591).
+
+First full forecast (phase 4 CLI), 2026-10-10 — FCC v. Consumers' Research, briefs + argument transcript, leakage guards on (own docket excluded; only documents dated before the 2025-03-26 argument):
+- Predicted: Reversed 6–3; Roberts, Sotomayor, Kagan, Kavanaugh, Barrett, Jackson in the majority (Kavanaugh and Jackson concurring); Thomas, Gorsuch, Alito dissenting; Kagan writes. Matches the actual decision (June 2025) on every vote, the author and both concurrences.
+- Caveat: NOT a fair test — decided before the model's knowledge cutoff, so the model may know the result despite the retrieval guards. The honest test is OT2026 cases locked before decision.
+- Cost $2.26 total ($0.27 summary; first agent $0.76 writing the cache, the other eight ~$0.15 each reading 126,815 cached tokens); 200 s. No citations removed or flagged; clerk needed no corrections.
+- Retrieval must run one justice at a time (3 searches each) — a 27-search burst timed out (decisions.md Q25).
+
+Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.
+- `lib/clerk-rules.ts` (+tests), `lib/schemas.ts` (+citation checker, tests), `lib/models.ts` (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10), `lib/claude.ts` (streamed structured output with `betaZodOutputFormat`, server-side refusal fallbacks, cost per call, stream-started hook), `lib/briefs.ts` (local text extraction; decisions.md Q22), `lib/agents/{summarizer,justice,clerk}.ts`, `lib/retrieval.ts`, `lib/embedding.ts`.
+- Summarizer tested on FCC v. Consumers' Research: $0.27, 16 s, neutral, no outcome leak.
+- Fan-out: the first justice starts; the other eight start once it streams, so they read the shared briefs+summary cache.
+- `scripts/try/forecast.ts` runs one case end to end from the CLI; waiting on embeddings.

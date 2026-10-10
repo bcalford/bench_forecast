@@ -100,7 +100,8 @@ One per non-recused active justice, all running in parallel on Opus.
   - how much weight they give precedent
   - signature doctrines
   - typical voting partners
-- Profiles are rebuilt each term.
+- `data/justices/<slug>/voting.md` is generated from the Supreme Court Database: base rates by issue area and agreement with each colleague (decisions.md Q23). The profile generator and every justice agent read it.
+- Profiles and voting records are rebuilt each term.
 
 ## 4. Architecture
 ```
@@ -109,7 +110,7 @@ Next.js (App Router, TypeScript) on Vercel
  ├─ app/api/inngest/route.ts         Inngest handler
  └─ app/api/cron/outcomes/route.ts   outcome fetch + scoring
 Inngest job: predictCase
- 1. extract   — PDFs → text (Claude native PDF, Sonnet)
+ 1. extract   — PDFs → text, locally (native PDF only for scanned briefs; decisions.md Q22)
  2. summarize — briefing summary (Sonnet)
  3. fan-out   — one justice agent per non-recused justice (Opus, parallel, cached shared prefix)
                 → citation validator
@@ -150,7 +151,7 @@ supabase/migrations/
 
 ## 6. Models and cost
 - **Opus 5.5:** the justice agents and the clerk step.
-- **Sonnet 5.5:** PDF extraction and the summary.
+- **Sonnet 5.5:** the briefing summary (and reading any scanned brief as a native PDF).
 - **Voyage AI:** embeddings.
 - **Prompt caching:** the shared brief prefix is cached for all nine agents.
 - **Target cost:** about $1–5 per run. Confirm current pricing with the `claude-api` skill before writing API code.

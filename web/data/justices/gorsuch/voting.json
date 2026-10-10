@@ -1,0 +1,292 @@
+{
+  "source": "Supreme Court Database, 2026 Release 01",
+  "argued_cases_only": true,
+  "terms": [
+    2016,
+    2025
+  ],
+  "recent_terms": [
+    2023,
+    2025
+  ],
+  "overall": {
+    "cases": 549,
+    "inMajority": "81%",
+    "forPetitioner": "64%",
+    "writesSeparately": "28%",
+    "majorityOpinions": 62,
+    "liberalInDivided": "36%"
+  },
+  "recent": {
+    "cases": 174,
+    "inMajority": "80%",
+    "forPetitioner": "64%",
+    "writesSeparately": "27%",
+    "majorityOpinions": 19,
+    "liberalInDivided": "38%"
+  },
+  "by_issue_area": [
+    {
+      "area": "Economic activity",
+      "cases": 139,
+      "inMajority": "83%",
+      "forPetitioner": "59%",
+      "writesSeparately": "22%",
+      "majorityOpinions": 17,
+      "liberalInDivided": "29%",
+      "liberal": "41%"
+    },
+    {
+      "area": "Criminal procedure",
+      "cases": 104,
+      "inMajority": "77%",
+      "forPetitioner": "59%",
+      "writesSeparately": "30%",
+      "majorityOpinions": 11,
+      "liberalInDivided": "44%",
+      "liberal": "48%"
+    },
+    {
+      "area": "Civil rights",
+      "cases": 92,
+      "inMajority": "82%",
+      "forPetitioner": "68%",
+      "writesSeparately": "30%",
+      "majorityOpinions": 14,
+      "liberalInDivided": "40%",
+      "liberal": "47%"
+    },
+    {
+      "area": "Judicial power",
+      "cases": 79,
+      "inMajority": "78%",
+      "forPetitioner": "68%",
+      "writesSeparately": "25%",
+      "majorityOpinions": 5,
+      "liberalInDivided": "41%",
+      "liberal": "46%"
+    },
+    {
+      "area": "First Amendment",
+      "cases": 36,
+      "inMajority": "97%",
+      "forPetitioner": "78%",
+      "writesSeparately": "36%",
+      "majorityOpinions": 3,
+      "liberalInDivided": "48%",
+      "liberal": "53%"
+    },
+    {
+      "area": "Due process",
+      "cases": 18,
+      "inMajority": "89%",
+      "forPetitioner": "61%",
+      "writesSeparately": "50%",
+      "majorityOpinions": 2,
+      "liberalInDivided": "18%",
+      "liberal": "28%"
+    },
+    {
+      "area": "Unions",
+      "cases": 17,
+      "inMajority": "82%",
+      "forPetitioner": "82%",
+      "writesSeparately": "18%",
+      "majorityOpinions": 2,
+      "liberalInDivided": "9%",
+      "liberal": "35%"
+    },
+    {
+      "area": "Federalism",
+      "cases": 17,
+      "inMajority": "76%",
+      "forPetitioner": "65%",
+      "writesSeparately": "12%",
+      "majorityOpinions": 2,
+      "liberalInDivided": "25%",
+      "liberal": "29%"
+    },
+    {
+      "area": "Federal taxation",
+      "cases": 10,
+      "inMajority": "70%",
+      "forPetitioner": "60%",
+      "writesSeparately": "30%",
+      "majorityOpinions": 3,
+      "liberalInDivided": "0%",
+      "liberal": "22%"
+    },
+    {
+      "area": "Miscellaneous",
+      "cases": 10,
+      "inMajority": "80%",
+      "forPetitioner": "89%",
+      "writesSeparately": "70%",
+      "majorityOpinions": 0,
+      "liberalInDivided": "71%",
+      "liberal": "71%"
+    }
+  ],
+  "agreement": [
+    {
+      "justice": "thomas",
+      "name": "Clarence Thomas",
+      "all": {
+        "n": 549,
+        "rate": "82%"
+      },
+      "divided": {
+        "n": 324,
+        "rate": "69%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "68%"
+      }
+    },
+    {
+      "justice": "alito",
+      "name": "Samuel A. Alito, Jr.",
+      "all": {
+        "n": 545,
+        "rate": "81%"
+      },
+      "divided": {
+        "n": 323,
+        "rate": "68%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "69%"
+      }
+    },
+    {
+      "justice": "barrett",
+      "name": "Amy Coney Barrett",
+      "all": {
+        "n": 338,
+        "rate": "81%"
+      },
+      "divided": {
+        "n": 196,
+        "rate": "68%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "64%"
+      }
+    },
+    {
+      "justice": "roberts",
+      "name": "John G. Roberts, Jr.",
+      "all": {
+        "n": 549,
+        "rate": "78%"
+      },
+      "divided": {
+        "n": 324,
+        "rate": "63%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "64%"
+      }
+    },
+    {
+      "justice": "kavanaugh",
+      "name": "Brett M. Kavanaugh",
+      "all": {
+        "n": 466,
+        "rate": "78%"
+      },
+      "divided": {
+        "n": 273,
+        "rate": "62%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "56%"
+      }
+    },
+    {
+      "justice": "kagan",
+      "name": "Elena Kagan",
+      "all": {
+        "n": 546,
+        "rate": "65%"
+      },
+      "divided": {
+        "n": 322,
+        "rate": "40%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "34%"
+      }
+    },
+    {
+      "justice": "sotomayor",
+      "name": "Sonia Sotomayor",
+      "all": {
+        "n": 548,
+        "rate": "60%"
+      },
+      "divided": {
+        "n": 324,
+        "rate": "33%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "29%"
+      }
+    },
+    {
+      "justice": "jackson",
+      "name": "Ketanji Brown Jackson",
+      "all": {
+        "n": 229,
+        "rate": "63%"
+      },
+      "divided": {
+        "n": 124,
+        "rate": "31%"
+      },
+      "recentDivided": {
+        "n": 96,
+        "rate": "29%"
+      }
+    }
+  ],
+  "separate_opinions_joined": [
+    {
+      "justice": "thomas",
+      "name": "Clarence Thomas",
+      "opinionsJoined": 51
+    },
+    {
+      "justice": "alito",
+      "name": "Samuel A. Alito, Jr.",
+      "opinionsJoined": 32
+    },
+    {
+      "justice": "barrett",
+      "name": "Amy Coney Barrett",
+      "opinionsJoined": 9
+    },
+    {
+      "justice": "sotomayor",
+      "name": "Sonia Sotomayor",
+      "opinionsJoined": 7
+    },
+    {
+      "justice": "kavanaugh",
+      "name": "Brett M. Kavanaugh",
+      "opinionsJoined": 4
+    },
+    {
+      "justice": "jackson",
+      "name": "Ketanji Brown Jackson",
+      "opinionsJoined": 4
+    }
+  ]
+}

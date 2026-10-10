@@ -1,0 +1,312 @@
+{
+  "source": "Supreme Court Database, 2026 Release 01",
+  "argued_cases_only": true,
+  "terms": [
+    2010,
+    2025
+  ],
+  "recent_terms": [
+    2023,
+    2025
+  ],
+  "overall": {
+    "cases": 979,
+    "inMajority": "81%",
+    "forPetitioner": "60%",
+    "writesSeparately": "10%",
+    "majorityOpinions": 108,
+    "liberalInDivided": "75%"
+  },
+  "recent": {
+    "cases": 176,
+    "inMajority": "76%",
+    "forPetitioner": "59%",
+    "writesSeparately": "14%",
+    "majorityOpinions": 19,
+    "liberalInDivided": "79%"
+  },
+  "by_issue_area": [
+    {
+      "area": "Economic activity",
+      "cases": 243,
+      "inMajority": "85%",
+      "forPetitioner": "57%",
+      "writesSeparately": "9%",
+      "majorityOpinions": 28,
+      "liberalInDivided": "61%",
+      "liberal": "56%"
+    },
+    {
+      "area": "Criminal procedure",
+      "cases": 218,
+      "inMajority": "80%",
+      "forPetitioner": "68%",
+      "writesSeparately": "9%",
+      "majorityOpinions": 28,
+      "liberalInDivided": "82%",
+      "liberal": "69%"
+    },
+    {
+      "area": "Civil rights",
+      "cases": 154,
+      "inMajority": "75%",
+      "forPetitioner": "57%",
+      "writesSeparately": "7%",
+      "majorityOpinions": 16,
+      "liberalInDivided": "90%",
+      "liberal": "77%"
+    },
+    {
+      "area": "Judicial power",
+      "cases": 130,
+      "inMajority": "86%",
+      "forPetitioner": "59%",
+      "writesSeparately": "8%",
+      "majorityOpinions": 12,
+      "liberalInDivided": "63%",
+      "liberal": "56%"
+    },
+    {
+      "area": "First Amendment",
+      "cases": 60,
+      "inMajority": "72%",
+      "forPetitioner": "63%",
+      "writesSeparately": "22%",
+      "majorityOpinions": 4,
+      "liberalInDivided": "71%",
+      "liberal": "68%"
+    },
+    {
+      "area": "Federalism",
+      "cases": 37,
+      "inMajority": "86%",
+      "forPetitioner": "59%",
+      "writesSeparately": "11%",
+      "majorityOpinions": 4,
+      "liberalInDivided": "59%",
+      "liberal": "59%"
+    },
+    {
+      "area": "Due process",
+      "cases": 35,
+      "inMajority": "80%",
+      "forPetitioner": "63%",
+      "writesSeparately": "11%",
+      "majorityOpinions": 4,
+      "liberalInDivided": "68%",
+      "liberal": "69%"
+    },
+    {
+      "area": "Unions",
+      "cases": 27,
+      "inMajority": "67%",
+      "forPetitioner": "52%",
+      "writesSeparately": "19%",
+      "majorityOpinions": 3,
+      "liberalInDivided": "78%",
+      "liberal": "74%"
+    },
+    {
+      "area": "Privacy",
+      "cases": 16,
+      "inMajority": "81%",
+      "forPetitioner": "63%",
+      "writesSeparately": "13%",
+      "majorityOpinions": 1,
+      "liberalInDivided": "82%",
+      "liberal": "63%"
+    },
+    {
+      "area": "Federal taxation",
+      "cases": 15,
+      "inMajority": "73%",
+      "forPetitioner": "60%",
+      "writesSeparately": "0%",
+      "majorityOpinions": 1,
+      "liberalInDivided": "88%",
+      "liberal": "79%"
+    },
+    {
+      "area": "Miscellaneous",
+      "cases": 14,
+      "inMajority": "79%",
+      "forPetitioner": "54%",
+      "writesSeparately": "29%",
+      "majorityOpinions": 3,
+      "liberalInDivided": "60%",
+      "liberal": "55%"
+    },
+    {
+      "area": "Attorneys",
+      "cases": 11,
+      "inMajority": "73%",
+      "forPetitioner": "73%",
+      "writesSeparately": "0%",
+      "majorityOpinions": 2,
+      "liberalInDivided": "75%",
+      "liberal": "73%"
+    }
+  ],
+  "agreement": [
+    {
+      "justice": "sotomayor",
+      "name": "Sonia Sotomayor",
+      "all": {
+        "n": 972,
+        "rate": "90%"
+      },
+      "divided": {
+        "n": 548,
+        "rate": "83%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "89%"
+      }
+    },
+    {
+      "justice": "jackson",
+      "name": "Ketanji Brown Jackson",
+      "all": {
+        "n": 231,
+        "rate": "89%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "79%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "80%"
+      }
+    },
+    {
+      "justice": "roberts",
+      "name": "John G. Roberts, Jr.",
+      "all": {
+        "n": 976,
+        "rate": "73%"
+      },
+      "divided": {
+        "n": 551,
+        "rate": "52%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "54%"
+      }
+    },
+    {
+      "justice": "kavanaugh",
+      "name": "Brett M. Kavanaugh",
+      "all": {
+        "n": 468,
+        "rate": "71%"
+      },
+      "divided": {
+        "n": 274,
+        "rate": "50%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "48%"
+      }
+    },
+    {
+      "justice": "barrett",
+      "name": "Amy Coney Barrett",
+      "all": {
+        "n": 340,
+        "rate": "70%"
+      },
+      "divided": {
+        "n": 197,
+        "rate": "49%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "50%"
+      }
+    },
+    {
+      "justice": "gorsuch",
+      "name": "Neil M. Gorsuch",
+      "all": {
+        "n": 546,
+        "rate": "65%"
+      },
+      "divided": {
+        "n": 322,
+        "rate": "40%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "34%"
+      }
+    },
+    {
+      "justice": "alito",
+      "name": "Samuel A. Alito, Jr.",
+      "all": {
+        "n": 971,
+        "rate": "61%"
+      },
+      "divided": {
+        "n": 546,
+        "rate": "31%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "26%"
+      }
+    },
+    {
+      "justice": "thomas",
+      "name": "Clarence Thomas",
+      "all": {
+        "n": 979,
+        "rate": "61%"
+      },
+      "divided": {
+        "n": 551,
+        "rate": "30%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "24%"
+      }
+    }
+  ],
+  "separate_opinions_joined": [
+    {
+      "justice": "sotomayor",
+      "name": "Sonia Sotomayor",
+      "opinionsJoined": 55
+    },
+    {
+      "justice": "110",
+      "name": "Justice Breyer (former)",
+      "opinionsJoined": 45
+    },
+    {
+      "justice": "109",
+      "name": "Justice Ginsburg (former)",
+      "opinionsJoined": 26
+    },
+    {
+      "justice": "jackson",
+      "name": "Ketanji Brown Jackson",
+      "opinionsJoined": 11
+    },
+    {
+      "justice": "barrett",
+      "name": "Amy Coney Barrett",
+      "opinionsJoined": 9
+    },
+    {
+      "justice": "thomas",
+      "name": "Clarence Thomas",
+      "opinionsJoined": 6
+    }
+  ]
+}

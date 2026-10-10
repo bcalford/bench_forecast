@@ -1,0 +1,322 @@
+{
+  "source": "Supreme Court Database, 2026 Release 01",
+  "argued_cases_only": true,
+  "terms": [
+    2005,
+    2025
+  ],
+  "recent_terms": [
+    2023,
+    2025
+  ],
+  "overall": {
+    "cases": 1377,
+    "inMajority": "90%",
+    "forPetitioner": "66%",
+    "writesSeparately": "8%",
+    "majorityOpinions": 150,
+    "liberalInDivided": "37%"
+  },
+  "recent": {
+    "cases": 176,
+    "inMajority": "96%",
+    "forPetitioner": "69%",
+    "writesSeparately": "3%",
+    "majorityOpinions": 19,
+    "liberalInDivided": "39%"
+  },
+  "by_issue_area": [
+    {
+      "area": "Criminal procedure",
+      "cases": 332,
+      "inMajority": "86%",
+      "forPetitioner": "60%",
+      "writesSeparately": "9%",
+      "majorityOpinions": 31,
+      "liberalInDivided": "34%",
+      "liberal": "37%"
+    },
+    {
+      "area": "Economic activity",
+      "cases": 320,
+      "inMajority": "92%",
+      "forPetitioner": "67%",
+      "writesSeparately": "6%",
+      "majorityOpinions": 26,
+      "liberalInDivided": "36%",
+      "liberal": "43%"
+    },
+    {
+      "area": "Civil rights",
+      "cases": 223,
+      "inMajority": "91%",
+      "forPetitioner": "67%",
+      "writesSeparately": "7%",
+      "majorityOpinions": 24,
+      "liberalInDivided": "33%",
+      "liberal": "41%"
+    },
+    {
+      "area": "Judicial power",
+      "cases": 180,
+      "inMajority": "91%",
+      "forPetitioner": "67%",
+      "writesSeparately": "7%",
+      "majorityOpinions": 11,
+      "liberalInDivided": "31%",
+      "liberal": "40%"
+    },
+    {
+      "area": "First Amendment",
+      "cases": 81,
+      "inMajority": "96%",
+      "forPetitioner": "74%",
+      "writesSeparately": "9%",
+      "majorityOpinions": 23,
+      "liberalInDivided": "43%",
+      "liberal": "47%"
+    },
+    {
+      "area": "Federalism",
+      "cases": 58,
+      "inMajority": "83%",
+      "forPetitioner": "66%",
+      "writesSeparately": "12%",
+      "majorityOpinions": 4,
+      "liberalInDivided": "64%",
+      "liberal": "62%"
+    },
+    {
+      "area": "Due process",
+      "cases": 42,
+      "inMajority": "81%",
+      "forPetitioner": "74%",
+      "writesSeparately": "14%",
+      "majorityOpinions": 7,
+      "liberalInDivided": "38%",
+      "liberal": "50%"
+    },
+    {
+      "area": "Unions",
+      "cases": 35,
+      "inMajority": "100%",
+      "forPetitioner": "69%",
+      "writesSeparately": "11%",
+      "majorityOpinions": 2,
+      "liberalInDivided": "33%",
+      "liberal": "46%"
+    },
+    {
+      "area": "Privacy",
+      "cases": 25,
+      "inMajority": "92%",
+      "forPetitioner": "80%",
+      "writesSeparately": "16%",
+      "majorityOpinions": 3,
+      "liberalInDivided": "31%",
+      "liberal": "28%"
+    },
+    {
+      "area": "Federal taxation",
+      "cases": 21,
+      "inMajority": "100%",
+      "forPetitioner": "52%",
+      "writesSeparately": "0%",
+      "majorityOpinions": 6,
+      "liberalInDivided": "63%",
+      "liberal": "75%"
+    },
+    {
+      "area": "Attorneys",
+      "cases": 20,
+      "inMajority": "100%",
+      "forPetitioner": "75%",
+      "writesSeparately": "0%",
+      "majorityOpinions": 2,
+      "liberalInDivided": "0%",
+      "liberal": "45%"
+    },
+    {
+      "area": "Miscellaneous",
+      "cases": 16,
+      "inMajority": "88%",
+      "forPetitioner": "87%",
+      "writesSeparately": "13%",
+      "majorityOpinions": 8,
+      "liberalInDivided": "73%",
+      "liberal": "67%"
+    },
+    {
+      "area": "Interstate relations",
+      "cases": 13,
+      "inMajority": "92%",
+      "forPetitioner": "33%",
+      "writesSeparately": "23%",
+      "majorityOpinions": 1,
+      "liberalInDivided": "—",
+      "liberal": "—"
+    }
+  ],
+  "agreement": [
+    {
+      "justice": "kavanaugh",
+      "name": "Brett M. Kavanaugh",
+      "all": {
+        "n": 469,
+        "rate": "94%"
+      },
+      "divided": {
+        "n": 275,
+        "rate": "90%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "88%"
+      }
+    },
+    {
+      "justice": "barrett",
+      "name": "Amy Coney Barrett",
+      "all": {
+        "n": 340,
+        "rate": "88%"
+      },
+      "divided": {
+        "n": 197,
+        "rate": "79%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "80%"
+      }
+    },
+    {
+      "justice": "alito",
+      "name": "Samuel A. Alito, Jr.",
+      "all": {
+        "n": 1330,
+        "rate": "86%"
+      },
+      "divided": {
+        "n": 769,
+        "rate": "75%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "67%"
+      }
+    },
+    {
+      "justice": "thomas",
+      "name": "Clarence Thomas",
+      "all": {
+        "n": 1375,
+        "rate": "81%"
+      },
+      "divided": {
+        "n": 787,
+        "rate": "66%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "64%"
+      }
+    },
+    {
+      "justice": "gorsuch",
+      "name": "Neil M. Gorsuch",
+      "all": {
+        "n": 549,
+        "rate": "78%"
+      },
+      "divided": {
+        "n": 324,
+        "rate": "63%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "64%"
+      }
+    },
+    {
+      "justice": "kagan",
+      "name": "Elena Kagan",
+      "all": {
+        "n": 976,
+        "rate": "73%"
+      },
+      "divided": {
+        "n": 551,
+        "rate": "52%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "54%"
+      }
+    },
+    {
+      "justice": "sotomayor",
+      "name": "Sonia Sotomayor",
+      "all": {
+        "n": 1081,
+        "rate": "70%"
+      },
+      "divided": {
+        "n": 608,
+        "rate": "46%"
+      },
+      "recentDivided": {
+        "n": 98,
+        "rate": "49%"
+      }
+    },
+    {
+      "justice": "jackson",
+      "name": "Ketanji Brown Jackson",
+      "all": {
+        "n": 231,
+        "rate": "71%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "46%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "41%"
+      }
+    }
+  ],
+  "separate_opinions_joined": [
+    {
+      "justice": "alito",
+      "name": "Samuel A. Alito, Jr.",
+      "opinionsJoined": 39
+    },
+    {
+      "justice": "105",
+      "name": "Justice Scalia (former)",
+      "opinionsJoined": 19
+    },
+    {
+      "justice": "thomas",
+      "name": "Clarence Thomas",
+      "opinionsJoined": 10
+    },
+    {
+      "justice": "kavanaugh",
+      "name": "Brett M. Kavanaugh",
+      "opinionsJoined": 9
+    },
+    {
+      "justice": "106",
+      "name": "Justice Kennedy (former)",
+      "opinionsJoined": 5
+    },
+    {
+      "justice": "gorsuch",
+      "name": "Neil M. Gorsuch",
+      "opinionsJoined": 5
+    }
+  ]
+}

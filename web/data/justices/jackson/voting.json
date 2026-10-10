@@ -1,0 +1,242 @@
+{
+  "source": "Supreme Court Database, 2026 Release 01",
+  "argued_cases_only": true,
+  "terms": [
+    2022,
+    2025
+  ],
+  "recent_terms": [
+    2023,
+    2025
+  ],
+  "overall": {
+    "cases": 231,
+    "inMajority": "74%",
+    "forPetitioner": "59%",
+    "writesSeparately": "35%",
+    "majorityOpinions": 22,
+    "liberalInDivided": "81%"
+  },
+  "recent": {
+    "cases": 175,
+    "inMajority": "71%",
+    "forPetitioner": "60%",
+    "writesSeparately": "37%",
+    "majorityOpinions": 16,
+    "liberalInDivided": "84%"
+  },
+  "by_issue_area": [
+    {
+      "area": "Economic activity",
+      "cases": 60,
+      "inMajority": "77%",
+      "forPetitioner": "53%",
+      "writesSeparately": "28%",
+      "majorityOpinions": 7,
+      "liberalInDivided": "72%",
+      "liberal": "65%"
+    },
+    {
+      "area": "Criminal procedure",
+      "cases": 46,
+      "inMajority": "72%",
+      "forPetitioner": "67%",
+      "writesSeparately": "39%",
+      "majorityOpinions": 6,
+      "liberalInDivided": "85%",
+      "liberal": "74%"
+    },
+    {
+      "area": "Civil rights",
+      "cases": 37,
+      "inMajority": "62%",
+      "forPetitioner": "49%",
+      "writesSeparately": "38%",
+      "majorityOpinions": 5,
+      "liberalInDivided": "96%",
+      "liberal": "89%"
+    },
+    {
+      "area": "Judicial power",
+      "cases": 36,
+      "inMajority": "81%",
+      "forPetitioner": "58%",
+      "writesSeparately": "33%",
+      "majorityOpinions": 2,
+      "liberalInDivided": "67%",
+      "liberal": "64%"
+    },
+    {
+      "area": "First Amendment",
+      "cases": 15,
+      "inMajority": "67%",
+      "forPetitioner": "67%",
+      "writesSeparately": "47%",
+      "majorityOpinions": 0,
+      "liberalInDivided": "86%",
+      "liberal": "73%"
+    }
+  ],
+  "agreement": [
+    {
+      "justice": "sotomayor",
+      "name": "Sonia Sotomayor",
+      "all": {
+        "n": 231,
+        "rate": "93%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "87%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "88%"
+      }
+    },
+    {
+      "justice": "kagan",
+      "name": "Elena Kagan",
+      "all": {
+        "n": 231,
+        "rate": "89%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "79%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "80%"
+      }
+    },
+    {
+      "justice": "roberts",
+      "name": "John G. Roberts, Jr.",
+      "all": {
+        "n": 231,
+        "rate": "71%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "46%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "41%"
+      }
+    },
+    {
+      "justice": "kavanaugh",
+      "name": "Brett M. Kavanaugh",
+      "all": {
+        "n": 231,
+        "rate": "70%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "45%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "39%"
+      }
+    },
+    {
+      "justice": "barrett",
+      "name": "Amy Coney Barrett",
+      "all": {
+        "n": 231,
+        "rate": "68%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "40%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "37%"
+      }
+    },
+    {
+      "justice": "gorsuch",
+      "name": "Neil M. Gorsuch",
+      "all": {
+        "n": 229,
+        "rate": "63%"
+      },
+      "divided": {
+        "n": 124,
+        "rate": "31%"
+      },
+      "recentDivided": {
+        "n": 96,
+        "rate": "29%"
+      }
+    },
+    {
+      "justice": "alito",
+      "name": "Samuel A. Alito, Jr.",
+      "all": {
+        "n": 228,
+        "rate": "57%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "22%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "19%"
+      }
+    },
+    {
+      "justice": "thomas",
+      "name": "Clarence Thomas",
+      "all": {
+        "n": 231,
+        "rate": "56%"
+      },
+      "divided": {
+        "n": 125,
+        "rate": "18%"
+      },
+      "recentDivided": {
+        "n": 97,
+        "rate": "15%"
+      }
+    }
+  ],
+  "separate_opinions_joined": [
+    {
+      "justice": "sotomayor",
+      "name": "Sonia Sotomayor",
+      "opinionsJoined": 28
+    },
+    {
+      "justice": "kagan",
+      "name": "Elena Kagan",
+      "opinionsJoined": 12
+    },
+    {
+      "justice": "gorsuch",
+      "name": "Neil M. Gorsuch",
+      "opinionsJoined": 6
+    },
+    {
+      "justice": "barrett",
+      "name": "Amy Coney Barrett",
+      "opinionsJoined": 3
+    },
+    {
+      "justice": "kavanaugh",
+      "name": "Brett M. Kavanaugh",
+      "opinionsJoined": 2
+    },
+    {
+      "justice": "roberts",
+      "name": "John G. Roberts, Jr.",
+      "opinionsJoined": 1
+    }
+  ]
+}
