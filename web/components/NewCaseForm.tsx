@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import Bench from "./Bench";
 import { ArrowRight, CheckMark } from "./Icons";
 import { byslug, justices } from "@/lib/court";
-import { CURRENT_TERM, MAX_MB, MIN_DESCRIPTION, type Filing, type Slot } from "@/lib/filing";
+import { CURRENT_TERM, MAX_MB, MIN_DESCRIPTION, type Filing, type Slot, CODE_RE, CODE_FORMAT_MESSAGE, normalizeCode, reasonMessage, isCodeReason } from "@/lib/filing";
 
 type Files = { pet: File | null; resp: File | null; amicus: File[]; transcript: File | null };
 const EMPTY_FILES: Files = { pet: null, resp: null, amicus: [], transcript: null };
@@ -50,7 +50,7 @@ function FileSlot({ id, label, hint, file, error, alert = false, onPick, onClear
 }
 
 // Where each error in the summary takes you.
-const ERROR_TARGETS: Record<string, string> = { title: "title", pet: "pet-file", resp: "resp-file", description: "desc", recused: "f-bench", server: "f-file" };
+const ERROR_TARGETS: Record<string, string> = { title: "title", pet: "pet-file", resp: "resp-file", description: "desc", recused: "f-bench", server: "f-file", code: "code" };
 
 function jumpTo(id: string) {
   const el = document.getElementById(id);
@@ -73,6 +73,8 @@ export default function NewCaseForm({ open }: { open: boolean }) {
   const [attempted, setAttempted] = useState(false);
   const [progress, setProgress] = useState<string | null>(null); // non-null while filing
   const [serverError, setServerError] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [codeError, setCodeError] = useState<string | null>(null); // the server's verdict on the code, cleared on edit
   const summaryRef = useRef<HTMLDivElement>(null);
 
   const sitting = justices.length - recused.size;
@@ -99,6 +101,9 @@ export default function NewCaseForm({ open }: { open: boolean }) {
       e.description = `Describe the case in at least ${MIN_DESCRIPTION} characters: the parties, what happened below, and the question.`;
     }
     if (sitting < 2) e.recused = "At least two justices must sit to decide a case.";
+    const c = normalizeCode(code);
+    if (!c) e.code = "Filing a case needs an invite code.";
+    else if (!CODE_RE.test(c)) e.code = CODE_FORMAT_MESSAGE;
     return e;
   };
 
@@ -108,12 +113,22 @@ export default function NewCaseForm({ open }: { open: boolean }) {
     requestAnimationFrame(() => { summaryRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }); summaryRef.current?.focus({ preventScroll: true }); });
   };
 
+  // Code refusals belong on the code field; anything else goes in the summary.
+  const refuse = (body: { error?: string; reason?: string }, fallback: string) => {
+    if (!isCodeReason(body.reason)) return fail(body.error ?? fallback);
+    setProgress(null);
+    setCodeError(body.error ?? fallback);
+    requestAnimationFrame(() => { summaryRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }); summaryRef.current?.focus({ preventScroll: true }); });
+  };
+
   const submit = async (ev: FormEvent) => {
     ev.preventDefault();
     if (!open || progress) return;
     const e = validate();
     setAttempted(true);
     setServerError(null);
+    setCodeError(null);
+    const sendCode = normalizeCode(code);
     if (Object.keys(e).length) {
       // Focus the summary: it is announced, and each line jumps to its field.
       requestAnimationFrame(() => { summaryRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }); summaryRef.current?.focus({ preventScroll: true }); });
@@ -136,10 +151,10 @@ export default function NewCaseForm({ open }: { open: boolean }) {
         setProgress("Preparing the upload…");
         const res = await fetch("/api/filings/uploads", {
           method: "POST", headers: { "content-type": "application/json" },
-          body: JSON.stringify({ files: toUpload.map((u) => ({ slot: u.slot, name: u.file.name })) }),
+          body: JSON.stringify({ code: sendCode, files: toUpload.map((u) => ({ slot: u.slot, name: u.file.name })) }),
         });
         const body = await res.json();
-        if (!res.ok) return fail(body.error ?? "Could not prepare the upload. Try again.");
+        if (!res.ok) return refuse(body, "Could not prepare the upload. Try again.");
         caseId = body.caseId;
         const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
         for (let i = 0; i < toUpload.length; i++) {
@@ -158,11 +173,11 @@ export default function NewCaseForm({ open }: { open: boolean }) {
       setProgress("Filing…");
       const filing: Filing = {
         caseId, title: title.trim(), docket: docket.trim(), mode, briefPaths, transcriptPath,
-        description: mode === "description" ? description.trim() : "", recused: [...recused],
+        description: mode === "description" ? description.trim() : "", recused: [...recused], code: sendCode,
       };
       const res = await fetch("/api/filings", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(filing) });
       const body = await res.json();
-      if (!res.ok) return fail(body.error ?? "Could not file the case. Try again.");
+      if (!res.ok) return refuse(body, "Could not file the case. Try again.");
       router.push(`/runs/${body.predictionId}`);
     } catch {
       fail("Something went wrong on the way to the server. Check your connection and try again.");
@@ -172,9 +187,11 @@ export default function NewCaseForm({ open }: { open: boolean }) {
   // Re-validated on every change once the visitor has tried to file, so fixed fields clear at once.
   const errors: Record<string, string> = attempted ? validate() : {};
   if (serverError) errors.server = serverError;
+  if (codeError && !errors.code) errors.code = codeError;
   const ready = {
     title: !!title.trim(),
     briefs: mode === "briefs" ? !!(files.pet && files.resp) : description.trim().length >= MIN_DESCRIPTION,
+    code: CODE_RE.test(normalizeCode(code)),
   };
 
   return (
@@ -184,7 +201,7 @@ export default function NewCaseForm({ open }: { open: boolean }) {
           <div>
             <h1 id="new-h" className="reader-title">Forecast a case</h1>
             <p className="docket-line">
-              File the merits briefs and the nine agents predict each justice&apos;s vote. A run takes about five minutes, and you can watch each vote land.
+              File the merits briefs and the nine agents predict each justice&apos;s vote. A run takes about five minutes, and you can watch each vote land. Filing needs an invite code.
             </p>
           </div>
         </div>
@@ -304,10 +321,18 @@ export default function NewCaseForm({ open }: { open: boolean }) {
 
           <section className="filing" aria-labelledby="f-file" id="f-file">
             <h2 id="f-file-h" className="section-h">File it</h2>
+            <div className="field">
+              <label className="field-label" htmlFor="code">Invite code <span className="req">Required</span></label>
+              <input id="code" className="text-input num code-input" value={code} placeholder="BF-0000-0000" maxLength={20}
+                autoComplete="off" spellCheck={false} aria-invalid={!!errors.code} aria-describedby={errors.code ? "code-err" : undefined}
+                onChange={(e) => { setCode(e.target.value.toUpperCase()); setCodeError(null); }}
+                onBlur={() => setCode((c) => normalizeCode(c))} />
+              {errors.code && <span id="code-err" className="field-error">{errors.code}</span>}
+            </div>
             {open ? (
-              <p className="muted fine-line">Each forecast runs nine agents and costs a few dollars. Once filed, it locks when the last vote is in and can&apos;t be changed.</p>
+              <p className="muted fine-line">Each forecast runs nine agents and costs a few dollars, so new filings share a daily budget. Once filed, it locks when the last vote is in and can&apos;t be changed.</p>
             ) : (
-              <p className="warn-note" role="status">Filing opens soon. Until then, read the forecasts already made.</p>
+              <p className="warn-note" role="status">{reasonMessage("cap")}</p>
             )}
             <button type="submit" className="file-btn" disabled={!!progress || !open}>
               {progress ?? "File for forecast"} {!progress && <ArrowRight />}
@@ -323,6 +348,7 @@ export default function NewCaseForm({ open }: { open: boolean }) {
             <li className={ready.briefs ? "is-done" : ""}>
               <CheckMark on={ready.briefs} className="sum-mark" /> {mode === "briefs" ? `${briefCount || "No"} brief${briefCount === 1 ? "" : "s"} attached` : "Plain-English description"}
             </li>
+            <li className={ready.code ? "is-done" : ""}><CheckMark on={ready.code} className="sum-mark" /> Invite code</li>
             <li className="is-info"><span className="sum-gap" aria-hidden="true" /> {sitting} justices sitting</li>
             <li className="is-info"><span className="sum-gap" aria-hidden="true" /> {mode === "briefs" ? phase : "Before argument"}</li>
           </ul>
