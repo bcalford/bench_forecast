@@ -66,7 +66,7 @@ async function main() {
     const lost = r1.reason === "ok" ? r2 : r1;
     assert.equal(lost.max_runs, 1, "used_up carries max_runs for the message");
     assert.ok(won.prediction_id, "ok returns the new prediction");
-    assert.equal((await a.query("select invite_code from predictions where id = $1", [won.prediction_id])).rows[0].invite_code, CODES.one);
+    assert.equal((await a.query("select invite_code from filing_claims where prediction_id = $1", [won.prediction_id])).rows[0].invite_code, CODES.one);
     assert.equal((await status(CODES.one)).reason, "used_up");
 
     // Holds: a fresh queued run holds $2.50; one stuck for 3 hours holds nothing
@@ -92,6 +92,17 @@ async function main() {
     await a.query("begin");
     await a.query("set local role anon");
     await assert.rejects(a.query("select * from filing_status(null, 1, 1)"), /permission denied/);
+    await a.query("rollback");
+
+    // Visitors can read predictions (and get them over Realtime), so the code that paid for a run
+    // must not live there: it sits in filing_claims, which only the server can read.
+    await a.query("begin");
+    await a.query("set local role anon");
+    await assert.rejects(a.query("select invite_code from predictions limit 1"), /does not exist/);
+    await a.query("rollback"); // a refused statement aborts the transaction, so each check gets its own
+    await a.query("begin");
+    await a.query("set local role anon");
+    await assert.rejects(a.query("select * from filing_claims limit 1"), /permission denied/);
     await a.query("rollback");
 
     console.log("gate-check: all checks passed");
