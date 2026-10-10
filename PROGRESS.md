@@ -104,7 +104,11 @@ Phase 5 — UI ported to Next.js on real data (2026-10-10, uncommitted at time o
 - Filing is closed in production (`lib/filing.ts` `filingOpen()`; `FILING_OPEN=1` overrides) until phase 6 adds invite codes and the daily cap.
 - `cases.decided_before_cutoff` now drives a "Not a fair test" label (run page, home rows, featured card); set true for the FCC v. Consumers' Research backtest.
 - Verified: tsc, lint, `next build`, all routes 200 (unknown run 404), signed upload + missing-upload rejection. Browser pass (2026-10-10) over every route: renders clean. Fixed there: duplicate React keys on the reasoning page (a justice can cite one passage twice; keys are now passage + index) and the decision panel's "Judgment below" label, renamed "Judgment" (it showed the predicted result, not the lower court's). Not yet verified: a live filing through the form watching Realtime (costs ~$2.30).
-- ⏭ Next: phase 6 (invite codes, daily cap, deploy on Vercel Hobby with Fluid compute on; Q26).
+Phase 6 — invite codes and the daily cap (2026-10-10):
+- Migration 8: `filing_budget`, `filing_status`, `claim_filing` (checks the code and the budget and creates the prediction in one serialized transaction), `refund_filing` (failed runs give their use back, once). Cap $10/day (`DAILY_SPEND_CAP_USD`; missing → $10, unreadable → closed), $2.50 held per run in flight for 2 hours. `scripts/try/gate-check.ts` exercises them.
+- Routes take an invite code; refusals clean up the case and its briefs; a failed event send or a failed run refunds. `/new` closes when the budget is spent. `filingOpen()`/`FILING_OPEN` removed.
+- `npm run invite -- new|list|off|on|runs|spend`. Deploy checklist: `docs/deploy.md`.
+- ⏭ Next: owner deploys per `docs/deploy.md`; then production checks and one real filing (~$2.30) with the owner's go-ahead; then phase 7 (scorecard).
 
 Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.
 - `lib/clerk-rules.ts` (+tests), `lib/schemas.ts` (+citation checker, tests), `lib/models.ts` (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10), `lib/claude.ts` (streamed structured output with `betaZodOutputFormat`, server-side refusal fallbacks, cost per call, stream-started hook), `lib/briefs.ts` (local text extraction; decisions.md Q22), `lib/agents/{summarizer,justice,clerk}.ts`, `lib/retrieval.ts`, `lib/embedding.ts`.
