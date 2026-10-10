@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "inngest:dev": "npx --yes inngest-cli@latest dev -u http://localhost:3000/api/inngest",
     "test": "tsx --test lib/*.test.ts scripts/**/*.test.ts",
-    "roster:build": "tsx scripts/profiles/build-roster.ts"
+    "roster:build": "tsx scripts/profiles/build-roster.ts",
+    "invite": "tsx --env-file=.env.local scripts/admin/invite.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.132.1",
