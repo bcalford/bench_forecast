@@ -1,10 +1,12 @@
-// Step 2 of filing: checks the filing, creates the case and its prediction, and starts the Inngest job.
+// Step 2 of filing: checks the filing, creates the case, claims a run against the invite code and the day's budget, and starts the Inngest job.
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { serviceClient } from "@/lib/supabase";
 import { inngest } from "@/inngest/client";
 import { justices } from "@/lib/court";
-import { CURRENT_TERM, MIN_DESCRIPTION, filingOpen } from "@/lib/filing";
+import { CURRENT_TERM, MIN_DESCRIPTION, normalizeCode, reasonMessage } from "@/lib/filing";
+import { claimFiling, refundFiling } from "@/lib/gate";
+import { setStage } from "@/lib/pipeline";
 
 const slugs = justices.map((j) => j.slug) as [string, ...string[]];
 const Body = z.object({
@@ -16,10 +18,10 @@ const Body = z.object({
   transcriptPath: z.string().max(200).nullable(),
   description: z.string().trim().max(8000),
   recused: z.array(z.enum(slugs)).max(7),
+  code: z.string().max(40),
 });
 
 export async function POST(req: Request) {
-  if (!filingOpen()) return NextResponse.json({ error: "Filing opens soon." }, { status: 403 });
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Some of the filing is missing or malformed." }, { status: 400 });
   const f = parsed.data;
@@ -46,13 +48,23 @@ export async function POST(req: Request) {
   });
   if (caseError) return NextResponse.json({ error: "Could not file the case. Try again." }, { status: 500 });
 
-  const { data: prediction, error } = await db
-    .from("predictions")
-    .insert({ case_id: f.caseId, phase: f.mode === "briefs" && f.transcriptPath ? "after_argument" : "before_argument" })
-    .select("id")
-    .single();
-  if (error || !prediction) return NextResponse.json({ error: "Could not file the case. Try again." }, { status: 500 });
+  // The claim checks the code and the budget and creates the prediction in one transaction (migration 8).
+  const phase = f.mode === "briefs" && f.transcriptPath ? "after_argument" : "before_argument";
+  const claim = await claimFiling(db, normalizeCode(f.code), f.caseId, phase).catch(() => null);
+  if (!claim || claim.reason !== "ok" || !claim.predictionId) {
+    // Nothing is left behind for a refused filing: not the case, not its uploaded briefs.
+    await db.from("cases").delete().eq("id", f.caseId);
+    if (paths.length) await db.storage.from("briefs").remove(paths);
+    if (!claim || claim.reason === "ok") return NextResponse.json({ error: "Could not file the case. Try again." }, { status: 500 });
+    return NextResponse.json({ error: reasonMessage(claim.reason, claim.maxRuns), reason: claim.reason }, { status: 403 });
+  }
 
-  await inngest.send({ name: "case/predict.requested", data: { predictionId: prediction.id } });
-  return NextResponse.json({ predictionId: prediction.id });
+  try {
+    await inngest.send({ name: "case/predict.requested", data: { predictionId: claim.predictionId } });
+  } catch {
+    await setStage(claim.predictionId, "failed", { error: "The forecast couldn't be started." });
+    await refundFiling(db, claim.predictionId);
+    return NextResponse.json({ error: "The forecast couldn't be started, and your invite code wasn't charged. Try again." }, { status: 502 });
+  }
+  return NextResponse.json({ predictionId: claim.predictionId });
 }
