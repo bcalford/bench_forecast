@@ -12,12 +12,15 @@ const railPath = Array.from({ length: 41 }, (_, i) => {
 }).join(" ");
 
 type Votes = Record<string, SeatVote | undefined>;
+// Names for the filled and hollow seats; an evenly divided Court has no majority or dissent (lib/vote-labels.ts).
+export type SideLabels = { majority: string; minority: string };
+const MAJORITY_DISSENT: SideLabels = { majority: "Majority", minority: "Dissent" };
 
-function splitGroups(votes: Votes, recused: Set<string>) {
+function splitGroups(votes: Votes, recused: Set<string>, sides: SideLabels = MAJORITY_DISSENT) {
   const sitting = benchOrder.filter((j) => !recused.has(j.slug));
   return [
-    { key: "majority", label: "Majority", members: sitting.filter((j) => votes[j.slug]?.vote === "majority") },
-    { key: "minority", label: "Dissent", members: sitting.filter((j) => votes[j.slug]?.vote !== "majority") },
+    { key: "majority", label: sides.majority, members: sitting.filter((j) => votes[j.slug]?.vote === "majority") },
+    { key: "minority", label: sides.minority, members: sitting.filter((j) => votes[j.slug]?.vote !== "majority") },
     { key: "recused", label: "Recused", members: benchOrder.filter((j) => recused.has(j.slug)) },
   ];
 }
@@ -50,7 +53,7 @@ const NEUTRAL: SeatVote = { vote: "majority", role: "", confidence: 0, writes: f
 
 export default function Bench({
   votes, author = null, arrangement = "bench", arrived = null, selected = null, onSelect, interactive = true,
-  label = "Predicted votes, in bench seating order", recused = NO_ONE, neutral = false, caption, describe,
+  label = "Predicted votes, in bench seating order", recused = NO_ONE, neutral = false, caption, describe, sideLabels = MAJORITY_DISSENT,
 }: {
   votes: Votes;
   author?: string | null;
@@ -64,10 +67,11 @@ export default function Bench({
   neutral?: boolean; // seats with no vote in them, e.g. the recusal picker
   caption?: string | ((j: Justice, out: boolean) => string); // a string labels every seat the same
   describe?: (j: Justice, out: boolean) => string;
+  sideLabels?: SideLabels;
 }) {
   const pos = layout(votes, arrangement, recused);
   const isPending = (slug: string) => !neutral && (!votes[slug] || (arrived !== null && !arrived.has(slug)));
-  const groups = splitGroups(votes, recused).filter((g) => g.members.length).map((g) => {
+  const groups = splitGroups(votes, recused, sideLabels).filter((g) => g.members.length).map((g) => {
     const xs = g.members.map((j) => pos[j.slug].x);
     return { ...g, x: (Math.min(...xs) + Math.max(...xs)) / 2 };
   });
@@ -126,15 +130,15 @@ export default function Bench({
   );
 }
 
-export function BenchLegend({ collapsible = false }: { collapsible?: boolean }) {
+export function BenchLegend({ collapsible = false, sideLabels = MAJORITY_DISSENT }: { collapsible?: boolean; sideLabels?: SideLabels }) {
   const sample: SeatVote = { vote: "majority", role: "Joins majority", confidence: 0.75, writes: false };
   // Open by default on wide screens; on phones the key folds away so the bench and tally lead.
   const [wide] = useState(() => typeof window === "undefined" || window.matchMedia("(min-width: 701px)").matches);
   const list = (
     <ul className="bench-legend">
       <li>
-        <SeatMark vote={sample} size={22} showConfidence={false} /> Majority
-        <SeatMark vote={{ ...sample, vote: "minority" }} size={22} showConfidence={false} /> Dissent
+        <SeatMark vote={sample} size={22} showConfidence={false} /> {sideLabels.majority}
+        <SeatMark vote={{ ...sample, vote: "minority" }} size={22} showConfidence={false} /> {sideLabels.minority}
       </li>
       <li>
         <SeatMark vote={{ ...sample, writes: true }} size={22} showConfidence={false} />

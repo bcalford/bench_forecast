@@ -215,6 +215,7 @@ export default function RunView({ f }: { f: ForecastView }) {
             recused={recused}
             selected={sealed ? selected : null}
             onSelect={select}
+            sideLabels={f.sideLabels}
           />
 
           <div className="bench-bar">
@@ -232,7 +233,7 @@ export default function RunView({ f }: { f: ForecastView }) {
               </button>
             )}
           </div>
-          <BenchLegend collapsible />
+          <BenchLegend collapsible sideLabels={f.sideLabels} />
         </div>
       </section>
 

@@ -122,7 +122,7 @@ export default function ReasoningView({ f }: { f: ForecastView }) {
                   <div>
                     <h2>{j.name}</h2>
                     <p className="rsec-meta">
-                      {v.role} · {v.disposition} · <span className="num">{Math.round(v.confidence * 100)}%</span> confidence
+                      {v.roleKey === "divided" ? v.role : <>{v.role} · {v.disposition}</>} · <span className="num">{Math.round(v.confidence * 100)}%</span> confidence
                     </p>
                   </div>
                 </header>

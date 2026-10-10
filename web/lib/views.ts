@@ -4,6 +4,7 @@ import { serviceClient } from "./supabase";
 import { tallyVotes, type JusticeVote } from "./clerk-rules";
 import { justices, byslug, DISPOSITION_WORD, type SeatVote } from "./court";
 import type { BriefingSummary } from "./schemas";
+import { labelVotes, type VoteLabels } from "./vote-labels";
 
 export type CitationView = { passage_id: string; quote: string; why: string; case_name: string | null; date: string | null; label: string | null; url: string | null };
 
@@ -40,13 +41,7 @@ export type ForecastView = {
   recused: string[];
   concurring: string[];
   dissenting: string[];
-};
-
-const ROLE_LABEL: Record<string, string> = {
-  majority: "Joins majority",
-  concur: "Concurrence",
-  concur_judgment: "Concurs in the judgment",
-  dissent: "Dissents",
+  sideLabels: VoteLabels["sideLabels"]; // "Majority"/"Dissent", or each side's vote on an evenly divided Court
 };
 
 export const formatEt = (iso: string | null) =>
@@ -78,21 +73,15 @@ export const loadForecast = cache(async (id: string): Promise<ForecastView | nul
     voteRows.map((r): JusticeVote => ({ justice: r.justice, vote: r.vote as JusticeVote["vote"], role: r.role as JusticeVote["role"], confidence: Number(r.confidence) })),
     seniority,
   );
-  const inMajority = new Set(tally.majority.length ? tally.majority : tally.sides.set_aside);
   const author = p.author_pred as string | null;
+  const labels = labelVotes(voteRows.map((r) => ({ justice: r.justice, vote: r.vote as JusticeVote["vote"], role: r.role as JusticeVote["role"] })), tally, author);
 
   const votes: Record<string, VoteView> = {};
   for (const r of voteRows) {
-    const majority = inMajority.has(r.justice);
-    const isAuthor = r.justice === author;
-    const roleKey = majority ? (r.role === "dissent" ? "majority" : r.role) : "dissent";
     votes[r.justice] = {
-      vote: majority ? "majority" : "minority",
-      role: isAuthor ? "Writes for the Court" : ROLE_LABEL[roleKey] ?? roleKey,
+      ...labels.votes[r.justice],
       confidence: Number(r.confidence),
-      writes: isAuthor || roleKey === "concur" || roleKey === "concur_judgment",
       disposition: DISPOSITION_WORD[r.vote] ?? r.vote,
-      roleKey,
       briefReason: r.brief_reason,
       detailedReason: r.detailed_reason,
       citations: r.citations ?? [],
@@ -125,8 +114,9 @@ export const loadForecast = cache(async (id: string): Promise<ForecastView | nul
     arrival: voteRows.map((r) => r.justice),
     sitting,
     recused,
-    concurring: sitting.filter((s) => votes[s]?.vote === "majority" && votes[s].writes && s !== author),
-    dissenting: sitting.filter((s) => votes[s]?.vote === "minority"),
+    concurring: labels.concurring,
+    dissenting: labels.dissenting,
+    sideLabels: labels.sideLabels,
   };
 });
 

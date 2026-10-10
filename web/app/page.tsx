@@ -50,7 +50,7 @@ export default async function Home() {
                 <cite className="case-name">{featured.title}</cite>
                 <span className="num">{featured.outcome}, {featured.tally[0]}–{featured.tally[1]}{featured.fairTest ? "" : " · Not a fair test"}</span>
               </span>
-              <Bench votes={featured.votes} author={featured.author} recused={new Set(featured.recused)} interactive={false} />
+              <Bench votes={featured.votes} author={featured.author} recused={new Set(featured.recused)} interactive={false} sideLabels={featured.sideLabels} />
             </Link>
           )}
         </div>
