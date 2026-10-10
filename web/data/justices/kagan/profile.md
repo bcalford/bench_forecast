@@ -7,130 +7,109 @@ sources: 120 opinions from this justice's library (opening passages); Supreme Co
 ---
 
 # Elena Kagan
-# Elena Kagan: Working Profile
-
 ## Interpretive method
 
-- **Statutory interpretation.** She reads text in context. She gives words their ordinary meaning and tests that meaning with everyday analogies: "a 'tangible object' is an object that's tangible" (Yates, 2015, dissenting); the series-modifier examples in Lockhart (2016, dissenting); "adjacent" covering "nearby" (Sackett, 2023, concurring in the judgment).
-- **Legislative history.** She uses it only "when statutory text in context remains, after careful review, stubbornly ambiguous" (FS Credit, 2026, dissenting). She has also cited it as confirming support for her reading (Lockhart, 2016, dissenting).
-- **Clear-statement rules.** She repeatedly objects to demands for "a special brand of legislative clarity" for broad delegations. She prefers "standard rules of statutory construction" (Learning Resources, 2026, concurring in part). She reached the same result as the Court in Learning Resources without joining its major-questions reasoning.
-- **Agency deference.** Her opinions show she accepted deference to agencies on genuine ambiguity:
-  - Chevron (Little Sisters, 2020, concurring in the judgment).
-  - Auer, "potent in its place, but cabined in its scope" (Kisor, 2019).
-- **Reasoned explanation.** She insists that agencies give reasoned explanations (Judulang, 2011; Little Sisters, 2020).
-- **Constitutional questions.**
-  - She relies on long-settled practice for structural provisions (CFPB, 2024, concurring).
-  - She applies the Bruen/Rahimi analogue test when it governs (Wolford, 2026, dissenting).
-  - In Establishment Clause cases she prefers purposes-and-effects analysis and case-by-case use of history (American Legion, 2019, concurring in part).
+- **Text read in context.** She typically starts with ordinary meaning and checks it against surrounding words, statutory structure, and evident purpose. Examples include "tangible object" in Yates (2015, dissenting), the series-modifier reading in Lockhart (2016, dissenting), and "adjacent" in Sackett (2023, concurring in the judgment).
+- **Legislative history and lenity.** She treats legislative history as appropriate only when text in context "remains, after careful review, stubbornly ambiguous" (FS Credit, 2026, dissenting). She has invoked uncommonly clear history and the rule of lenity as backstops (Lockhart, 2016, dissenting).
+- **Clear-statement rules.** She rejects the major-questions demand for special legislative clarity in favor of "standard rules of statutory construction" plus a "modicum of common sense" about how Congress delegates (Learning Resources, 2026, concurring in part; West Virginia v. EPA, 2022, dissenting; Biden v. Nebraska, 2023, dissenting).
+- **Agency interpretation.** She defended Chevron as a presumption of congressional intent grounded in agency expertise and accountability (Loper Bright, 2024, dissenting; Little Sisters, 2020, concurring in the judgment). She preserved a "cabined" Auer deference (Kisor, 2019). She insists that agencies give reasoned explanations (Judulang, 2011; Little Sisters, 2020).
+- **Structural constitutional questions.** She relies heavily on text plus long-settled historical practice (Seila Law, 2020, dissenting in part; CFPB v. CFSA, 2024, concurring).
+- **Establishment Clause.** She has kept purpose-and-effects analysis and prefers case-by-case use of history (American Legion, 2019, concurring in part).
 
 ## Positions by area of law
 
-**Economic activity** (243 cases; 85% in majority; 56% liberal direction, SCDB). Her record here is mixed.
-- Arbitration:
-  - She dissented where arbitration clauses would block federal claims (American Express, 2013, dissenting) or displace neutral state contract rules (Lamps Plus, 2019, dissenting).
-  - She wrote opinions enforcing equal-footing and anti-special-rule principles under the FAA (Kindred, 2017; Morgan, 2022).
-  - She upheld an arbitrator's class-arbitration ruling (Oxford Health, 2013).
-- She wrote for the Court rejecting Mexico's suit against gun makers (Smith & Wesson, 2025).
+**Overall.** Across 979 career cases she was in the majority 81% of the time, falling to 76% in OT2023–25. The database codes 75% of her divided-case votes in its "liberal" direction, rising to 79% recently (SCDB).
 
-**Criminal procedure** (218 cases; 80% in majority; 69% liberal, SCDB).
-- **Confrontation Clause.** She consistently supports cross-examination of forensic and confession evidence (Williams, 2012, dissenting; Samia, 2023, dissenting; Smith v. Arizona, 2024).
-- **Fourth Amendment.** Her positions vary by case:
-  - For the defendant: Jardines (2013, concurring); Strieff (2016, dissenting).
-  - For the State, with stated limits: Heien (2014, concurring); Glover (2020, concurring); Case v. Montana (2026).
-- **Categorical approach.** She applies it strictly (Descamps, 2013; Borden, 2021) and applied vagueness doctrine in Dimaya (2018).
-- **Government-side holdings she authored.** Kaley (2014); Voisine (2016); Chaidez (2013).
+**Criminal procedure.** This is her highest for-petitioner area: 68% for petitioner, with 69% of votes in the database's liberal direction (SCDB).
+- She dissents for defendants on the Confrontation Clause (Williams, 2012; Samia, 2023), exclusion (Utah v. Strieff, 2016), Brady (Turner, 2017), Miranda remedies (Vega, 2022), and habeas (Brown v. Davenport, 2022; Jones v. Hendrix, 2023; Edwards v. Vannoy, 2021).
+- She has read ACCA narrowly (Descamps, 2013; Borden, 2021; Wooden, 2022).
+- She also writes or joins pro-government results: dog-sniff probable cause (Florida v. Harris, 2013), reasonable suspicion (Kansas v. Glover, 2020, concurring), bank fraud (Loughrin, 2014), straw purchases (Abramski, 2014), reckless-misdemeanor firearm bans (Voisine, 2016), and safety-valve eligibility (Pulsifer, 2024).
+- She favors plaintiffs in Fourth Amendment §1983 suits (Manuel, 2017; Chiaverini, 2024; Barnes v. Felix, 2025).
 
-**Civil rights** (154 cases; 75% in majority; 77% liberal, SCDB).
-- Racial-gerrymandering and Voting Rights Act cases:
-  - She wrote Cooper v. Harris (2017).
-  - She dissented in Brnovich (2021), Alexander (2024), and Callais (2026).
-- She dissented on partisan gerrymandering (Rucho, 2019).
-- She wrote a broad reading of Title VII (Muldrow, 2024).
-- She would apply heightened scrutiny to Tennessee's SB1 (Skrmetti, 2025, dissenting).
+**Civil rights and voting.** 77% of votes are in the database's liberal direction, with 75% in the majority (SCDB).
+- She dissents where the Court narrows redistricting and VRA claims (Rucho, 2019; Brnovich, 2021; Alexander, 2024; Louisiana v. Callais, 2026).
+- She wrote Cooper v. Harris (2017) affirming a racial-gerrymander finding.
+- On equal protection she would have applied heightened scrutiny to Tennessee's SB1 without deciding the outcome (Skrmetti, 2025, dissenting).
 
-**First Amendment** (60 cases; 72% in majority; 68% liberal, SCDB).
-- She treats viewpoint discrimination as near-categorically invalid (Iancu, 2019; Chiles, 2026, concurring).
-- She resists automatic strict scrutiny for subject-matter sign rules (Reed, 2015, concurring in the judgment).
-- She applies strict scrutiny to adult access to protected speech (Free Speech Coalition, 2025, dissenting).
-- She upholds campaign-finance anti-corruption limits (FEC v. Cruz, 2022, dissenting; NRSC, 2026, dissenting).
-- Religion cases:
-  - She emphasizes equal treatment and pluralism (Town of Greece, 2014, dissenting; Tandon, 2021, dissenting).
-  - She joined the Court in Masterpiece Cakeshop on hostility grounds (2018, concurring).
+**Economic activity.** 85% in majority and 56% in the database's liberal direction (SCDB), the latter her lowest among large areas, with frequent unanimous or cross-cutting work.
+- She dissented on arbitration clauses that block federal claims (American Express, 2013) and on class-arbitration interpretation (Lamps Plus, 2019).
+- She nonetheless enforced an arbitrator's class ruling (Oxford Health, 2013).
+- In regulatory cases she defends agency action (Michigan v. EPA, 2015; NFIB v. OSHA, 2022; McLaughlin, 2025, all dissenting).
 
-**Unions** (27 cases; 67% in majority, among her lowest; 74% liberal, SCDB). She defended Abood (Harris v. Quinn, 2014, dissenting; Janus, 2018, dissenting).
+**Judicial power.** 86% in majority (SCDB).
+- She resists standing limits on congressionally created claims (TransUnion, 2021, dissenting) and on challenges to the HEROES Act plan (Biden v. Nebraska, 2023, dissenting).
+- She objects to merits rulings on the emergency docket (Department of Education v. California, 2025; Mirabelli, 2026, both dissenting).
 
-**Judicial power** (130 cases; 86% in majority, SCDB).
-- She resists narrowing statutory standing (TransUnion, 2021, dissenting) and objects to finding standing loosely (Biden v. Nebraska, 2023, dissenting).
-- She wrote several jurisdiction opinions (Badgerow, 2022; Harrow, 2024; Royal Canin, 2025).
+**Separation of powers.**
+- She would uphold for-cause removal limits (Seila Law, 2020) and broad delegations (Gundy, 2019; FCC v. Consumers' Research, 2025).
+- She nonetheless held SEC ALJs to be officers (Lucia, 2018) and agreed IEEPA does not authorize tariffs (Learning Resources, 2026).
 
-**Administrative law and agencies.** These are not separately coded in the SCDB table. She dissented from limits on agency authority (Michigan v. EPA, 2015; NFIB, 2022; West Virginia, 2022) and upheld a delegation in Gundy (2019).
+**First Amendment.** 72% in majority (SCDB).
+- She distinguishes viewpoint discrimination, which she treats as near-categorically invalid (Iancu v. Brunetti, 2019; Chiles, 2026, concurring), from content-based distinctions, where she resists automatic strict scrutiny (Reed, 2015, concurring in the judgment).
+- She would apply strict scrutiny to age-verification limits burdening adults (Free Speech Coalition, 2025, dissenting).
+- She defends campaign contribution limits and their anti-circumvention rules (FEC v. Cruz, 2022; NRSC, 2026, both dissenting).
+- On religion she emphasizes equal treatment and pluralism (Town of Greece, 2014, dissenting; Tandon, 2021, dissenting; Masterpiece, 2018, concurring).
 
-**Takings.** She dissented in Koontz (2013) and Knick (2019).
+**Unions.** This is her lowest majority rate, at 67% (SCDB), reflecting her dissents defending Abood (Harris v. Quinn, 2014; Janus, 2018).
 
-**Not shown in the sources.** Neither source shows her positions in privacy, attorney, or federal-taxation cases beyond the SCDB rates (privacy 63% liberal; federal taxation 79%; attorneys 73%) and United States v. Clarke (2014).
+**Federalism and sovereign immunity.** 86% in majority (SCDB).
+- She requires unmistakably clear abrogation (Financial Oversight Bd., 2023; Exxon Mobil v. Cimex, 2026, dissenting).
+- She applied precedent to reach both pro-immunity and anti-immunity results (Allen v. Cooper, 2020; Torres, 2022, concurring).
+
+**Takings.** She takes intermediate positions in Koontz (2013, dissenting) and dissented in Knick (2019).
+
+**Immigration.** Results are mixed: against the BIA in Judulang (2011), for it in Martinez Gutierrez (2012), against the noncitizen in Sanchez (2021), for the noncitizen in Dimaya (2018), and dissenting on TPS terminations in Mullin v. Doe (2026).
+
+**Second Amendment.** Within the Bruen/Rahimi framework, she would have upheld Hawaii's private-property default rule (Wolford, 2026, dissenting).
+
+**Not shown by the sources.** The sources say little about privacy, federal taxation, or attorneys beyond the SCDB figures.
 
 ## Weight given to precedent
 
-She gives precedent heavy weight, including precedent she disagrees with.
-- **Majority opinions declining to overrule:**
-  - Kimble (2015) kept Brulotte and sent critics "to Congress."
-  - Kisor (2019) kept Auer.
-  - Minerva (2021) kept assignor estoppel.
-  - Bay Mills (2014) "decline[d] to revisit" tribal immunity rulings.
-- **Applying decisions she doubted:**
-  - She applied Seila Law, which she had dissented from "vehemently" (Collins, 2021, concurring in part).
-  - She applied Monsanto despite finding it "troubling" (Luis, 2016, dissenting).
-  - She applied Napier while calling it "an anachronism" (Kurns, 2012, concurring).
-  - She called PennEast controlling though she had joined its dissent (Torres, 2022, concurring).
-- **Her framework.** In dissents she uses the conventional stare decisis factors: special justification, workability, eroded underpinnings, and reliance (Janus, 2018; Knick, 2019).
-- **Recent statements.** She objects when majorities discard earlier clear statements (Brown v. Davenport, 2022, dissenting) or decline to follow what a precedent said (Edwards, 2021, dissenting).
+Stare decisis is a dominant theme.
+- She declined to overrule Brulotte, telling critics to "seek relief... from Congress" (Kimble, 2015). She declined to overrule Auer (Kisor, 2019).
+- Her dissents from overrulings stress workability and reliance (Janus, 2018; Knick, 2019; Loper Bright, 2024).
+- She repeatedly applies precedents she disagrees with:
+  - Seila Law, which she had "vehemently" dissented from (Collins, 2021, concurring in part).
+  - Monsanto (Luis, 2016, dissenting).
+  - Napier, which she called an "anachronism" (Kurns, 2012, concurring).
+  - PennEast (Torres, 2022, concurring).
+  - Bruen (Wolford, 2026, dissenting).
+- She rests holdings expressly on adherence to prior cases (Dimaya, 2018; Lucia, 2018; Allen v. Cooper, 2020; Manuel, 2017).
+- She objects when the Court departs from its own recent statements (Brown v. Davenport, 2022, dissenting; Edwards v. Vannoy, 2021, dissenting).
 
 ## Signature doctrines and recurring themes
 
-- **Proper, limited judicial role.** She describes majority rulings as judicial overreach in several areas:
-  - Standing as "judicial aggrandizement" (TransUnion, 2021).
-  - Displacing Congress's or agencies' judgments (Biden v. Nebraska, 2023; West Virginia, 2022; NFIB, 2022).
-  - Refusing to remedy constitutional harms (Rucho, 2019).
-- **Emergency docket process.** Recent dissents object to deciding novel questions "with barebones briefing, no argument" (Department of Education, 2025). Related dissents: Mirabelli (2026); Mullin (2026).
-- **Cost–benefit framing of remedies.** Exclusion "when, but only when" its benefits exceed its costs (Strieff, 2016). The "when (but only when)" effective-vindication rule (American Express, 2013).
-- **Equality.** In religion and voting cases she frames the issue as each citizen owning "an equal share" in government (Town of Greece, 2014; Brnovich, 2021).
-- **Limiting principles.**
-  - She often joins holdings while defining their boundaries (Heien, 2014; Kisor, 2019; Minerva, 2021).
-  - She sometimes takes a middle position between majority and dissent (Messerschmidt, 2012; Zubaydah, 2022; Koontz, 2013).
+- **Courts' "proper, limited role."** She invokes this phrase against judicial displacement of Congress and agencies (Biden v. Nebraska, 2023; TransUnion, 2021; Seila Law, 2020).
+- **Congressional choice and agency expertise.** Congress allocates authority and agencies are better placed on technical and policy questions (Loper Bright, 2024; West Virginia v. EPA, 2022).
+- **Political equality.** She treats "democratic subversion" and vote dilution as core constitutional harms (Rucho, 2019; Callais, 2026).
+- **Effective vindication of statutory rights.** Procedural devices should not nullify federal claims (American Express, 2013; Genesis Healthcare, 2013).
+- **Regular order.** She objects to deciding novel questions with "barebones briefing, no argument" (Department of Education, 2025; Mirabelli, 2026).
+- **Narrow resolutions.** She often disposes of a case on the narrowest available ground:
+  - She declines to reach issues the parties didn't ask the Court to decide (Skrmetti, 2025; Wolford, 2026).
+  - She finds intermediate answers (Messerschmidt, 2012; Zubaydah, 2022).
 
 ## Typical voting partners
 
-**Divided-case agreement rates** (SCDB):
+In divided cases, her closest alignment is with Sotomayor: 83% career, rising to 89% recently. Next is Jackson, at 79% career and 80% recently (SCDB).
 
-| Justice | Career | Recent (OT2023–OT2025) |
-|---|---|---|
-| Sotomayor | 83% | 89% |
-| Jackson | 79% | 80% |
-| Roberts | 52% | 54% |
-| Kavanaugh | 50% | 48% |
-| Barrett | 49% | 50% |
-| Gorsuch | 40% | 34% |
-| Alito | 31% | 26% |
-| Thomas | 30% | 24% |
+Roberts (52%/54%), Kavanaugh (50%/48%), and Barrett (49%/50%) form a middle tier near even (SCDB).
 
-- **Recent change.** Agreement has risen with Sotomayor and fallen with Gorsuch, Alito and Thomas (SCDB).
-- **Separate opinions she joined most** (SCDB): Sotomayor 55, Breyer 45, Ginsburg 26, Jackson 11, Barrett 9, Thomas 6.
-- **Joint and partial joins in the excerpts:**
-  - Joint dissents with Sotomayor (Jones v. Hendrix, 2023) and with Breyer and Sotomayor (NFIB, 2022; Dobbs, 2022).
-  - Parts of Sotomayor's and Jackson's dissents (Skrmetti, 2025; Wolford, 2026; FS Credit, 2026).
-  - Cross-bloc joins: Thomas's TransUnion dissent (2021); Barrett's PennEast dissent (per Torres, 2022); Kavanaugh's textual approach (Sackett, 2023).
+Agreement is lowest with Gorsuch (40%/34%), Alito (31%/26%), and Thomas (30%/24%). All three have declined in recent terms (SCDB).
+
+The separate opinions she joins most are Sotomayor's (55), Breyer's (45), and Ginsburg's (26), followed by Jackson's (11), Barrett's (9), and Thomas's (6) (SCDB). Cross-cutting examples include joining Thomas's TransUnion dissent (2021) and the Barrett-authored PennEast dissent (Torres, 2022, concurring). Her joint dissents appear with Breyer and Sotomayor (NFIB v. OSHA, 2022; Dobbs, 2022) and with Sotomayor (Jones v. Hendrix, 2023).
 
 ## How this justice tends to write separately
 
-- **Frequency** (SCDB):
-  - She writes separately in 10% of cases over her career and 14% recently.
-  - She has written 108 majority opinions, 19 of them recently.
-  - Her majority rate fell from 81% to 76%.
-- **Concurrences.** These usually join in full and then elaborate limits or open questions:
-  - Heien (2014); Hawkes (2016); Gill (2018); Jander (2020); Chiles (2026).
-  - Some identify a precedent as the true source of a problem (Kirtsaeng, 2013).
-- **Partial joins.** She explains exactly which parts she declines to join and why, often to avoid broader pronouncements (American Legion, 2019; Skrmetti, 2025; Learning Resources, 2026).
-- **Dissents.**
-  - They frequently open with a hypothetical or "nutshell" framing: American Express (2013); Lockhart (2016); Samia (2023); FEC v. Cruz (2022); McLaughlin (2025); Callais (2026).
-  - They then return to text and precedent.
-  - She sometimes concedes common ground before stating the disagreement (Turner, 2017; Koontz, 2013).
+She writes separately in 10% of cases career and 14% recently, and authored 108 majority opinions, 19 of them recent (SCDB).
+
+- **Dissent openings.** Her dissents often open with a hypothetical or plain-language framing:
+  - Star Wars examples (Lockhart, 2016).
+  - "John and Mary" (Samia, 2023).
+  - A circle-shaped district (Callais, 2026).
+  - Airborne plutonium (McLaughlin, 2025).
+  - Binoculars on a porch (Jardines, 2013, concurring).
+- **Short limiting concurrences.** These stress the limits of a holding (Heien, 2014; Hawkes, 2016; Jander, 2020; Chiles, 2026).
+- **Concurrences in the judgment.** These avoid a doctrine she rejects (Learning Resources, 2026; Sackett, 2023; Cameron, 2022).
+- **Partial joins.** She frequently joins opinions part by part, explaining why (American Legion, 2019; Skrmetti, 2025; FS Credit, 2026; Wolford, 2026).
+- **Emergency-docket dissents.** These are brief and procedural in focus (Department of Education, 2025; Tandon, 2021).

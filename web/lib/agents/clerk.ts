@@ -1,5 +1,6 @@
 // The clerk step (spec.md §3.4). Code decides the tally, outcome, tie rule and assigner; one model call then
 // groups the majority into joiners and concurrences and predicts the author, constrained to the code's result.
+import type Anthropic from "@anthropic-ai/sdk";
 import { structuredCall } from "../claude";
 import { MODELS } from "../models";
 import { tallyVotes, type ClerkTally, type JusticeVote, type Seniority } from "../clerk-rules";
@@ -12,7 +13,7 @@ separately, and those who agree only with the result; (2) predict who writes the
 assigns it, how opinion assignments are being balanced across the term, and each candidate's expertise in this
 area of law. Choose the author only from the candidates given. Explain the author choice in one sentence.`;
 
-export type ClerkRun = { tally: ClerkTally; result: ClerkResult; costUsd: number; adjustments: string[] };
+export type ClerkRun = { tally: ClerkTally; result: ClerkResult; costUsd: number; adjustments: string[]; calls: { model: string; usage: Anthropic.Beta.BetaUsage; costUsd: number }[] };
 
 export async function runClerk(
   title: string,
@@ -31,6 +32,7 @@ export async function runClerk(
       result: { joins_majority: [], concurrences: [], concurrences_in_judgment: [], predicted_author: null, author_explanation: "An equally divided Court affirms without an opinion." },
       costUsd: 0,
       adjustments: [],
+      calls: [],
     };
   }
 
@@ -76,5 +78,5 @@ export async function runClerk(
     adjustments.push(`predicted author ${result.predicted_author ?? "none"} is not a candidate; using the assigner`);
     result.predicted_author = tally.authorCandidates.includes(tally.assigner!) ? tally.assigner : tally.authorCandidates[0] ?? null;
   }
-  return { tally, result, costUsd: r.costUsd, adjustments };
+  return { tally, result, costUsd: r.costUsd, adjustments, calls: [{ model: r.model, usage: r.usage, costUsd: r.costUsd }] };
 }

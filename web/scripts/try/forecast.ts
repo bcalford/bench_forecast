@@ -11,7 +11,7 @@ import { retrieveForJustice } from "../../lib/retrieval";
 import { embedQueries } from "../../lib/embedding";
 import { runBench, sharedPrefix, type JusticeInput } from "../../lib/agents/justice";
 import { runClerk } from "../../lib/agents/clerk";
-import { justiceTurns } from "../ingest/transcripts-split";
+import { justiceTurns } from "../../lib/transcripts";
 import type { JusticeOpinion } from "../../lib/schemas";
 
 const readOptional = (path: string) => (existsSync(path) ? readFileSync(path, "utf8") : null);

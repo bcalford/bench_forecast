@@ -92,6 +92,13 @@ First full forecast (phase 4 CLI), 2026-10-10 — FCC v. Consumers' Research, br
 - Cost $2.26 total ($0.27 summary; first agent $0.76 writing the cache, the other eight ~$0.15 each reading 126,815 cached tokens); 200 s. No citations removed or flagged; clerk needed no corrections.
 - Retrieval must run one justice at a time (3 searches each) — a 27-search burst timed out (decisions.md Q25).
 
+Step 2 — pipeline wired into Inngest (2026-10-10), verified end to end:
+- Migration 7: `predictions.stage` (queued → summarizing → retrieving → deliberating → clerk → locked/failed), `as_of`, `error`; `cases.argued_on`; private Storage bucket `briefs`.
+- `inngest/predictCase.ts`: retryable steps (summarize; embed queries; retrieve per justice sequentially; first justice alone to warm the cache, then eight in parallel; clerk-and-lock); each vote saved as it lands (`justice_votes`, citations enriched with case/label/url); every model call in `spend_ledger`; failures set stage `failed` + `error`. `lib/pipeline.ts` holds the DB/storage helpers; `lib/roster.generated.ts` bundles roster, profiles and voting records (`npm run roster:build` after editing a profile). `app/api/inngest` has `maxDuration = 300` (Vercel Hobby caps at 60 s: production needs Pro or another host).
+- `scripts/try/enqueue.ts` files a case like the form will (upload briefs, create case + prediction, send event). Run with `npm run dev` + `npm run inngest:dev`.
+- Test: FCC v. Consumers' Research through the job: locked Reversed 6–3, Kagan writing, same nine sides as the CLI run; 4 min; $2.25 (10 Opus calls incl. clerk, 1 Sonnet); no flagged votes.
+- ⏭ Next: phase 5, port the Bench UI from `web-1/` onto this data (run page follows `predictions.stage` and `justice_votes` over Realtime).
+
 Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.
 - `lib/clerk-rules.ts` (+tests), `lib/schemas.ts` (+citation checker, tests), `lib/models.ts` (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10), `lib/claude.ts` (streamed structured output with `betaZodOutputFormat`, server-side refusal fallbacks, cost per call, stream-started hook), `lib/briefs.ts` (local text extraction; decisions.md Q22), `lib/agents/{summarizer,justice,clerk}.ts`, `lib/retrieval.ts`, `lib/embedding.ts`.
 - Summarizer tested on FCC v. Consumers' Research: $0.27, 16 s, neutral, no outcome leak.

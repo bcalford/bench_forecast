@@ -2,7 +2,7 @@
 //   npx tsx --env-file=.env.local scripts/ingest/transcripts.ts --terms 2011-2025 [--dry-run]
 import { extractText, getDocumentProxy } from "unpdf";
 import { getPdf } from "./http";
-import { justiceTurns } from "./transcripts-split";
+import { justiceTurns } from "../../lib/transcripts";
 import { chunk } from "./chunk";
 import { listArguments } from "./sources/transcripts";
 
