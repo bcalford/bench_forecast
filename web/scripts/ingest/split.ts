@@ -31,20 +31,22 @@ const SURNAMES: Record<string, string> = {
   GORSUCH: "gorsuch", KAVANAUGH: "kavanaugh", BARRETT: "barrett", JACKSON: "jackson",
 };
 
-// Role words, including part qualifiers: "concurring in Parts I and II–B and in the judgment".
-const ROLE_WORDS = "(?:concurring|dissenting)(?:[ ,]+(?:in|part|parts?|Parts?|and|the|judgment|concurring|dissenting|from|denial|of|certiorari|application|for|stay|grant|order|dismissal|as|to|except|[IVX]+(?:[–-][A-Z0-9]+)*|[A-Z0-9](?=[,. ])))*";
+// Role words, including part qualifiers: "concurring in Parts I and II–B and in the judgment", and scope
+// qualifiers: "concurring in the judgment with respect to severability and dissenting in part".
+const ROLE_WORDS = "(?:concurring|dissenting)(?:[ ,]+(?:with respect to [a-z]+(?: [a-z]+){0,2}?(?= and|,|\\.)|in|part|parts?|Parts?|principal|footnotes?|\\d+|and|the|judgment|concurring|dissenting|from|denial|of|certiorari|application|for|stay|grant|order|dismissal|as|to|except|[IVX]+(?:[–-][A-Z0-9]+)*|[A-Z0-9](?=[,. ])))*";
 const NAME = "([A-Z][A-Za-z'’-]+)";
 const JUSTICE = `(?:CHIEF JUSTICE|JUSTICE|Chief Justice|Justice) ${NAME}`;
 
 // One alternation per kind of opening sentence; capture groups say which matched.
-const OPENER = new RegExp(
+export const OPENER = new RegExp(
   [
     `${JUSTICE} delivered the opinion of the Court[^.]{0,250}\\.`, // 1: majority author
     `${JUSTICE} announced the judgment of the Court[^.]{0,400}\\.`, // 2: plurality author
     // Joinder lists can be long and comma-laden ("…joins as to Parts I–A, I–B, and II, concurring").
     // The role ends the sentence: "Justice Sotomayor, dissenting in part." A mention inside another opinion keeps
     // going ("Justice Sotomayor, dissenting in part, renews a debate…") and must not start a section.
-    `${JUSTICE}(?:, with whom [^.]{0,300}?joins?[^.]{0,200}?)?, (${ROLE_WORDS})\\s*\\.`, // 3, 4: separate opinion
+    // Joinders: "with whom Justice Y joins" or "joined by Justice Y"; a footnote marker may follow ("join,* dissenting").
+    `${JUSTICE}(?:, with whom [^.]{0,300}?joins?[^.]{0,200}?|, joined by [^.]{0,300}?)?,\\*? (${ROLE_WORDS})\\s*\\.`, // 3, 4: separate opinion
     // Some U.S. Reports prints open a separate opinion with the short form: "Thomas, J., concurring." A citation
     // of that form always ends in a parenthesis ("(Thomas, J., concurring).") and so never matches.
     `(?<![(\\[])\\b${NAME}, (?:C\\. )?J\\., (${ROLE_WORDS})\\s*\\.`, // 5, 6: separate opinion, short form
@@ -109,6 +111,12 @@ export function splitOpinion(pages: string[]): { sections: Section[]; skipped: s
     return page;
   };
 
+  // OCR in the older volumes splits words ("con curring", "w ith whom", "joi ns"); repair the ones openers need.
+  full = full
+    .replace(/\bcon ?cur ?ring\b/g, "concurring")
+    .replace(/\bdis ?sent ?ing\b/g, "dissenting")
+    .replace(/\bw ith whom\b/g, "with whom")
+    .replace(/\bjoi n(s?)\b/g, "join$1");
   const openers = [...full.matchAll(OPENER)];
   const sections: Section[] = [];
   const skipped: string[] = [];
