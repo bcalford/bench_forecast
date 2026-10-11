@@ -27,24 +27,50 @@ export async function saveOutcome(db: SupabaseClient, caseId: string, r: Reading
   }));
 }
 
-const JUDGMENT_OF = (outcome: string): Judgment =>
-  /^affirmed/i.test(outcome) ? "affirm" : /^reversed/i.test(outcome) ? "reverse" : /^vacated/i.test(outcome) ? "vacate_remand" : "other";
+// A judgment "in part" is not its first word: "Affirmed in part, reversed in part" is other.
+export const judgmentOfOutcome = (outcome: string): Judgment =>
+  /\bin part\b/i.test(outcome) ? "other"
+    : /^affirmed/i.test(outcome) ? "affirm" : /^reversed/i.test(outcome) ? "reverse" : /^vacated/i.test(outcome) ? "vacate_remand" : "other";
 
-// Scores every eligible forecast on the case; upserts, so a corrected outcome rescores. Returns rows written.
+// Why the owner can't simply confirm a held reading: it must name every sitting justice, and a judgment
+// in part or several judgments need `set`. Recusals aren't stored, so the owner names them.
+export function confirmProblems(o: { outcome: string; votes: Record<string, string>; notes: string | null }, recused: string[]): string[] {
+  const problems: string[] = [];
+  for (const s of recused) if (!(s in SENIORITY)) problems.push(`unknown justice "${s}"`);
+  for (const s of recused) if (s in o.votes) problems.push(`${s} has a vote but was named as recused`);
+  const missing = justices.map((j) => j.slug).filter((s) => !(s in o.votes) && !recused.includes(s));
+  if (missing.length) problems.push(`no vote read for ${missing.join(", ")}; name recusals with --recused, or use set`);
+  if (judgmentOfOutcome(o.outcome) === "other") problems.push(`judgment "${o.outcome}" can't be scored as read; use set`);
+  if (/more than one judgment/.test(o.notes ?? "")) problems.push("more than one judgment; use set");
+  return problems;
+}
+
+// Which locked forecasts to score and which old scores to clear: a corrected date, an outcome sent back to
+// review, or a case outside the scored term must not leave a stale score behind.
+export function scoringPlan<P extends { id: string; locked_at: string }>(
+  preds: P[], outcome: { decided_at: string; status: string }, c: { term: string; decided_before_cutoff: boolean },
+): { score: P[]; clear: string[] } {
+  const scorable = outcome.status === "scored" && c.term === SCORED_TERM && !c.decided_before_cutoff;
+  const score = scorable ? preds.filter((p) => lockedBeforeDecision(p.locked_at, outcome.decided_at)) : [];
+  return { score, clear: preds.filter((p) => !score.includes(p)).map((p) => p.id) };
+}
+
+// Scores every eligible forecast on the case and clears the rest; upserts, so a corrected outcome rescores.
+// Returns rows written.
 export async function scoreCase(db: SupabaseClient, caseId: string): Promise<number> {
   const outcome = ok(await db.from("outcomes").select("decided_at, outcome, votes, author, status").eq("case_id", caseId).single()) as
     { decided_at: string; outcome: string; votes: Record<string, Vote>; author: string | null; status: string };
-  if (outcome.status !== "scored") return 0;
   const c = ok(await db.from("cases").select("term, decided_before_cutoff").eq("id", caseId).single()) as { term: string; decided_before_cutoff: boolean };
-  if (c.term !== SCORED_TERM || c.decided_before_cutoff) return 0;
-  const preds = (ok(await db.from("predictions").select("id, locked_at, author_pred").eq("case_id", caseId).eq("status", "locked")) as
-    { id: string; locked_at: string; author_pred: string | null }[]).filter((p) => lockedBeforeDecision(p.locked_at, outcome.decided_at));
+  const all = ok(await db.from("predictions").select("id, locked_at, author_pred").eq("case_id", caseId).eq("status", "locked")) as
+    { id: string; locked_at: string; author_pred: string | null }[];
+  const { score: preds, clear } = scoringPlan(all, outcome, c);
+  if (clear.length) ok(await db.from("scores").delete().in("prediction_id", clear));
   let written = 0;
   for (const p of preds) {
     const rows = ok(await db.from("justice_votes").select("justice, vote, confidence").eq("prediction_id", p.id)) as { justice: string; vote: Vote; confidence: number }[];
     const s = scoreForecast(
       { votes: Object.fromEntries(rows.map((r) => [r.justice, r.vote])), confidence: Object.fromEntries(rows.map((r) => [r.justice, Number(r.confidence)])), author: p.author_pred },
-      { judgment: JUDGMENT_OF(outcome.outcome), votes: outcome.votes, author: outcome.author }, SENIORITY);
+      { judgment: judgmentOfOutcome(outcome.outcome), votes: outcome.votes, author: outcome.author }, SENIORITY);
     ok(await db.from("scores").upsert({
       prediction_id: p.id, outcome_correct: s.outcomeCorrect, votes_correct: s.votesCorrect, votes_total: s.votesTotal,
       majority_correct: s.majorityCorrect, author_correct: s.authorCorrect,

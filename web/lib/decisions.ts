@@ -94,7 +94,10 @@ export function readDecision(raw: string): Reading {
     }
     if (/^delivered/.test(body)) {
       author = subjects[0] ?? null;
-      [...subjects, ...joiners].forEach((s) => withJ.add(s));
+      // "in which all other Members joined" names no one; recusals and dissents below still apply.
+      const allOthers = /\bin which all other Members joined\b/i.test(body);
+      if (allOthers && /\bexcept\b/i.test(body)) { reasons.push("all other Members joined, with an exception"); continue; }
+      (allOthers ? SLUGS : [...subjects, ...joiners]).forEach((s) => withJ.add(s));
       continue;
     }
     const kind = body.replace(/,? in which.*$/, "");

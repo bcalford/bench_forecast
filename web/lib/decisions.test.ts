@@ -137,3 +137,29 @@ describe("readDecision sends unclear decisions to review", () => {
     assert.ok(r.reasons.some((x) => /not accounted for/.test(x)));
   });
 });
+
+describe("readDecision: 'in which all other Members joined'", () => {
+  it("counts every justice with the judgment", () => {
+    const r = readDecision("Pp. 4–12. 98 F. 4th 1, reversed and remanded. ROBERTS, C. J., delivered the opinion of the Court, in which all other Members joined." + END);
+    assert.equal(r.clean, true, r.reasons.join("; "));
+    assert.equal(r.author, "roberts");
+    assert.equal(Object.keys(r.votes).length, 9);
+    assert.ok(Object.values(r.votes).every((v) => v === "reverse"));
+  });
+  it("still applies a recusal and a concurrence", () => {
+    const r = readDecision("Pp. 4–12. Affirmed. BARRETT, J., delivered the opinion of the Court, in which all other Members joined as to Parts I and III. THOMAS, J., filed a concurring opinion. KAGAN, J., took no part in the consideration or decision of the case." + END);
+    assert.equal(r.clean, true, r.reasons.join("; "));
+    assert.equal(Object.keys(r.votes).length, 8);
+    assert.equal(r.votes.kagan, undefined);
+    assert.equal(r.recused.join(), "kagan");
+  });
+  it("sends a dissent alongside it to review", () => {
+    const r = readDecision("Pp. 4–12. Affirmed. BARRETT, J., delivered the opinion of the Court, in which all other Members joined. GORSUCH, J., filed a dissenting opinion." + END);
+    assert.equal(r.clean, false);
+    assert.ok(r.reasons.some((x) => /both with and against/.test(x)));
+  });
+  it("sends 'all other Members joined except …' to review", () => {
+    const r = readDecision("Pp. 4–12. Affirmed. BARRETT, J., delivered the opinion of the Court, in which all other Members joined except GORSUCH, J." + END);
+    assert.equal(r.clean, false);
+  });
+});

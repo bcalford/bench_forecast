@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { sampleSeason } from "./sample-season";
-import { buildScoredCase, byPhase, dispositionOf, perJustice, seasonRecord, type ScoredInput } from "./scorecard";
+import { buildScoredCase, byPhase, dispositionOf, partitionForecasts, perJustice, seasonRecord, type ScoredInput } from "./scorecard";
 
 const REV = ["roberts", "sotomayor", "kagan", "kavanaugh", "barrett", "jackson"];
 const AFF = ["thomas", "alito", "gorsuch"];
@@ -59,5 +59,21 @@ describe("sampleSeason", () => {
     assert.equal(sampleSeason[0].id, null);
     assert.ok(sampleSeason.every((c) => c.votes.length === 9));
     assert.deepEqual(seasonRecord(sampleSeason), seasonRecord(sampleSeason)); // deterministic
+  });
+});
+
+describe("partitionForecasts", () => {
+  const row = (id: string, locked_at: string, outcomes: { decided_at: string; status: string } | null) => ({ id, locked_at, cases: { outcomes } });
+  it("puts each forecast in one list, and a decision-day lock in neither", () => {
+    const rows = [
+      row("no-decision", "2026-10-10T21:00:00Z", null),
+      row("in-review", "2026-10-10T21:00:00Z", { decided_at: "2027-01-15", status: "needs_review" }),
+      row("review-same-day", "2027-01-15T15:00:00Z", { decided_at: "2027-01-15", status: "needs_review" }),
+      row("scored", "2026-10-10T21:00:00Z", { decided_at: "2027-01-15", status: "scored" }),
+      row("scored-same-day", "2027-01-15T15:00:00Z", { decided_at: "2027-01-15", status: "scored" }),
+    ];
+    const p = partitionForecasts(rows);
+    assert.deepEqual(p.scored.map((r) => r.id), ["scored"]);
+    assert.deepEqual(p.waiting.map((r) => r.id), ["no-decision", "in-review"]);
   });
 });
