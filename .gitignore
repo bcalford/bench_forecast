@@ -21,3 +21,8 @@ web-1/.impeccable/live/*
 
 # Scraped third-party stylesheet used only for research; not ours to redistribute
 harvey_all.css
+
+# Private research notes (kept locally, not published)
+research_notes/
+reports/
+harvey_all.css
