@@ -13,7 +13,8 @@
     "test": "tsx --test lib/*.test.ts scripts/**/*.test.ts",
     "roster:build": "tsx scripts/profiles/build-roster.ts",
     "invite": "tsx --env-file=.env.local scripts/admin/invite.ts",
-    "outcomes": "tsx --env-file=.env.local scripts/admin/outcomes.ts"
+    "outcomes": "tsx --env-file=.env.local scripts/admin/outcomes.ts",
+    "docket": "tsx --env-file=.env.local scripts/admin/docket.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.132.1",
