@@ -1,5 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { sampleSeason } from "./sample-season";
 import { buildScoredCase, byPhase, dispositionOf, perJustice, seasonRecord, type ScoredInput } from "./scorecard";
 
 const REV = ["roberts", "sotomayor", "kagan", "kavanaugh", "barrett", "jackson"];
@@ -48,5 +49,15 @@ describe("aggregations", () => {
   });
   it("splits by phase", () => {
     assert.deepEqual(byPhase([right, wrong]).map((p) => [p.phase, p.n, p.outcomeRight]), [["Before argument", 1, 0], ["After argument", 1, 1]]);
+  });
+});
+
+describe("sampleSeason", () => {
+  it("is sixteen stable synthetic cases in the live shape", () => {
+    assert.equal(sampleSeason.length, 16);
+    assert.equal(sampleSeason[0].title, "Mercer v. Ohio");
+    assert.equal(sampleSeason[0].id, null);
+    assert.ok(sampleSeason.every((c) => c.votes.length === 9));
+    assert.deepEqual(seasonRecord(sampleSeason), seasonRecord(sampleSeason)); // deterministic
   });
 });

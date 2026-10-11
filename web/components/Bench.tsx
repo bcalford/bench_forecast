@@ -104,7 +104,7 @@ export default function Bench({
             : `${j.name}: ${v.role}, ${Math.round(v.confidence * 100)}% confidence${isAuthor ? ", predicted opinion author" : ""}`;
           const inner = (
             <>
-              <SeatMark key={out ? "out" : pending ? "pending" : "voted"} vote={neutral ? NEUTRAL : v} isAuthor={isAuthor} pending={pending} recused={out} neutral={neutral} />
+              <SeatMark key={out ? "out" : pending ? "pending" : "voted"} vote={neutral ? { ...NEUTRAL, confidence: v?.confidence ?? 0 } : v} isAuthor={isAuthor} pending={pending} recused={out} neutral={neutral} />
               <span className="seat-name"><span className="full">{j.last}</span><span className="short" aria-hidden="true">{j.last.slice(0, 3)}</span></span>
               <span className="seat-conf">{typeof caption === "string" ? caption : caption ? caption(j, out) : out ? "Recused" : pending || !v ? "…" : `${Math.round(v.confidence * 100)}%`}</span>
             </>
