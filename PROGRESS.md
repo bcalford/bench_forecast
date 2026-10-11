@@ -115,7 +115,7 @@ Phase 6 — invite codes and the daily cap (2026-10-10):
 Phase 7 — docket forecasts, decisions and the scorecard (2026-10-11):
 - Migration 10: `predictions.origin` (invite/docket/owner), public cap counts invite runs only, `spend_today_by_origin()`, `outcomes.status/source_url/notes` review queue.
 - Pure, tested: `lib/court-site.ts` (hearing lists, transcripts, docket pages, slip listings), `lib/decisions.ts` (`readDecision` from the syllabus; 100 of 141 cached OT2024–25 opinions read clean, the rest go to review), `lib/scoring.ts`, `lib/scorecard.ts`; fixtures in `lib/fixtures/court/`.
-- Inngest: `read-decisions` (cron 6 PM ET + `decisions/read.requested`), `predict-docket-case` (event `case/predict.docket`, concurrency 9 steps). Decision PDFs are read as plain text (`lib/fetch-court.ts`): the corpus reader's footnote filter drops the end of the syllabus in preliminary prints.
+- Inngest: `read-decisions` (cron 6 PM ET + `decisions/read.requested`), `predict-docket-case` (event `case/predict.docket`, concurrency 3 steps; the plan allows 5). Decision PDFs are read as plain text (`lib/fetch-court.ts`): the corpus reader's footnote filter drops the end of the syllabus in preliminary prints.
 - Scripts: `npm run docket -- list|forecast`, `npm run outcomes -- review|confirm|set|run`; both send production events with `INNGEST_PROD_EVENT_KEY`. Runbook: `docs/scorecard-ops.md`. Decision Q27.
 - `/scorecard` ports the prototype onto real data with the labelled sample-season preview.
 - ⏭ Next: owner adds INNGEST_PROD_EVENT_KEY and runs the first docket batch; a browser check of the sample toggle (Chrome was disconnected); owner reviews the nine profiles.

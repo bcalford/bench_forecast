@@ -18,8 +18,8 @@ import { serviceClient } from "@/lib/supabase";
 type Event = { data: { predictionId: string } };
 
 // The forecast pipeline, registered twice: public and owner runs, and docket batches (scripts/admin/docket.ts).
-// Docket runs get their own concurrency limit, counted in steps: about one run's nine-justice fan-out at a
-// time, so a batch never slows public filings.
+// Docket runs get their own concurrency limit, counted in steps. The Inngest plan allows 5 across the account;
+// docket runs take at most 3, so a batch leaves 2 for public filings.
 function makePredict(id: string, trigger: string, concurrency?: number) {
   return inngest.createFunction(
   {
@@ -102,6 +102,6 @@ function makePredict(id: string, trigger: string, concurrency?: number) {
 }
 
 export const predictCase = makePredict("predict-case", "case/predict.requested");
-export const predictDocketCase = makePredict("predict-docket-case", "case/predict.docket", 9);
+export const predictDocketCase = makePredict("predict-docket-case", "case/predict.docket", 3);
 
 export const functions = [predictCase, predictDocketCase];
