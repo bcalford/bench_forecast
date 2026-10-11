@@ -17,11 +17,16 @@ import { serviceClient } from "@/lib/supabase";
 
 type Event = { data: { predictionId: string } };
 
-export const predictCase = inngest.createFunction(
+// The forecast pipeline, registered twice: public and owner runs, and docket batches (scripts/admin/docket.ts).
+// Docket runs get their own concurrency limit, counted in steps: about one run's nine-justice fan-out at a
+// time, so a batch never slows public filings.
+function makePredict(id: string, trigger: string, concurrency?: number) {
+  return inngest.createFunction(
   {
-    id: "predict-case",
-    triggers: [{ event: "case/predict.requested" }],
+    id,
+    triggers: [{ event: trigger }],
     retries: 2, // per step; agent steps are expensive, so keep this low
+    ...(concurrency ? { concurrency } : {}),
     onFailure: async ({ event, error }) => {
       const predictionId = (event.data.event as Event).data.predictionId;
       await setStage(predictionId, "failed", { error: error.message.slice(0, 500) });
@@ -94,5 +99,9 @@ export const predictCase = inngest.createFunction(
     return { predictionId, ...result };
   },
 );
+}
 
-export const functions = [predictCase];
+export const predictCase = makePredict("predict-case", "case/predict.requested");
+export const predictDocketCase = makePredict("predict-docket-case", "case/predict.docket", 9);
+
+export const functions = [predictCase, predictDocketCase];

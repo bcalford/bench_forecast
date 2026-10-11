@@ -68,16 +68,29 @@ async function main() {
     assert.ok(won.prediction_id, "ok returns the new prediction");
     assert.equal((await a.query("select invite_code from filing_claims where prediction_id = $1", [won.prediction_id])).rows[0].invite_code, CODES.one);
     assert.equal((await status(CODES.one)).reason, "used_up");
+    assert.equal((await a.query("select origin from predictions where id = $1", [won.prediction_id])).rows[0].origin, "invite", "claims are invite runs");
 
     // Holds: a fresh queued run holds $2.50; one stuck for 3 hours holds nothing
     const before = await room();
     await a.query(
-      "insert into predictions (case_id, phase, status, created_at) values ($1, 'before_argument', 'queued', now() - interval '3 hours')",
+      "insert into predictions (case_id, phase, status, origin, created_at) values ($1, 'before_argument', 'queued', 'invite', now() - interval '3 hours')",
       [await newCase()],
     );
     assert.equal(await room(), before, "a run stuck for 3 hours holds nothing");
-    await a.query("insert into predictions (case_id, phase, status) values ($1, 'before_argument', 'queued')", [await newCase()]);
-    assert.equal(await room(), before - HOLD, "a fresh queued run holds $2.50");
+    const fresh = await newCase();
+    await a.query("insert into predictions (case_id, phase, status, origin) values ($1, 'before_argument', 'queued', 'invite')", [fresh]);
+    assert.equal(await room(), before - HOLD, "a fresh queued invite run holds $2.50");
+
+    // Owner and docket runs neither hold nor spend from the public budget.
+    const ownerCase = await newCase();
+    const ownerPred = (await a.query("insert into predictions (case_id, phase, status, origin) values ($1, 'after_argument', 'running', 'docket') returning id", [ownerCase])).rows[0].id;
+    await a.query("insert into spend_ledger (prediction_id, model, input_tokens, output_tokens, cost_usd) values ($1, 'gate-check', 0, 0, 5)", [ownerPred]);
+    assert.equal(await room(), before - HOLD, "docket runs don't touch the public budget");
+    const invitePred = (await a.query("select id from predictions where case_id = $1", [fresh])).rows[0].id;
+    await a.query("insert into spend_ledger (prediction_id, model, input_tokens, output_tokens, cost_usd) values ($1, 'gate-check', 0, 0, 1)", [invitePred]);
+    assert.equal(await room(), before - HOLD - 1, "invite spend counts");
+    const byOrigin = Object.fromEntries((await a.query("select origin, usd from spend_today_by_origin()")).rows.map((r) => [r.origin, Number(r.usd)]));
+    assert.ok(byOrigin.docket >= 5, "spend_today_by_origin reports docket spend");
 
     // Refunds: only failed runs, only once
     assert.equal(await refund(won.prediction_id), false, "a queued run isn't refunded");
@@ -108,6 +121,7 @@ async function main() {
     console.log("gate-check: all checks passed");
   } finally {
     await a.query("rollback").catch(() => {});
+    await a.query("delete from spend_ledger where model = 'gate-check'");
     await a.query("delete from cases where id = any($1)", [caseIds]); // cascades to their predictions
     await a.query("delete from invite_codes where note = 'gate-check'");
     await a.end();

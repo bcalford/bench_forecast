@@ -58,6 +58,11 @@ async function run(cmd: Command) {
       console.log(`Cap ${usd(cap)} (from .env.local; production reads its own DAILY_SPEND_CAP_USD)`);
       console.log(`Spent today ${usd(cap - Number(afterSpend.data))} · held ${usd(inFlight * HOLD_USD)} for ${inFlight} run${inFlight === 1 ? "" : "s"} in progress · room ${usd(left)}`);
       console.log(left >= HOLD_USD ? "Filing is open." : "Filing is paused until midnight Eastern.");
+      const byOrigin = await db.rpc("spend_today_by_origin");
+      if (byOrigin.error) throw new Error(byOrigin.error.message);
+      const rows = (byOrigin.data ?? []) as { origin: string; usd: number }[];
+      const other = rows.filter((r) => r.origin !== "invite").map((r) => `${r.origin} ${usd(Number(r.usd))}`);
+      console.log(`Not counted against the cap today: ${other.length ? other.join(" · ") : "nothing"}`);
       return;
     }
   }

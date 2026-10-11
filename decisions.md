@@ -136,3 +136,8 @@ Settled in the design-grilling session on 2026-10-08. Each entry lists the quest
 - **Decision:** Vercel Hobby with Fluid compute on, for the website and the Inngest route (`maxDuration = 300`).
 - **Why:** Hobby's old 60 s cap no longer applies: with Fluid compute, Hobby functions default to and max out at 300 s (Pro: 800 s). Inngest runs each step as its own request, so only the longest step has to fit. In the FCC v. Consumers' Research run (247 s overall) the summary took about 22 s, each justice about 60–80 s and the clerk about 4 s; a citation retry could take a justice's step to about 160 s. Hobby is for non-commercial use, which this portfolio app is.
 - **Revisit:** if a justice step nears 300 s, give the citation retry its own step before paying for Pro. Move to Pro if the app becomes commercial or outgrows Hobby's included usage. Check Inngest's free-plan limits against the daily cap (about 20 steps per forecast).
+
+## Q27 — How the OT2026 scorecard is fed (2026-10-11)
+- **Options:** owner files cases · owner-run docket script · unattended forecasting; decisions automatic · automatic with review · owner confirms each
+- **Decision:** An owner-run script forecasts every argued case after argument, with its own `--max-spend` (docket runs don't count against the public $10/day). A daily Inngest job reads the Court's slip opinions and scores clean decisions; anything ambiguous waits in a review queue. Totals count one forecast per case (the docket one if any).
+- **Why:** A full term (~55–60 cases, ~$130–140) makes the scorecard meaningful while spending stays the owner's call; automatic scoring keeps "scored in public" true without letting a parsing slip publish a wrong score.

@@ -111,7 +111,14 @@ Phase 6 — invite codes and the daily cap (2026-10-10):
 - Live at https://bench-forecast.vercel.app (2026-10-10). Inngest syncs `https://bench-forecast.vercel.app/api/inngest`: per-deployment URLs sit behind Vercel Authentication, so the integration's automatic sync to them fails (fix later with a Protection Bypass secret). Production checks passed: every route, code refusal at both steps, no orphan rows, no console errors.
 - First production forecast: Suncor Energy v. County Commissioners of Boulder County (No. 25-170, argued Oct 5; briefs + transcript; Alito recused). Locked 4–4, affirmed by an equally divided Court; 5 min 26 s; $2.13; no flagged votes; code BF-ADNM-Z79X used 1 of 1. It exposed tie labels ("Joins majority"/"Dissents" on a 4–4); fixed in `lib/vote-labels.ts` (each justice labelled by their vote; no dissent list).
 - Deferred from the phase 6 review: lost-response claims can cost a run; a send that times out after delivery refunds a run that still goes ahead; one run can cost more than the $2.50 hold; orphaned PDFs from abandoned uploads; `/new` 500s if Supabase env vars are missing.
-- ⏭ Next: phase 7 (OT2026 case list, outcomes cron, scorecard); owner reviews the nine profiles.
+
+Phase 7 — docket forecasts, decisions and the scorecard (2026-10-11):
+- Migration 10: `predictions.origin` (invite/docket/owner), public cap counts invite runs only, `spend_today_by_origin()`, `outcomes.status/source_url/notes` review queue.
+- Pure, tested: `lib/court-site.ts` (hearing lists, transcripts, docket pages, slip listings), `lib/decisions.ts` (`readDecision` from the syllabus; 100 of 141 cached OT2024–25 opinions read clean, the rest go to review), `lib/scoring.ts`, `lib/scorecard.ts`; fixtures in `lib/fixtures/court/`.
+- Inngest: `read-decisions` (cron 6 PM ET + `decisions/read.requested`), `predict-docket-case` (event `case/predict.docket`, concurrency 9 steps). Decision PDFs are read as plain text (`lib/fetch-court.ts`): the corpus reader's footnote filter drops the end of the syllabus in preliminary prints.
+- Scripts: `npm run docket -- list|forecast`, `npm run outcomes -- review|confirm|set|run`; both send production events with `INNGEST_PROD_EVENT_KEY`. Runbook: `docs/scorecard-ops.md`. Decision Q27.
+- `/scorecard` ports the prototype onto real data with the labelled sample-season preview.
+- ⏭ Next: owner adds INNGEST_PROD_EVENT_KEY and runs the first docket batch; a browser check of the sample toggle (Chrome was disconnected); owner reviews the nine profiles.
 
 Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.
 - `lib/clerk-rules.ts` (+tests), `lib/schemas.ts` (+citation checker, tests), `lib/models.ts` (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10), `lib/claude.ts` (streamed structured output with `betaZodOutputFormat`, server-side refusal fallbacks, cost per call, stream-started hook), `lib/briefs.ts` (local text extraction; decisions.md Q22), `lib/agents/{summarizer,justice,clerk}.ts`, `lib/retrieval.ts`, `lib/embedding.ts`.
