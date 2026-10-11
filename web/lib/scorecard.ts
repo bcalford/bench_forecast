@@ -3,7 +3,7 @@
 import type { Vote } from "./clerk-rules";
 import { justices } from "./court";
 import type { Judgment } from "./decisions";
-import { scoreForecast } from "./scoring";
+import { lockedBeforeDecision, scoreForecast } from "./scoring";
 
 export type Disposition = "Affirm" | "Reverse" | "Vacate" | "Other";
 export type ScoredVote = { slug: string; confidence: number; voteRight: boolean; majorityRight: boolean };
@@ -75,4 +75,16 @@ export function byPhase(cases: ScoredCase[]) {
     const vs = cs.flatMap((c) => c.votes);
     return { phase, n: cs.length, outcomeRight: cs.filter((c) => c.outcomeRight).length, votes: vs.length, voteRight: vs.filter((v) => v.voteRight).length };
   });
+}
+
+// Splits locked forecasts into scored and waiting. One locked on or after its decision day is in neither:
+// only forecasts locked before their decision count, whether or not the outcome has been reviewed yet.
+export function partitionForecasts<R extends { locked_at: string; cases: { outcomes: { decided_at: string; status: string } | null } }>(
+  rows: R[],
+): { scored: R[]; waiting: R[] } {
+  const fair = rows.filter((r) => !r.cases.outcomes || lockedBeforeDecision(r.locked_at, r.cases.outcomes.decided_at));
+  return {
+    scored: fair.filter((r) => r.cases.outcomes?.status === "scored"),
+    waiting: fair.filter((r) => r.cases.outcomes?.status !== "scored"),
+  };
 }

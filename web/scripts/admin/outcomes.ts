@@ -1,12 +1,12 @@
 // The decision review queue and manual runs of the decision job (spec §2).
 //   npm run outcomes -- review
-//   npm run outcomes -- confirm 25-170
+//   npm run outcomes -- confirm 25-170 [--recused alito]
 //   npm run outcomes -- set 25-170 --judgment reversed --majority roberts,thomas,… --dissent kagan,… [--author roberts] [--recused alito]
 //   npm run outcomes -- run [--term 24] [--dry-run]
 import type { Vote } from "../../lib/clerk-rules";
 import { justices } from "../../lib/court";
 import { currentTerm, normalizeDocket } from "../../lib/court-site";
-import { scoreCase } from "../../lib/outcomes";
+import { confirmProblems, scoreCase } from "../../lib/outcomes";
 import { serviceClient } from "../../lib/supabase";
 import { prodInngest } from "./prod-inngest";
 
@@ -42,10 +42,12 @@ async function main() {
     }
     case "confirm": {
       for (const c of await caseFor(docketArg)) {
-        const { data, error } = await db.from("outcomes").select("votes").eq("case_id", c.id).single();
+        const { data, error } = await db.from("outcomes").select("outcome, votes, notes").eq("case_id", c.id).single();
         if (error) throw new Error(`No outcome stored for ${docketArg} yet.`);
-        if (Object.keys(data.votes ?? {}).length < 7) throw new Error("The stored guess is missing votes; use `set` to enter the result.");
-        await db.from("outcomes").update({ status: "scored", notes: "confirmed by owner" }).eq("case_id", c.id);
+        const problems = confirmProblems({ outcome: data.outcome, votes: data.votes ?? {}, notes: data.notes }, list(arg("recused")));
+        if (problems.length) throw new Error(`Can't confirm ${docketArg}: ${problems.join("; ")}.`);
+        const { error: saveError } = await db.from("outcomes").update({ status: "scored", notes: "confirmed by owner" }).eq("case_id", c.id);
+        if (saveError) throw new Error(saveError.message);
         console.log(`${docketArg}: confirmed; ${await scoreCase(db, c.id)} forecast(s) scored.`);
       }
       return;
@@ -81,7 +83,7 @@ async function main() {
       return;
     }
     default:
-      throw new Error("Usage: npm run outcomes -- review | confirm <docket> | set <docket> --judgment … --majority … --dissent … [--author …] [--recused …] [--decided YYYY-MM-DD] | run [--term N] [--dry-run]");
+      throw new Error("Usage: npm run outcomes -- review | confirm <docket> [--recused …] | set <docket> --judgment … --majority … --dissent … [--author …] [--recused …] [--decided YYYY-MM-DD] | run [--term N] [--dry-run]");
   }
 }
 
