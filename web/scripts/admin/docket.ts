@@ -66,7 +66,13 @@ async function file(c: DocketCase): Promise<string> {
   if (ins.error) throw new Error(ins.error.message);
   const p = await db.from("predictions").insert({ case_id: caseId, phase: "after_argument", origin: "docket", as_of: c.argued }).select("id").single();
   if (p.error) throw new Error(p.error.message);
-  await prodInngest().send({ name: "case/predict.docket", data: { predictionId: p.data.id } });
+  try {
+    await prodInngest().send({ name: "case/predict.docket", data: { predictionId: p.data.id } });
+  } catch (e) {
+    // Leave nothing that looks in flight: a failed run doesn't block the case on the next batch.
+    await db.from("predictions").update({ status: "failed", stage: "failed", error: "The run couldn't be started." }).eq("id", p.data.id);
+    throw new Error(`couldn't start the run (${(e as Error).message}); marked failed, so the next batch retries it`);
+  }
   return p.data.id as string;
 }
 
@@ -99,9 +105,13 @@ async function main() {
     if (why.length) { console.log(`skip ${c.docket}: ${why.join("; ")}`); continue; }
     if (started >= limit) { console.log(`stop: --max-spend $${maxSpend} allows ${limit} case(s) at $${HOLD_USD.toFixed(2)} each`); break; }
     if (dry) { console.log(`would file ${c.docket} ${c.title}${c.recused.length ? ` (recused: ${c.recused.join(", ")})` : ""}`); started++; continue; }
-    const id = await file(c);
-    console.log(`filed ${c.docket} ${c.title} → https://bench-forecast.vercel.app/runs/${id}`);
-    started++;
+    try {
+      const id = await file(c);
+      console.log(`filed ${c.docket} ${c.title} → https://bench-forecast.vercel.app/runs/${id}`);
+      started++;
+    } catch (e) {
+      console.log(`failed ${c.docket}: ${(e as Error).message}`);
+    }
   }
   console.log(`${dry ? "Would start" : "Started"} ${started} forecast(s), about $${(started * HOLD_USD).toFixed(2)}.`);
 }

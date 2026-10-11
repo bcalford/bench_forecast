@@ -1,6 +1,7 @@
 // Scoring a locked forecast against the Court's decision (spec §3). Pure functions; lib/outcomes.ts stores
 // the results and lib/scorecard.ts reuses them for the page.
 import { sideOf, tallyVotes, type Seniority, type Vote } from "./clerk-rules";
+import { normalizeDocket } from "./court-site";
 import type { Judgment } from "./decisions";
 
 export type ForecastForScoring = { votes: Record<string, Vote>; confidence: Record<string, number>; author: string | null };
@@ -49,6 +50,10 @@ const etDate = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { time
 
 // Locked on an Eastern calendar day before the decision day.
 export const lockedBeforeDecision = (lockedAtIso: string, decidedAt: string) => etDate(lockedAtIso) < decidedAt;
+
+// What counts as one case: its docket number, since each filing creates its own case row; the row id when
+// there is no docket number.
+export const caseKey = (docket: string | null, caseId: string) => (docket && normalizeDocket(docket)) || caseId;
 
 // One forecast per case for the term totals: the docket forecast if there is one, else the earliest locked.
 export function countingForecasts<T extends { caseId: string; origin: string; lockedAt: string }>(fs: T[]): T[] {

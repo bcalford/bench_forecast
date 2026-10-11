@@ -90,6 +90,25 @@ describe("readDecision on preliminary prints and page breaks", () => {
 });
 
 describe("readDecision sends unclear decisions to review", () => {
+  it("a running head the cleaner misses can't merge a dissent into the majority", () => {
+    const r = readDecision("Pp. 9–17. 21 F. 4th 1112, reversed and remanded. ROBERTS, C. J., delivered the opinion of the Court, in which THOMAS, GORSUCH, KAVANAUGH, BARRETT, and JACKSON, JJ., joined. 4 UNITED STATES ex rel. SCHUTTE v. SUPERVALU INC. Syllabus ALITO, J., filed a dissenting opinion, in which SOTOMAYOR and KAGAN, JJ., joined." + END);
+    assert.equal(r.clean, false, "must not read 9–0");
+  });
+  it("an opinion dissenting in part", () => {
+    const r = readDecision("Pp. 11–16. Vacated and remanded. ALITO, J., delivered the opinion of the Court, in which ROBERTS, C. J., THOMAS, GORSUCH, KAVANAUGH, and BARRETT, JJ., joined. JACKSON, J., filed an opinion dissenting in part, in which SOTOMAYOR and KAGAN, JJ., joined." + END);
+    assert.equal(r.clean, false);
+    assert.ok(r.reasons.some((x) => /in part/.test(x)), r.reasons.join("; "));
+  });
+  it("consolidated cases with different judgments", () => {
+    const r = readDecision("Pp. 20–24. No. 25–1, 99 F. 4th 1, reversed and remanded; No. 25–2, 99 F. 4th 2, affirmed. KAGAN, J., delivered the opinion for a unanimous Court." + END);
+    assert.equal(r.clean, false);
+    assert.ok(r.reasons.some((x) => /more than one judgment/.test(x)), r.reasons.join("; "));
+  });
+  it("a judgment line it doesn't recognize, after a lower court's 'affirmed'", () => {
+    const r = readDecision("The Court of Appeals affirmed. Held: the Special Master's recommendation is adopted. Pp. 5–9. Exceptions overruled. GORSUCH, J., delivered the opinion for a unanimous Court." + END);
+    assert.equal(r.clean, false);
+    assert.equal(r.judgment, null);
+  });
   it("Glossip v. Oklahoma: concurring in part and dissenting in part", () => {
     const r = readDecision("529 P. 3d 218, reversed and remanded. SOTOMAYOR, J., delivered the opinion of the Court, in which ROBERTS, C. J., and KAGAN, KAVANAUGH, and JACKSON, JJ., joined, and in which BARRETT, J., joined as to Part II. BARRETT, J., filed an opinion concurring in part and dissenting in part. THOMAS, J., filed a dissenting opinion, in which ALITO, J., joined, and in which BARRETT, J., joined as to Parts IV– A–1, IV–A–2, and IV–A–3. GORSUCH, J., took no part in the considera- tion or decision of the case." + END);
     assert.equal(r.clean, false);

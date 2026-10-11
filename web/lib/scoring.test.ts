@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import type { Seniority, Vote } from "./clerk-rules";
-import { calibration, countingForecasts, lockedBeforeDecision, scoreForecast } from "./scoring";
+import { calibration, caseKey, countingForecasts, lockedBeforeDecision, scoreForecast } from "./scoring";
 
 const S: Seniority = { roberts: 1, thomas: 2, alito: 3, sotomayor: 4, kagan: 5, gorsuch: 6, kavanaugh: 7, barrett: 8, jackson: 9 };
 const ALL = Object.keys(S);
@@ -85,5 +85,19 @@ describe("calibration", () => {
     const b = calibration(vs);
     assert.deepEqual(b.map((x) => [x.lo, x.n, x.observed]), [[0.5, 3, 1 / 3], [0.9, 2, 1]]);
     assert.ok(Math.abs(b[0].stated - (0.55 + 0.58 + 0.45) / 3) < 1e-9);
+  });
+});
+
+describe("caseKey", () => {
+  it("counts one forecast per docket even when filings created separate case rows", () => {
+    const fs = [
+      { id: "invite", caseId: caseKey("25-170", "row-1"), origin: "invite", lockedAt: "2026-10-10T23:49:00Z" },
+      { id: "docket", caseId: caseKey("No. 25–170", "row-2"), origin: "docket", lockedAt: "2026-10-12T00:00:00Z" },
+    ];
+    assert.deepEqual(countingForecasts(fs).map((f) => f.id), ["docket"]);
+  });
+  it("falls back to the case row when there is no docket number", () => {
+    assert.equal(caseKey(null, "row-3"), "row-3");
+    assert.equal(caseKey("", "row-4"), "row-4");
   });
 });

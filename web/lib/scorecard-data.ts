@@ -1,7 +1,7 @@
 // Loads the scorecard from the database (spec §3–4): scored OT2026 forecasts and the waiting list.
 import { cache } from "react";
 import { buildScoredCase, type ScoredCase } from "./scorecard";
-import { countingForecasts, lockedBeforeDecision } from "./scoring";
+import { caseKey, countingForecasts, lockedBeforeDecision } from "./scoring";
 import { SCORED_TERM } from "./outcomes";
 import { serviceClient } from "./supabase";
 import { formatEt } from "./views";
@@ -30,7 +30,7 @@ export const loadScorecard = cache(async (): Promise<{ counted: ScoredCase[]; al
     decidedAt: r.cases.outcomes!.decided_at, outcome: r.cases.outcomes!.outcome, actualVotes: r.cases.outcomes!.votes, actualAuthor: r.cases.outcomes!.author,
   });
   const all = scoredRows.map(toCase);
-  const countedIds = new Set(countingForecasts(scoredRows.map((r) => ({ id: r.id, caseId: r.case_id, origin: r.origin, lockedAt: r.locked_at }))).map((f) => f.id));
+  const countedIds = new Set(countingForecasts(scoredRows.map((r) => ({ id: r.id, caseId: caseKey(r.cases.docket, r.case_id), origin: r.origin, lockedAt: r.locked_at }))).map((f) => f.id));
   const counted = all.filter((c) => countedIds.has(c.id!));
 
   const waiting = rows.filter((r) => r.cases.outcomes?.status !== "scored").map((r) => ({

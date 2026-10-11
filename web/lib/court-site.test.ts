@@ -63,6 +63,15 @@ describe("parseDocketPage", () => {
     const html = `<td class="ProceedingDate">Oct 01 2026</td><td>JUSTICE ALITO took no part in the consideration or decision of this petition.</td>`;
     assert.deepEqual(parseDocketPage(html).recused, ["alito"]);
   });
+  it("reads a recusal entry in the docket's real wording", () => {
+    const html = `<td class="ProceedingDate">Jun 30 2026</td><td>Justice Jackson took no part in the consideration or decision of this petition.</td>`;
+    assert.deepEqual(parseDocketPage(html).recused, ["jackson"]);
+  });
+  it("doesn't take a brief filed in support of the other side as the respondents' brief", () => {
+    const row = (date: string, text: string, url: string) => `<td class="ProceedingDate">${date}</td><td>${text} <a href= ${url} class="documentanchor" target="_blank">Main Document</a></td>`;
+    const html = row("May 1 2026", "Brief of respondents Acme Corp. filed.", "https://x/resp.pdf") + row("May 8 2026", "Brief of respondent United States in support of petitioners filed.", "https://x/us.pdf");
+    assert.equal(parseDocketPage(html).respondent?.url, "https://x/resp.pdf");
+  });
   it("returns nulls when a brief is missing", () => {
     assert.deepEqual(parseDocketPage("<html></html>"), { petitioner: null, respondent: null, recused: [] });
   });

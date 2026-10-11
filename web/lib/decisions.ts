@@ -40,13 +40,20 @@ function lineupEnd(rest: string): number {
   return end;
 }
 
-function judgmentOf(before: string): { judgment: Judgment | null; outcome: string; mixed: boolean } {
-  const m = [...before.matchAll(/\b(affirmed|reversed|vacated|dismissed)\b[^.]*\./gi)].pop();
-  if (!m) return { judgment: null, outcome: "Undetermined", mixed: false };
-  const phrase = m[0].replace(/\.$/, "").trim();
+// The judgment line follows the syllabus's last page cite ("Pp. 34–37." or "P. 26."), so only the text after
+// it is searched: a lower court's "affirmed" earlier in the syllabus is not the Court's judgment.
+function judgmentOf(before: string): { judgment: Judgment | null; outcome: string; mixed: boolean; several: boolean } {
+  const cites = [...before.matchAll(/\bPp?\. ?\d+(?:[–-] ?\d+)?\./g)];
+  const lastCite = cites[cites.length - 1];
+  const tail = lastCite ? before.slice(lastCite.index! + lastCite[0].length) : before.slice(-300);
+  const all = [...tail.matchAll(/\b(affirmed|reversed|vacated|dismissed)\b[^.;]*[.;]/gi)];
+  const m = all.pop();
+  if (!m) return { judgment: null, outcome: "Undetermined", mixed: false, several: false };
+  const several = new Set([...all, m].map((x) => x[1].toLowerCase())).size > 1;
+  const phrase = m[0].replace(/[.;]$/, "").trim();
   const word = m[1].toLowerCase();
   const judgment: Judgment = word === "affirmed" ? "affirm" : word === "reversed" ? "reverse" : word === "vacated" ? "vacate_remand" : "other";
-  return { judgment, outcome: phrase.charAt(0).toUpperCase() + phrase.slice(1).toLowerCase(), mixed: /\bin part\b/i.test(phrase) };
+  return { judgment, outcome: phrase.charAt(0).toUpperCase() + phrase.slice(1).toLowerCase(), mixed: /\bin part\b/i.test(phrase), several };
 }
 
 export function readDecision(raw: string): Reading {
@@ -58,10 +65,11 @@ export function readDecision(raw: string): Reading {
     return { judgment: null, outcome: "Undetermined", votes: {}, author: null, recused: [], clean: false, reasons: [perCuriam ? "per curiam: no author line" : "no opinion line found"] };
   }
   const lineup = text.slice(start, start + lineupEnd(text.slice(start)));
-  const { judgment, outcome, mixed } = judgmentOf(text.slice(Math.max(0, start - 600), start));
+  const { judgment, outcome, mixed, several } = judgmentOf(text.slice(Math.max(0, start - 600), start));
   if (!judgment) reasons.push("no judgment line before the opinion line");
   else if (judgment === "other") reasons.push(`judgment is "${outcome}"`);
   if (mixed) reasons.push(`judgment "${outcome}" is in part`);
+  if (several) reasons.push("more than one judgment (consolidated cases decided differently?)");
 
   const withJ = new Set<string>(), against = new Set<string>(), recused = new Set<string>();
   let author: string | null = null;
@@ -74,6 +82,11 @@ export function readDecision(raw: string): Reading {
     const body = sentence.slice(verb);
     if (/^took no part/.test(body)) { subjects.forEach((s) => recused.add(s)); continue; }
     if (/^announced the judgment/.test(body)) { reasons.push("plurality: the judgment was announced without a majority opinion"); continue; }
+    // Two opinions run together (an unstripped page header hid the sentence break): don't guess who joined what.
+    if ((sentence.match(/\b(?:delivered|filed|took no part)\b/g) ?? []).length > 1) {
+      reasons.push("two opinions run together in one sentence");
+      continue;
+    }
     if (/^delivered the opinion for a unanimous Court/.test(body)) {
       author = subjects[0] ?? null;
       SLUGS.forEach((s) => withJ.add(s));
@@ -87,7 +100,7 @@ export function readDecision(raw: string): Reading {
     const kind = body.replace(/,? in which.*$/, "");
     const dissent = /dissent/i.test(kind);
     const concur = /concur/i.test(kind);
-    if (dissent && concur) {
+    if ((dissent && concur) || (dissent && /\bin part\b/i.test(kind))) {
       reasons.push(`${subjects.join(" and ")}: ${kind.replace(/^filed (?:an? )?/, "")} (in part)`);
       continue;
     }

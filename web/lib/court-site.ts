@@ -69,9 +69,9 @@ export function parseDocketPage(html: string): { petitioner: DocketDoc | null; r
     const main = m[2].match(/href=\s*["']?([^"'\s>]+)["']?\s+class="documentanchor"[^>]*>\s*Main Document/);
     const url = main ? (main[1].startsWith("http") ? main[1] : COURT + main[1]) : null;
     if (/took no part|recus/i.test(text)) {
-      for (const n of text.match(/\b[A-Z]{4,}\b/g) ?? []) if (SURNAMES[n]) recused.add(SURNAMES[n]);
+      for (const n of text.match(/\b[A-Za-z]{4,}\b/g) ?? []) if (SURNAMES[n.toUpperCase()]) recused.add(SURNAMES[n.toUpperCase()]);
     }
-    if (!url || /in opposition|amic/i.test(text)) continue;
+    if (!url || /in opposition|amic|in support of/i.test(text)) continue;
     if (/^Brief of (?:the )?(?:federal )?petitioners?\b/i.test(text)) petitioner = { filed, url };
     else if (/^Brief of (?:the )?(?:federal )?respondents?\b/i.test(text)) respondent = { filed, url };
   }
