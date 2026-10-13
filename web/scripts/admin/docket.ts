@@ -1,6 +1,7 @@
 // Forecast every argued October Term 2026 case after argument (spec §1). Runs go to production through
 // Inngest Cloud (INNGEST_PROD_EVENT_KEY) and count against --max-spend, not the public cap.
 //   npm run docket -- list
+//   npm run docket -- schedule                     (every case on the published hearing lists, future ones too)
 //   npm run docket -- forecast --max-spend 30 [--cases 25-170,25-498] [--recuse 25-170:alito] [--dry-run] [--force]
 import { randomUUID } from "node:crypto";
 import { extractText, getDocumentProxy } from "unpdf";
@@ -17,7 +18,7 @@ const db = serviceClient();
 const arg = (name: string) => { const i = process.argv.indexOf(`--${name}`); return i > 0 ? process.argv[i + 1] : undefined; };
 const list = (s?: string) => (s ?? "").split(",").map((x) => x.trim()).filter(Boolean);
 
-async function hearingCases(): Promise<HearingCase[]> {
+async function hearingCases(includeFuture = false): Promise<HearingCase[]> {
   const out: HearingCase[] = [];
   for (const [i, m] of MONTHS.entries()) {
     const year = i < 3 ? TERM : TERM + 1;
@@ -27,7 +28,7 @@ async function hearingCases(): Promise<HearingCase[]> {
     out.push(...parseHearingList(String(text)));
   }
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
-  return out.filter((c) => c.argued && c.argued <= today);
+  return includeFuture ? out : out.filter((c) => c.argued && c.argued <= today);
 }
 
 // Cases already forecast after argument (locked, queued or running), by docket.
@@ -80,6 +81,16 @@ async function main() {
   const cmd = process.argv[2];
   const done = await alreadyForecast();
   const only = list(arg("cases"));
+
+  if (cmd === "schedule") {
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    for (const c of await hearingCases(true)) {
+      const status = done.has(c.docket) ? "forecast exists" : !c.argued ? "date not set" : c.argued > today ? "upcoming" : "argued";
+      console.log(`${c.docket.padEnd(9)} ${(c.argued || "—").padEnd(10)}  ${status.padEnd(15)}  ${c.title}${c.consolidatedWith.length ? `  (with ${c.consolidatedWith.join(", ")})` : ""}`);
+    }
+    return;
+  }
+
   let cases = await hearingCases();
   if (only.length) cases = cases.filter((c) => only.includes(c.docket));
   const gathered = await gather(cases);
@@ -91,7 +102,7 @@ async function main() {
     }
     return;
   }
-  if (cmd !== "forecast") throw new Error("Usage: npm run docket -- list | forecast --max-spend N [--cases a,b] [--recuse docket:slug] [--dry-run] [--force]");
+  if (cmd !== "forecast") throw new Error("Usage: npm run docket -- list | schedule | forecast --max-spend N [--cases a,b] [--recuse docket:slug] [--dry-run] [--force]");
 
   const maxSpend = Number(arg("max-spend"));
   if (!(maxSpend > 0)) throw new Error("Pass --max-spend in dollars, e.g. --max-spend 30.");
