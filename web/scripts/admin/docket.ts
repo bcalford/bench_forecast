@@ -4,9 +4,11 @@
 //   npm run docket -- schedule                     (every case on the published hearing lists, future ones too)
 //   npm run docket -- forecast --max-spend 30 [--cases 25-170,25-498] [--recuse 25-170:alito] [--dry-run] [--force]
 import { randomUUID } from "node:crypto";
+import { openSync, readFileSync, rmSync, writeSync, closeSync } from "node:fs";
+import { join } from "node:path";
 import { extractText, getDocumentProxy } from "unpdf";
 import { COURT, parseHearingList, parseTranscriptLinks, type HearingCase } from "../../lib/court-site";
-import { assembleCase, caseLimit, missing, perCaseEstimate, type DocketCase } from "../../lib/docket";
+import { assembleCase, caseLimit, missing, normalizeDocket, perCaseEstimate, type DocketCase } from "../../lib/docket";
 import { CourtFetchError, courtPdf, courtText } from "../../lib/fetch-court";
 import { storedName } from "../../lib/filing";
 import { serviceClient } from "../../lib/supabase";
@@ -40,7 +42,26 @@ async function alreadyForecast(): Promise<Set<string>> {
   const { data, error } = await db.from("cases").select("docket, predictions!inner(status, phase)")
     .eq("term", `October Term ${TERM}`).eq("predictions.phase", "after_argument").in("predictions.status", ["locked", "queued", "running"]);
   if (error) throw new Error(error.message);
-  return new Set((data ?? []).map((c) => c.docket as string));
+  return new Set((data ?? []).map((c) => normalizeDocket(c.docket as string)));
+}
+
+// One forecast run at a time on this machine, so two runs can't both file the same case.
+const LOCK = join(__dirname, "../../.docket-forecast.lock");
+function takeLock() {
+  for (let i = 0; i < 2; i++) {
+    try {
+      const fd = openSync(LOCK, "wx");
+      writeSync(fd, String(process.pid));
+      closeSync(fd);
+      process.on("exit", () => rmSync(LOCK, { force: true }));
+      return;
+    } catch {
+      const pid = Number(readFileSync(LOCK, "utf8"));
+      try { process.kill(pid, 0); } catch { rmSync(LOCK, { force: true }); continue; } // left by a run that died
+      throw new Error(`Another docket forecast is running (pid ${pid}). Wait for it to finish.`);
+    }
+  }
+  throw new Error(`Couldn't take ${LOCK}.`);
 }
 
 // Real costs of finished runs, so the budget follows what forecasts actually cost.
@@ -92,24 +113,24 @@ async function file(c: DocketCase): Promise<string> {
 async function main() {
   const cmd = process.argv[2];
   const done = await alreadyForecast();
-  const only = list(arg("cases"));
+  const only = list(arg("cases")).map(normalizeDocket);
 
   if (cmd === "schedule") {
     const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
     for (const c of await hearingCases(true)) {
-      const status = done.has(c.docket) ? "forecast exists" : !c.argued ? "date not set" : c.argued > today ? "upcoming" : "argued";
+      const status = done.has(normalizeDocket(c.docket)) ? "forecast exists" : !c.argued ? "date not set" : c.argued > today ? "upcoming" : "argued";
       console.log(`${c.docket.padEnd(9)} ${(c.argued || "—").padEnd(10)}  ${status.padEnd(15)}  ${c.title}${c.consolidatedWith.length ? `  (with ${c.consolidatedWith.join(", ")})` : ""}`);
     }
     return;
   }
 
   let cases = await hearingCases();
-  if (only.length) cases = cases.filter((c) => only.includes(c.docket));
+  if (only.length) cases = cases.filter((c) => only.includes(normalizeDocket(c.docket)));
   const gathered = await gather(cases);
 
   if (cmd === "list") {
     for (const c of gathered) {
-      const status = done.has(c.docket) ? "forecast exists" : missing(c).join("; ") || "ready";
+      const status = done.has(normalizeDocket(c.docket)) ? "forecast exists" : missing(c).join("; ") || "ready";
       console.log(`${c.docket.padEnd(9)} argued ${c.argued}  ${status}${c.recused.length ? `  recused: ${c.recused.join(", ")}` : ""}${c.consolidatedWith.length ? `  (with ${c.consolidatedWith.join(", ")})` : ""}  ${c.title}`);
     }
     return;
@@ -122,12 +143,15 @@ async function main() {
   const limit = caseLimit(maxSpend, perCase);
   const force = process.argv.includes("--force");
   const dry = process.argv.includes("--dry-run");
-  const todo = gathered.filter((c) => force || !done.has(c.docket));
+  if (!dry) takeLock();
+  const todo = gathered.filter((c) => force || !done.has(normalizeDocket(c.docket)));
   let started = 0;
   for (const c of todo) {
     const why = missing(c);
     if (why.length) { console.log(`skip ${c.docket}: ${why.join("; ")}`); continue; }
     if (started >= limit) { console.log(`stop: --max-spend $${maxSpend} allows ${limit} case(s) at $${perCase.toFixed(2)} each (the costliest recent run, or $2.50)`); break; }
+    // Checked again just before filing: a run from elsewhere may have filed it since the batch began.
+    if (!dry && !force && (await alreadyForecast()).has(normalizeDocket(c.docket))) { console.log(`skip ${c.docket}: forecast already exists`); continue; }
     if (dry) { console.log(`would file ${c.docket} ${c.title}${c.recused.length ? ` (recused: ${c.recused.join(", ")})` : ""}`); started++; continue; }
     try {
       const id = await file(c);

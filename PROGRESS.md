@@ -120,8 +120,9 @@ Phase 7 — docket forecasts, decisions and the scorecard (2026-10-11):
 - `/scorecard` ports the prototype onto real data with the labelled sample-season preview.
 - First docket batch (2026-10-11): 25-735 Reversed 5–4, 25-498 Affirmed 8–1, 25-579 Reversed 8–1; $5.80 for three. Browser check of `/scorecard` passed (live view, sample toggle, seat filter, no console errors).
 - Scoring fixes (branch `scoring-fixes`): `outcomes confirm` checks its save, needs a vote for every justice not named in `--recused`, and refuses a judgment in part or several judgments; scoring treats "in part" as other; rescoring clears stale scores; a forecast locked on its decision day is in neither scorecard list from the moment the decision date is known; "in which all other Members joined" reads clean.
-- Still deferred: a transient network error stops the hearing-list scan; `--max-spend` caps cases, not spend; skipping an existing case needs an exact docket match, and two concurrent docket runs could both file.
-- ⏭ Next: Beaird (25-5343) and Salazar (25-459) after their Oct 13–14 arguments (`--max-spend 5`); November sitting once its hearing list is published; owner reviews the nine profiles.
+- Docket hardening (2026-10-20): each case is budgeted at the costliest of the last 20 locked runs (at least $2.50); court fetches retry network errors, 429 and 5xx, and only a 404 ends the hearing-list scan; dockets match however they're typed (`normalizeDocket`), one forecast run at a time (`web/.docket-forecast.lock`, stale locks cleared), and each case is re-checked just before filing.
+- All six October cases locked: Beaird (25-5343) Vacated and remanded 6–3; Salazar (25-459) Vacated and remanded 6–3, $1.82.
+- ⏭ Next: November sitting once its hearing list is published (`--max-spend` per sitting); `npm run outcomes -- review` after decision days from December.
 
 Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.
 - `lib/clerk-rules.ts` (+tests), `lib/schemas.ts` (+citation checker, tests), `lib/models.ts` (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10), `lib/claude.ts` (streamed structured output with `betaZodOutputFormat`, server-side refusal fallbacks, cost per call, stream-started hook), `lib/briefs.ts` (local text extraction; decisions.md Q22), `lib/agents/{summarizer,justice,clerk}.ts`, `lib/retrieval.ts`, `lib/embedding.ts`.

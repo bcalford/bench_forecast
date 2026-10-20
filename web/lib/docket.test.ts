@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { assembleCase, caseLimit, missing, perCaseEstimate } from "./docket";
+import { assembleCase, caseLimit, missing, normalizeDocket, perCaseEstimate } from "./docket";
 import { parseTranscriptLinks } from "./court-site";
 
 const fx = (n: string) => readFileSync(join(__dirname, "fixtures", "court", n), "utf8");
@@ -43,5 +43,13 @@ describe("perCaseEstimate", () => {
   });
   it("rises to the costliest past run, rounded up to the cent", () => {
     assert.equal(perCaseEstimate([2.1, 3.401]), 3.41);
+  });
+});
+
+describe("normalizeDocket", () => {
+  it("matches a docket however it was typed", () => {
+    for (const d of ["25-459", " 25-459 ", "No. 25-459", "no.25-459"]) assert.equal(normalizeDocket(d), "25-459");
+    assert.equal(normalizeDocket("25a123"), "25A123");
+    assert.equal(normalizeDocket("22O145"), "22O145");
   });
 });

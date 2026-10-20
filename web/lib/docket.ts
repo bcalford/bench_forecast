@@ -26,3 +26,6 @@ export function missing(c: DocketCase): string[] {
 export const perCaseEstimate = (pastCosts: number[]) => Math.max(HOLD_USD, Math.ceil(Math.max(0, ...pastCosts) * 100 - 1e-6) / 100);
 
 export const caseLimit = (maxSpend: number, perCase = HOLD_USD) => Math.floor(maxSpend / perCase + 1e-9);
+
+// One spelling per docket, so "No. 25-459" and "25-459 " count as the case already forecast.
+export const normalizeDocket = (d: string) => d.trim().replace(/^no\.?\s*/i, "").replace(/\s+/g, "").toUpperCase();
