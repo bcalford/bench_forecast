@@ -6,9 +6,9 @@
 import { randomUUID } from "node:crypto";
 import { extractText, getDocumentProxy } from "unpdf";
 import { COURT, parseHearingList, parseTranscriptLinks, type HearingCase } from "../../lib/court-site";
-import { assembleCase, caseLimit, missing, type DocketCase } from "../../lib/docket";
+import { assembleCase, caseLimit, missing, perCaseEstimate, type DocketCase } from "../../lib/docket";
 import { courtPdf, courtText } from "../../lib/fetch-court";
-import { HOLD_USD, storedName } from "../../lib/filing";
+import { storedName } from "../../lib/filing";
 import { serviceClient } from "../../lib/supabase";
 import { prodInngest } from "./prod-inngest";
 
@@ -37,6 +37,13 @@ async function alreadyForecast(): Promise<Set<string>> {
     .eq("term", `October Term ${TERM}`).eq("predictions.phase", "after_argument").in("predictions.status", ["locked", "queued", "running"]);
   if (error) throw new Error(error.message);
   return new Set((data ?? []).map((c) => c.docket as string));
+}
+
+// Real costs of finished runs, so the budget follows what forecasts actually cost.
+async function pastCosts(): Promise<number[]> {
+  const { data, error } = await db.from("predictions").select("cost_usd").eq("status", "locked").order("locked_at", { ascending: false }).limit(20);
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((p) => Number(p.cost_usd));
 }
 
 async function gather(cases: HearingCase[]): Promise<DocketCase[]> {
@@ -106,7 +113,8 @@ async function main() {
 
   const maxSpend = Number(arg("max-spend"));
   if (!(maxSpend > 0)) throw new Error("Pass --max-spend in dollars, e.g. --max-spend 30.");
-  const limit = caseLimit(maxSpend);
+  const perCase = perCaseEstimate(await pastCosts());
+  const limit = caseLimit(maxSpend, perCase);
   const force = process.argv.includes("--force");
   const dry = process.argv.includes("--dry-run");
   const todo = gathered.filter((c) => force || !done.has(c.docket));
@@ -114,7 +122,7 @@ async function main() {
   for (const c of todo) {
     const why = missing(c);
     if (why.length) { console.log(`skip ${c.docket}: ${why.join("; ")}`); continue; }
-    if (started >= limit) { console.log(`stop: --max-spend $${maxSpend} allows ${limit} case(s) at $${HOLD_USD.toFixed(2)} each`); break; }
+    if (started >= limit) { console.log(`stop: --max-spend $${maxSpend} allows ${limit} case(s) at $${perCase.toFixed(2)} each (the costliest recent run, or $2.50)`); break; }
     if (dry) { console.log(`would file ${c.docket} ${c.title}${c.recused.length ? ` (recused: ${c.recused.join(", ")})` : ""}`); started++; continue; }
     try {
       const id = await file(c);
@@ -124,7 +132,7 @@ async function main() {
       console.log(`failed ${c.docket}: ${(e as Error).message}`);
     }
   }
-  console.log(`${dry ? "Would start" : "Started"} ${started} forecast(s), about $${(started * HOLD_USD).toFixed(2)}.`);
+  console.log(`${dry ? "Would start" : "Started"} ${started} forecast(s), budgeted at $${(started * perCase).toFixed(2)}.`);
 }
 
 main().catch((e) => { console.error((e as Error).message); process.exit(1); });

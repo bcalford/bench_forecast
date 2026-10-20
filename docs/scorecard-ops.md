@@ -9,6 +9,7 @@ Add `INNGEST_PROD_EVENT_KEY=<key>` to `web/.env.local` (Inngest dashboard → pr
     npm run docket -- schedule                      # every case on the published hearing lists, upcoming too
     npm run docket -- forecast --max-spend 30 --dry-run
     npm run docket -- forecast --max-spend 30       # starts up to 12 forecasts on production
+Each case is budgeted at $2.50, or at the costliest of the last 20 locked runs if one cost more, so a raised cost lowers how many cases a budget starts.
 Recusals the docket page doesn't show: `--recuse 25-170:alito`. Runs appear at bench-forecast.vercel.app as they lock. Docket runs share 3 of the Inngest plan's 5 concurrent steps: 3 cases took about 45 minutes, a full batch of 12 takes about 2–3 hours. Spend: `npm run invite -- spend`.
 
 ## Decisions (automatic, 6 PM Eastern daily)

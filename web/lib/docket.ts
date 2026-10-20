@@ -21,4 +21,8 @@ export function missing(c: DocketCase): string[] {
   return out;
 }
 
-export const caseLimit = (maxSpend: number) => Math.floor(maxSpend / HOLD_USD + 1e-9);
+// What a docket run is budgeted at: the $2.50 hold, or the costliest past run if one cost more,
+// so --max-spend tracks what runs really cost rather than a fixed guess.
+export const perCaseEstimate = (pastCosts: number[]) => Math.max(HOLD_USD, Math.ceil(Math.max(0, ...pastCosts) * 100 - 1e-6) / 100);
+
+export const caseLimit = (maxSpend: number, perCase = HOLD_USD) => Math.floor(maxSpend / perCase + 1e-9);

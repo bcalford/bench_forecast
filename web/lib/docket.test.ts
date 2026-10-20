@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { assembleCase, caseLimit, missing } from "./docket";
+import { assembleCase, caseLimit, missing, perCaseEstimate } from "./docket";
 import { parseTranscriptLinks } from "./court-site";
 
 const fx = (n: string) => readFileSync(join(__dirname, "fixtures", "court", n), "utf8");
@@ -29,5 +29,19 @@ describe("caseLimit", () => {
     assert.equal(caseLimit(30), 12);
     assert.equal(caseLimit(2), 0);
     assert.equal(caseLimit(2.5), 1);
+  });
+  it("uses the per-case estimate when one is given", () => {
+    assert.equal(caseLimit(10, 3.4), 2);
+    assert.equal(caseLimit(6.8, 3.4), 2);
+  });
+});
+
+describe("perCaseEstimate", () => {
+  it("is $2.50 while every past run cost less", () => {
+    assert.equal(perCaseEstimate([]), 2.5);
+    assert.equal(perCaseEstimate([1.86, 2.16, 2.04]), 2.5);
+  });
+  it("rises to the costliest past run, rounded up to the cent", () => {
+    assert.equal(perCaseEstimate([2.1, 3.401]), 3.41);
   });
 });
