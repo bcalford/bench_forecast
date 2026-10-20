@@ -1,14 +1,17 @@
 # Bench Forecast — progress and handoff
 
-Last updated: 2026-10-08 (after first push). Read this first when resuming.
+Last updated: 2026-10-20. Read this first when resuming.
 
 ## Where things stand
-- **`web-1/` is the live prototype** (React 18 + Vite). The old three-clone prototype (`web/`) was deleted on 2026-10-08.
-- Visual world: **"The Bench"**. Nine seats in true bench order, vote by shape not hue, brass only for the opinion author and the lock seal, bench-green band, Public Sans + Source Serif 4 (self-hosted via @fontsource).
-- Product truth: `PRODUCT.md`. Design rules: `DESIGN.md` + `.impeccable/design.json`. Spec and decisions: `spec.md`, `decisions.md`.
-- No backend yet. All data is sample or synthetic and labeled as such.
-- **Git:** repo on `main`, pushed to https://github.com/bcalford/bench_forecast (`origin`, tracking). Commits: `4fd7c73` initial, `98fd899` Method page repo link, `ec479b6` PROGRESS update (history rewritten 2026-10-08 to drop Claude co-author trailers). Commit/push only when asked.
-- `.gitignore` keeps out `node_modules/`, `dist/`, `.claude/settings.local.json`, the Impeccable engine binary (re-downloaded by the launcher), `.impeccable/review/` screenshots and caches, and `harvey_all.css` (scraped Harvey stylesheet, research only, never commit).
+- **The live app is `web/`** (Next.js on Vercel, Supabase, Inngest): https://bench-forecast.vercel.app. Phases 1–7 are done; the per-phase notes start at "Backend" below, newest work at the end of Phase 7.
+- **`web-1/` is the frozen design prototype** (React 18 + Vite, sample data only). The UI was ported from it in phase 5; it stays as the design reference and is not deployed. Its history is in the next section.
+- Visual world: **"The Bench"**. Nine seats in true bench order, vote by shape not hue, brass only for the opinion author and the lock seal, bench-green band, Public Sans + Source Serif 4.
+- Product truth: `PRODUCT.md`. Design rules: `DESIGN.md` + `.impeccable/design.json`. Spec and decisions: `spec.md`, `decisions.md`. Operations: `docs/scorecard-ops.md`, `docs/deploy.md`.
+- **Git:** `main` at https://github.com/bcalford/bench_forecast. Each finished step is committed and pushed. No Claude attribution in commits.
+- `.gitignore` keeps out `node_modules/`, `dist/`, `.claude/settings.local.json`, the Impeccable engine binary, `.impeccable/review/`, and `harvey_all.css` (scraped Harvey stylesheet, research only, never commit).
+
+# Design prototype (`web-1/`, frozen 2026-10-10)
+Everything from here to "Backend" describes the prototype as it was built on 2026-10-08. Hash routes, sample data and fix plans apply to `web-1/` only.
 
 ## Pages (hash routes)
 | Route | File | Notes |
@@ -58,12 +61,14 @@ Re-critique 2026-10-08 (round 4): **29/40** (third run at 29), snapshot `.impecc
 - ✅ Phone masthead shows the "Bench Forecast" name again (two rows, 95px).
 - Left open from round 4 (not scheduled): scorecard seat shapes reuse the arc for accuracy and the dashed ring for "no cases"; Method page's green code panel and boxed callout break the one-field/hairline rules; focus stays on the seat after selecting it; hero buttons stack at 1440; holding drops "remanded".
 
-## Open items and cautions
-- Own-opinion citation summaries in `src/data.js` (`ownCitations`) were written from memory; verify against the real opinions before showing to legal experts.
-- Not visually verified by hand: brief-chip passage panel, screen-reader announcements, `#/new/edit` prefill.
+## Prototype notes (`web-1/` only)
+- Its sample own-opinion citations (`src/data.js`, `ownCitations`) were written from memory. The live app doesn't use them: its citations come from the retrieved opinions.
+- Never hand-checked in the prototype: brief-chip passage panel, screen-reader announcements, `#/new/edit` prefill.
 - `web-1/PRODUCT.md` and `web-1/DESIGN.md` are symlinks to the root files. They were needed before the repo existed; with the git root now at `supreme-court-app/`, Impeccable finds the root files on its own, so the symlinks can be removed if they cause confusion.
 - Live mode config: `web-1/.impeccable/live/config.json`. Restart with `/impeccable live`.
 - Run locally: `cd web-1 && npm install && npm run dev` (Vite on :5173). `npx vite build` then `npx vite preview` serves `dist/`.
+
+# Live app (`web/`)
 
 ## Backend (started 2026-10-08)
 Decisions: Next.js app in `web/` (spec layout inside it); `web-1/` stays as the design reference until phase 5; hosted Supabase project (no local Docker).
