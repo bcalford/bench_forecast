@@ -7,7 +7,7 @@ import { randomUUID } from "node:crypto";
 import { extractText, getDocumentProxy } from "unpdf";
 import { COURT, parseHearingList, parseTranscriptLinks, type HearingCase } from "../../lib/court-site";
 import { assembleCase, caseLimit, missing, perCaseEstimate, type DocketCase } from "../../lib/docket";
-import { courtPdf, courtText } from "../../lib/fetch-court";
+import { CourtFetchError, courtPdf, courtText } from "../../lib/fetch-court";
 import { storedName } from "../../lib/filing";
 import { serviceClient } from "../../lib/supabase";
 import { prodInngest } from "./prod-inngest";
@@ -23,7 +23,11 @@ async function hearingCases(includeFuture = false): Promise<HearingCase[]> {
   for (const [i, m] of MONTHS.entries()) {
     const year = i < 3 ? TERM : TERM + 1;
     let bytes: Uint8Array;
-    try { bytes = await courtPdf(`${COURT}/oral_arguments/hearinglists/HearingList-${m}${year}.pdf`); } catch { break; }
+    try { bytes = await courtPdf(`${COURT}/oral_arguments/hearinglists/HearingList-${m}${year}.pdf`); }
+    catch (e) {
+      if (e instanceof CourtFetchError && e.notFound) break; // this month's list isn't published yet
+      throw new Error(`couldn't read the ${m} ${year} hearing list (${(e as Error).message}); try again`);
+    }
     const { text } = await extractText(await getDocumentProxy(bytes), { mergePages: true });
     out.push(...parseHearingList(String(text)));
   }
@@ -51,7 +55,8 @@ async function gather(cases: HearingCase[]): Promise<DocketCase[]> {
   const overrides = list(arg("recuse")).map((r) => r.split(":"));
   const out: DocketCase[] = [];
   for (const h of cases) {
-    const html = await courtText(`${COURT}/docket/docketfiles/html/public/${h.docket}.html`).catch(() => "");
+    const html = await courtText(`${COURT}/docket/docketfiles/html/public/${h.docket}.html`)
+      .catch((e) => { if (e instanceof CourtFetchError && e.notFound) return ""; throw e; });
     out.push(assembleCase(h, transcripts, html, overrides.filter(([d]) => d === h.docket).map(([, s]) => s)));
   }
   return out;
