@@ -1,9 +1,10 @@
 # Bench Forecast — progress and handoff
 
-Last updated: 2026-10-20. Read this first when resuming.
+Last updated: 2026-10-30. Read this first when resuming.
 
 ## Where things stand
 - **The live app is `web/`** (Next.js on Vercel, Supabase, Inngest): https://bench-forecast.vercel.app. Phases 1–7 are done; the per-phase notes start at "Backend" below, newest work at the end of Phase 7.
+- **Next:** all 6 October cases are locked. November sitting is 7 cases, Nov 2–10 (`npm run docket -- schedule` lists them as upcoming): run `npm run docket -- forecast --max-spend N` (try `--dry-run` first) after Nov 4 for the first four and after Nov 10 for the last three. First decisions ~December; after each decision day run `npm run outcomes -- review`.
 - **`web-1/` is the frozen design prototype** (React 18 + Vite, sample data only). The UI was ported from it in phase 5; it stays as the design reference and is not deployed. Its history is in the next section.
 - Visual world: **"The Bench"**. Nine seats in true bench order, vote by shape not hue, brass only for the opinion author and the lock seal, bench-green band, Public Sans + Source Serif 4.
 - Product truth: `PRODUCT.md`. Design rules: `DESIGN.md` + `.impeccable/design.json`. Spec and decisions: `spec.md`, `decisions.md`. Operations: `docs/scorecard-ops.md`, `docs/deploy.md`.
