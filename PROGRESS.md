@@ -4,7 +4,7 @@ Last updated: 2026-11-04. Read this first when resuming.
 
 ## Where things stand
 - **The live app is `web/`** (Next.js on Vercel, Supabase, Inngest): https://bench-forecast.vercel.app. Phases 1–7 are done; the per-phase notes start at "Backend" below, newest work at the end of Phase 7.
-- **Next:** all 6 October cases are locked. November sitting is 7 cases, Nov 2–10. Filed 2026-11-04: 25-352 Younge and 25-581 St. Mary Catholic Parish. Still waiting: 25-5930 (respondents' merits brief not found) and 25-1003 (no transcript yet); re-run `npm run docket -- forecast --max-spend 30 --dry-run` for them, and after Nov 10 for the last three. First decisions ~December; after each decision day run `npm run outcomes -- review`.
+- **Next:** all 6 October cases are locked. November sitting is 7 cases, Nov 2–10. Filed 2026-11-04: 25-352 Younge and 25-581 St. Mary Catholic Parish. The other five (25-5930, 25-1003, 25-417, 25-159, 25-966) go in one run after Nov 10, once the whole sitting is heard: `npm run docket -- forecast --max-spend 30`, `--dry-run` first (25-5930 was missing the respondents' merits brief on Nov 4). First decisions ~December; after each decision day run `npm run outcomes -- review`.
 - **`web-1/` is the frozen design prototype** (React 18 + Vite, sample data only). The UI was ported from it in phase 5; it stays as the design reference and is not deployed. Its history is in the next section.
 - Visual world: **"The Bench"**. Nine seats in true bench order, vote by shape not hue, brass only for the opinion author and the lock seal, bench-green band, Public Sans + Source Serif 4.
 - Product truth: `PRODUCT.md`. Design rules: `DESIGN.md` + `.impeccable/design.json`. Spec and decisions: `spec.md`, `decisions.md`. Operations: `docs/scorecard-ops.md`, `docs/deploy.md`.
@@ -130,7 +130,7 @@ Phase 7 — docket forecasts, decisions and the scorecard (2026-10-11):
 - All six October cases locked: Beaird (25-5343) Vacated and remanded 6–3; Salazar (25-459) Vacated and remanded 6–3, $1.82.
 - November filings (2026-11-04): 25-352 and 25-581 started ($5.00 budgeted); 25-5930 skipped (respondents' merits brief not found), 25-1003 skipped (no transcript yet).
 - Sittings (2026-11-04, migration 11): `cases.sitting`, `sitting_start`, `sitting_end` from the hearing list (`lib/sittings.ts`); `npm run docket -- sittings` fills cases filed without one (forecast does it too). Home docket and both scorecard lists fold by sitting (`components/SittingGroups.tsx`, native `<details>`): newest sitting open, argument order, "Filed on this site" last; a picked scorecard seat opens every scored sitting. Sample season has synthetic sittings. Backfilled all 8 OT2026 cases (October 6, November 2).
-- ⏭ Next: re-run the docket for 25-5930 and 25-1003, then the last three November cases after Nov 10; `npm run outcomes -- review` after decision days from December.
+- ⏭ Next: one docket run after Nov 10 for the other five November cases; `npm run outcomes -- review` after decision days from December.
 
 Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.
 - `lib/clerk-rules.ts` (+tests), `lib/schemas.ts` (+citation checker, tests), `lib/models.ts` (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10), `lib/claude.ts` (streamed structured output with `betaZodOutputFormat`, server-side refusal fallbacks, cost per call, stream-started hook), `lib/briefs.ts` (local text extraction; decisions.md Q22), `lib/agents/{summarizer,justice,clerk}.ts`, `lib/retrieval.ts`, `lib/embedding.ts`.
