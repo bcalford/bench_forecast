@@ -129,6 +129,7 @@ Phase 7 — docket forecasts, decisions and the scorecard (2026-10-11):
 - Docket hardening (2026-10-20): each case is budgeted at the costliest of the last 20 locked runs (at least $2.50); court fetches retry network errors, 429 and 5xx, and only a 404 ends the hearing-list scan; dockets match however they're typed (`normalizeDocket`), one forecast run at a time (`web/.docket-forecast.lock`, stale locks cleared), and each case is re-checked just before filing.
 - All six October cases locked: Beaird (25-5343) Vacated and remanded 6–3; Salazar (25-459) Vacated and remanded 6–3, $1.82.
 - November filings (2026-11-04): 25-352 and 25-581 started ($5.00 budgeted); 25-5930 skipped (respondents' merits brief not found), 25-1003 skipped (no transcript yet).
+- Sittings (2026-11-04, migration 11): `cases.sitting`, `sitting_start`, `sitting_end` from the hearing list (`lib/sittings.ts`); `npm run docket -- sittings` fills cases filed without one (forecast does it too). Home docket and both scorecard lists fold by sitting (`components/SittingGroups.tsx`, native `<details>`): newest sitting open, argument order, "Filed on this site" last; a picked scorecard seat opens every scored sitting. Sample season has synthetic sittings. Backfilled all 8 OT2026 cases (October 6, November 2).
 - ⏭ Next: re-run the docket for 25-5930 and 25-1003, then the last three November cases after Nov 10; `npm run outcomes -- review` after decision days from December.
 
 Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.

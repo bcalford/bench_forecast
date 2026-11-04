@@ -356,6 +356,22 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 .docket-out { font-size: 15px; font-weight: 600; }
 .docket-phase { font-size: 14px; color: var(--ink-2); }
 .docket-arrow { color: var(--green-ink); }
+.docket-argued { display: block; margin-top: 2px; font-size: 12.5px; }
+
+/* A sitting: a full-width disclosure row over its cases, chevron as in .terms. */
+.sitting > summary {
+  display: flex; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; min-height: 44px; padding: 14px 0;
+  border-bottom: 1px solid var(--rule); cursor: pointer; list-style: none;
+}
+.sitting > summary::-webkit-details-marker { display: none; }
+.sitting > summary::after {
+  content: ""; align-self: center; width: 6px; height: 6px; margin-left: auto; border-right: 1.5px solid var(--green-ink); border-bottom: 1.5px solid var(--green-ink);
+  transform: rotate(45deg) translateY(-2px); transition: transform 0.2s var(--ease-out);
+}
+.sitting[open] > summary::after { transform: rotate(225deg) translateY(-1px); }
+.sitting > summary:hover .sitting-name { text-decoration: underline; }
+.sitting-name { font-size: 15.5px; font-weight: 650; }
+.sitting-span, .sitting-count { font-size: 14px; color: var(--ink-2); }
 .tally-marks { display: inline-flex; gap: 3px; }
 .tally-marks svg { width: 10px; height: 10px; }
 .tm-fill { fill: var(--ink); }

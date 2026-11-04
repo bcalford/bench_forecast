@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Bench, { TallyMarks } from "@/components/Bench";
 import { ArrowRight } from "@/components/Icons";
+import SittingGroups from "@/components/SittingGroups";
+import { argued, groupBySitting } from "@/lib/sittings";
 import { listForecasts, loadForecast, type ForecastRow } from "@/lib/views";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +12,10 @@ function Row({ r }: { r: ForecastRow }) {
   return (
     <li>
       <Link className="docket-row is-link" href={`/runs/${r.id}`}>
-        <span className="docket-no num">{r.docket ? `No. ${r.docket}` : "Undocketed"}</span>
+        <span className="docket-no num">
+          {r.docket ? `No. ${r.docket}` : "Undocketed"}
+          {r.argued && <span className="docket-argued">{argued(r.argued)}</span>}
+        </span>
         <cite className="docket-title case-name">{r.title}</cite>
         {locked ? <TallyMarks tally={r.tally} /> : <span />}
         <span className="docket-out">
@@ -73,9 +78,10 @@ export default async function Home() {
                 : "Backtests of cases the Court has already decided. They show the method at work but are never scored."}
             </p>
           </div>
-          <ol className="docket-list">
-            {rows.filter((r) => r.term === term).map((r) => <Row key={r.id} r={r} />)}
-          </ol>
+          {/* Only the page's newest sitting starts open: the first group of the first term. */}
+          <SittingGroups groups={groupBySitting(rows.filter((r) => r.term === term))} isOpen={(i) => term === terms[0] && i === 0}>
+            {(group) => <ol className="docket-list">{group.map((r) => <Row key={r.id} r={r} />)}</ol>}
+          </SittingGroups>
         </section>
       ))}
 

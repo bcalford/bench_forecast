@@ -3,6 +3,7 @@
 //   npm run docket -- list
 //   npm run docket -- schedule                     (every case on the published hearing lists, future ones too)
 //   npm run docket -- forecast --max-spend 30 [--cases 25-170,25-498] [--recuse 25-170:alito] [--dry-run] [--force]
+//   npm run docket -- sittings                     (gives filed cases their sitting; forecast does this too)
 import { randomUUID } from "node:crypto";
 import { openSync, readFileSync, rmSync, writeSync, closeSync } from "node:fs";
 import { join } from "node:path";
@@ -11,6 +12,7 @@ import { COURT, parseHearingList, parseTranscriptLinks, type HearingCase } from 
 import { assembleCase, caseLimit, missing, normalizeDocket, perCaseEstimate, type DocketCase } from "../../lib/docket";
 import { CourtFetchError, courtPdf, courtText } from "../../lib/fetch-court";
 import { storedName } from "../../lib/filing";
+import { sittingFromList, sittingUpdates } from "../../lib/sittings";
 import { serviceClient } from "../../lib/supabase";
 import { prodInngest } from "./prod-inngest";
 
@@ -31,7 +33,9 @@ async function hearingCases(includeFuture = false): Promise<HearingCase[]> {
       throw new Error(`couldn't read the ${m} ${year} hearing list (${(e as Error).message}); try again`);
     }
     const { text } = await extractText(await getDocumentProxy(bytes), { mergePages: true });
-    out.push(...parseHearingList(String(text)));
+    const listed = parseHearingList(String(text));
+    const sitting = sittingFromList(m, listed);
+    out.push(...listed.map((c) => ({ ...c, sitting })));
   }
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
   return includeFuture ? out : out.filter((c) => c.argued && c.argued <= today);
@@ -96,6 +100,7 @@ async function file(c: DocketCase): Promise<string> {
   const ins = await db.from("cases").insert({
     id: caseId, title: c.title, docket: c.docket, term: `October Term ${TERM}`, input_mode: "briefs",
     brief_paths: briefPaths, oa_transcript_path: transcriptPath, recused: c.recused, argued_on: c.argued,
+    sitting: c.sitting?.name ?? null, sitting_start: c.sitting?.start ?? null, sitting_end: c.sitting?.end ?? null,
   });
   if (ins.error) throw new Error(ins.error.message);
   const p = await db.from("predictions").insert({ case_id: caseId, phase: "after_argument", origin: "docket", as_of: c.argued }).select("id").single();
@@ -108,6 +113,18 @@ async function file(c: DocketCase): Promise<string> {
     throw new Error(`couldn't start the run (${(e as Error).message}); marked failed, so the next batch retries it`);
   }
   return p.data.id as string;
+}
+
+// Cases filed without a sitting (through the form, or before sittings were kept) get the one their docket is on.
+async function fillSittings(listed: HearingCase[]): Promise<number> {
+  const { data, error } = await db.from("cases").select("id, docket, sitting, argued_on").eq("term", `October Term ${TERM}`).is("sitting", null);
+  if (error) throw new Error(error.message);
+  const updates = sittingUpdates(data ?? [], listed);
+  for (const { id, ...u } of updates) {
+    const up = await db.from("cases").update(u).eq("id", id);
+    if (up.error) throw new Error(up.error.message);
+  }
+  return updates.length;
 }
 
 async function main() {
@@ -124,6 +141,11 @@ async function main() {
     return;
   }
 
+  if (cmd === "sittings") {
+    console.log(`Gave ${await fillSittings(await hearingCases(true))} case(s) their sitting.`);
+    return;
+  }
+
   let cases = await hearingCases();
   if (only.length) cases = cases.filter((c) => only.includes(normalizeDocket(c.docket)));
   const gathered = await gather(cases);
@@ -135,7 +157,7 @@ async function main() {
     }
     return;
   }
-  if (cmd !== "forecast") throw new Error("Usage: npm run docket -- list | schedule | forecast --max-spend N [--cases a,b] [--recuse docket:slug] [--dry-run] [--force]");
+  if (cmd !== "forecast") throw new Error("Usage: npm run docket -- list | schedule | sittings | forecast --max-spend N [--cases a,b] [--recuse docket:slug] [--dry-run] [--force]");
 
   const maxSpend = Number(arg("max-spend"));
   if (!(maxSpend > 0)) throw new Error("Pass --max-spend in dollars, e.g. --max-spend 30.");
@@ -162,6 +184,7 @@ async function main() {
     }
   }
   console.log(`${dry ? "Would start" : "Started"} ${started} forecast(s), budgeted at $${(started * perCase).toFixed(2)}.`);
+  if (!dry) await fillSittings(await hearingCases(true));
 }
 
 main().catch((e) => { console.error((e as Error).message); process.exit(1); });

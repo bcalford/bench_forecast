@@ -5,6 +5,7 @@ import { tallyVotes, type JusticeVote } from "./clerk-rules";
 import { justices, byslug, DISPOSITION_WORD, type SeatVote } from "./court";
 import type { BriefingSummary } from "./schemas";
 import { labelVotes, type VoteLabels } from "./vote-labels";
+import type { Sitting } from "./sittings";
 
 export type CitationView = { passage_id: string; quote: string; why: string; case_name: string | null; date: string | null; label: string | null; url: string | null };
 
@@ -122,21 +123,29 @@ export const loadForecast = cache(async (id: string): Promise<ForecastView | nul
 
 export const lastName = (slug: string) => byslug[slug]?.last ?? slug;
 
-export type ForecastRow = { id: string; title: string; docket: string | null; term: string; phase: string; outcome: string | null; tally: [number, number]; status: string; lockedAt: string | null; fairTest: boolean };
+export type ForecastRow = {
+  id: string; title: string; docket: string | null; term: string; phase: string; outcome: string | null; tally: [number, number]; status: string; lockedAt: string | null; fairTest: boolean;
+  sitting: Sitting | null; argued: string | null; filed: string;
+};
+
+type SittingCols = { argued_on: string | null; sitting: string | null; sitting_start: string | null; sitting_end: string | null };
+export const SITTING_COLS = "argued_on, sitting, sitting_start, sitting_end";
+export const sittingOf = (c: SittingCols): Sitting | null => (c.sitting && c.sitting_start && c.sitting_end ? { name: c.sitting, start: c.sitting_start, end: c.sitting_end } : null);
 
 // Every forecast, newest first: locked ones with their result, running ones as in progress. Failed runs are left out.
 export async function listForecasts(): Promise<ForecastRow[]> {
   const db = serviceClient();
   const { data } = await db
     .from("predictions")
-    .select("id, phase, status, outcome, majority_count, minority_count, locked_at, created_at, cases!inner(title, docket, term, decided_before_cutoff)")
+    .select(`id, phase, status, outcome, majority_count, minority_count, locked_at, created_at, cases!inner(title, docket, term, decided_before_cutoff, ${SITTING_COLS})`)
     .neq("status", "failed")
     .order("created_at", { ascending: false })
     .limit(100);
-  type Row = { id: string; phase: string; status: string; outcome: string | null; majority_count: number | null; minority_count: number | null; locked_at: string | null; cases: { title: string; docket: string | null; term: string; decided_before_cutoff: boolean } };
+  type Row = { id: string; phase: string; status: string; outcome: string | null; majority_count: number | null; minority_count: number | null; locked_at: string | null; created_at: string; cases: SittingCols & { title: string; docket: string | null; term: string; decided_before_cutoff: boolean } };
   return ((data ?? []) as unknown as Row[]).map((r) => ({
     id: r.id, title: r.cases.title, docket: r.cases.docket, term: r.cases.term,
     phase: r.phase === "after_argument" ? "After argument" : "Before argument",
     outcome: r.outcome, tally: [r.majority_count ?? 0, r.minority_count ?? 0], status: r.status, lockedAt: formatEt(r.locked_at), fairTest: !r.cases.decided_before_cutoff,
+    sitting: sittingOf(r.cases), argued: r.cases.argued_on, filed: r.created_at,
   }));
 }

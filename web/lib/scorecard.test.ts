@@ -11,6 +11,7 @@ const base: ScoredInput = {
   votes: [...REV.map((j) => ({ justice: j, vote: "reverse", confidence: 0.8 })), ...AFF.map((j) => ({ justice: j, vote: "affirm", confidence: 0.7 }))],
   decidedAt: "2026-11-04", outcome: "Reversed and remanded",
   actualVotes: Object.fromEntries([...REV.map((j) => [j, "reverse"]), ...AFF.map((j) => [j, "affirm"])]), actualAuthor: "kagan",
+  sitting: null, argued: null, filed: "2026-10-10T20:00:00Z",
 };
 
 describe("dispositionOf", () => {
@@ -33,6 +34,17 @@ describe("buildScoredCase", () => {
     assert.equal(c.locked, "Oct 10");
     assert.equal(c.decided, "Nov 4");
     assert.equal(c.predicted.votes.thomas.side, "Affirm");
+  });
+  it("carries the sitting, argument day and filing time through for grouping", () => {
+    const c = buildScoredCase({ ...base, sitting: { name: "October", start: "2026-10-05", end: "2026-10-14" }, argued: "2026-10-06", filed: "2026-10-11T15:00:00Z" });
+    assert.deepEqual([c.sitting, c.argued, c.filed], [{ name: "October", start: "2026-10-05", end: "2026-10-14" }, "2026-10-06", "2026-10-11T15:00:00Z"]);
+  });
+});
+
+describe("sampleSeason sittings", () => {
+  it("files each synthetic case under the sitting its lock month suggests", () => {
+    assert.deepEqual([...new Set(sampleSeason.map((c) => c.sitting?.name))], ["October", "November", "December", "January", "February"]);
+    assert.ok(sampleSeason.every((c) => c.argued && c.sitting && c.argued >= c.sitting.start && c.argued <= c.sitting.end));
   });
 });
 

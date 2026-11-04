@@ -5,11 +5,13 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import Bench from "@/components/Bench";
 import { ArrowRight } from "@/components/Icons";
+import SittingGroups from "@/components/SittingGroups";
 import { byslug, type SeatVote } from "@/lib/court";
 import { sampleSeason } from "@/lib/sample-season";
 import type { WaitingRow } from "@/lib/scorecard-data";
 import { byPhase, perJustice, seasonRecord, type ScoredCase } from "@/lib/scorecard";
 import { CALIBRATION_MIN_VOTES, calibration } from "@/lib/scoring";
+import { argued, groupBySitting } from "@/lib/sittings";
 
 const pct = (n: number, d: number) => (d ? Math.round((100 * n) / d) : 0);
 
@@ -140,42 +142,47 @@ function Ledger({ cases, focus, onClear }: { cases: ScoredCase[]; focus: string 
         )}
       </div>
       <LedgerHead />
-      <ol className="ledger-list">
-        {cases.map((c) => {
-          const v = focus ? c.votes.find((x) => x.slug === focus) : undefined;
-          const title = <cite className="case-name">{c.title}</cite>;
-          return (
-            <li key={c.id ?? c.docket} className="ledger-row">
-              <span className="ledger-no num">{c.docket}</span>
-              <span className="ledger-case">
-                {c.id ? <Link href={`/runs/${c.id}`}>{title}</Link> : title}
-                <span className="ledger-dates num">Locked {c.locked} · Decided {c.decided} · {c.phase}</span>
-              </span>
-              <span className="ledger-tally">
-                <span className="ledger-k">Forecast</span>
-                <span className="num">{c.predicted.disposition} {c.predicted.tally.join("–")}</span>
-              </span>
-              <span className="ledger-tally">
-                <span className="ledger-k">Court</span>
-                <span className="num">{c.actual.disposition} {c.actual.tally.join("–")}</span>
-              </span>
-              <span className="ledger-score">
-                {v ? (
-                  <>
-                    <CaseMarks hits={[v.voteRight]} label={v.voteRight ? "Vote right" : "Vote missed"} />
-                    {c.predicted.votes[focus!]?.side ?? "Recused"} · <span className="num">{Math.round(v.confidence * 100)}%</span>
-                  </>
-                ) : (
-                  <>
-                    <CaseMarks hits={[c.outcomeRight]} label={c.outcomeRight ? "Outcome right" : "Outcome missed"} />
-                    <span className="num">{c.votes.filter((x) => x.voteRight).length}/{c.votes.length}</span> votes
-                  </>
-                )}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
+      {/* A picked seat fills every row with that justice's vote, so every sitting opens to show them. */}
+      <SittingGroups groups={groupBySitting(cases)} isOpen={(i) => !!focus || i === 0}>
+        {(group) => (
+          <ol className="ledger-list">
+            {group.map((c) => {
+              const v = focus ? c.votes.find((x) => x.slug === focus) : undefined;
+              const title = <cite className="case-name">{c.title}</cite>;
+              return (
+                <li key={c.id ?? c.docket} className="ledger-row">
+                  <span className="ledger-no num">{c.docket}</span>
+                  <span className="ledger-case">
+                    {c.id ? <Link href={`/runs/${c.id}`}>{title}</Link> : title}
+                    <span className="ledger-dates num">{c.argued && `${argued(c.argued)} · `}Locked {c.locked} · Decided {c.decided} · {c.phase}</span>
+                  </span>
+                  <span className="ledger-tally">
+                    <span className="ledger-k">Forecast</span>
+                    <span className="num">{c.predicted.disposition} {c.predicted.tally.join("–")}</span>
+                  </span>
+                  <span className="ledger-tally">
+                    <span className="ledger-k">Court</span>
+                    <span className="num">{c.actual.disposition} {c.actual.tally.join("–")}</span>
+                  </span>
+                  <span className="ledger-score">
+                    {v ? (
+                      <>
+                        <CaseMarks hits={[v.voteRight]} label={v.voteRight ? "Vote right" : "Vote missed"} />
+                        {c.predicted.votes[focus!]?.side ?? "Recused"} · <span className="num">{Math.round(v.confidence * 100)}%</span>
+                      </>
+                    ) : (
+                      <>
+                        <CaseMarks hits={[c.outcomeRight]} label={c.outcomeRight ? "Outcome right" : "Outcome missed"} />
+                        <span className="num">{c.votes.filter((x) => x.voteRight).length}/{c.votes.length}</span> votes
+                      </>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+      </SittingGroups>
     </section>
   );
 }
@@ -191,26 +198,30 @@ function PendingLedger({ rows }: { rows: WaitingRow[] }) {
       ) : (
         <>
           <LedgerHead />
-          <ol className="ledger-list">
-            {rows.map((c) => (
-              <li key={c.id} className="ledger-row is-pending">
-                <span className="ledger-no num">{c.docket ?? "—"}</span>
-                <span className="ledger-case">
-                  <Link href={`/runs/${c.id}`}><cite className="case-name">{c.title}</cite></Link>
-                  <span className="ledger-dates">{c.phase} · locked {c.lockedAt}</span>
-                </span>
-                <span className="ledger-tally">
-                  <span className="ledger-k">Forecast</span>
-                  <span className="num">{c.outcome} {c.tally.join("–")}</span>
-                </span>
-                <span className="ledger-tally">
-                  <span className="ledger-k">Court</span>
-                  <span className="awaiting">{c.review ? "Decided · scoring after review" : "Not yet decided"}</span>
-                </span>
-                <span className="ledger-score" />
-              </li>
-            ))}
-          </ol>
+          <SittingGroups groups={groupBySitting(rows)} isOpen={(i) => i === 0}>
+            {(group) => (
+              <ol className="ledger-list">
+                {group.map((c) => (
+                  <li key={c.id} className="ledger-row is-pending">
+                    <span className="ledger-no num">{c.docket ?? "—"}</span>
+                    <span className="ledger-case">
+                      <Link href={`/runs/${c.id}`}><cite className="case-name">{c.title}</cite></Link>
+                      <span className="ledger-dates">{c.argued && `${argued(c.argued)} · `}{c.phase} · locked {c.lockedAt}</span>
+                    </span>
+                    <span className="ledger-tally">
+                      <span className="ledger-k">Forecast</span>
+                      <span className="num">{c.outcome} {c.tally.join("–")}</span>
+                    </span>
+                    <span className="ledger-tally">
+                      <span className="ledger-k">Court</span>
+                      <span className="awaiting">{c.review ? "Decided · scoring after review" : "Not yet decided"}</span>
+                    </span>
+                    <span className="ledger-score" />
+                  </li>
+                ))}
+              </ol>
+            )}
+          </SittingGroups>
         </>
       )}
     </section>

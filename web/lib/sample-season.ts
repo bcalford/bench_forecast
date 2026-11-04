@@ -3,6 +3,7 @@
 // estimates are the "true" lean plus noise, which yields realistic, unspectacular accuracy.
 import { benchOrder } from "./court";
 import type { Disposition, ScoredCase, ScoredVote } from "./scorecard";
+import type { Sitting } from "./sittings";
 
 // Illustrative leanings for the synthetic generator only; never shown. Seniority order, as in the prototype.
 const LEANINGS: [slug: string, lean: number][] = [
@@ -16,7 +17,18 @@ const TITLES = [
   "Arcadia Water District v. EPA", "Thornbury v. SEC", "Navarro v. City of Tacoma", "Beaumont Rail v. Surface Transportation Board",
   "Quintero v. Arizona", "Feldman v. Kessler", "Okonkwo v. United States", "Ashby v. Maryland",
 ];
-const LOCKED = ["Oct 6", "Oct 14", "Oct 21", "Nov 3", "Nov 10", "Nov 18", "Dec 1", "Dec 8", "Dec 15", "Jan 6", "Jan 12", "Jan 20", "Feb 2", "Feb 9", "Feb 23", "Mar 2"];
+// Synthetic sittings and argument days, three or four cases each. A before-argument case locks four days ahead
+// of its argument, an after-argument one five days after.
+const SITTINGS: Sitting[] = [
+  { name: "October", start: "2026-10-05", end: "2026-10-14" }, { name: "November", start: "2026-11-02", end: "2026-11-10" },
+  { name: "December", start: "2026-11-30", end: "2026-12-09" }, { name: "January", start: "2027-01-11", end: "2027-01-21" },
+  { name: "February", start: "2027-02-22", end: "2027-03-03" },
+];
+const ARGUED = [
+  "2026-10-05", "2026-10-07", "2026-10-13", "2026-11-02", "2026-11-04", "2026-11-09", "2026-11-30", "2026-12-02", "2026-12-08",
+  "2027-01-11", "2027-01-13", "2027-01-20", "2027-02-22", "2027-02-24", "2027-03-01", "2027-03-03",
+];
+const shiftDays = (iso: string, d: number) => new Date(Date.parse(`${iso}T12:00:00Z`) + d * 864e5);
 const DECIDED = ["Feb 24", "Mar 4", "Mar 20", "Apr 1", "Apr 17", "May 5", "May 15", "May 22", "Jun 2", "Jun 5", "Jun 12", "Jun 17", "Jun 20", "Jun 24", "Jun 27", "Jun 30"];
 
 function mulberry32(seed: number) {
@@ -71,13 +83,14 @@ function buildCase(i: number, rand: () => number): ScoredCase {
     docket: `25-${2104 + i * 13}`,
     title: TITLES[i],
     phase: i % 3 === 0 ? "Before argument" : "After argument",
-    locked: LOCKED[i],
+    locked: shiftDays(ARGUED[i], i % 3 === 0 ? -4 : 5).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" }),
     decided: DECIDED[i],
     predicted: { disposition: pred.disposition as Disposition, tally: pred.tally, author: predictedAuthor, votes: predicted },
     actual: { disposition: act.disposition as Disposition, tally: act.tally, author: actualAuthor },
     outcomeRight: pred.disposition === act.disposition,
     authorRight: predictedAuthor === actualAuthor,
     votes,
+    sitting: SITTINGS[Math.min(Math.floor(i / 3), SITTINGS.length - 1)], argued: ARGUED[i], filed: shiftDays(ARGUED[i], i % 3 === 0 ? -4 : 5).toISOString(),
   };
 }
 

@@ -1,5 +1,7 @@
 // Parsers for the Supreme Court's website: hearing lists, the transcripts page, docket pages and slip-opinion
 // listings. Pure functions over text the callers fetch, so scripts and the Inngest job share them.
+import type { Sitting } from "./sittings";
+
 export const COURT = "https://www.supremecourt.gov";
 export const COURT_HEADERS = { "user-agent": "BenchForecast/1.0 (+https://bench-forecast.vercel.app)" };
 
@@ -15,7 +17,7 @@ export const normalizeDocket = (s: string) => (s.match(/\d{2}[-–]\d+/)?.[0] ??
 
 export const currentTerm = (now = new Date()) => (now.getUTCMonth() >= 9 ? now.getUTCFullYear() : now.getUTCFullYear() - 1);
 
-export type HearingCase = { docket: string; title: string; argued: string; consolidatedWith: string[] };
+export type HearingCase = { docket: string; title: string; argued: string; consolidatedWith: string[]; sitting?: Sitting | null };
 
 // "No. 25-170. Suncor Energy (U.S.A.) Inc., et al. v. County Commissioners of Boulder County, et al." under a
 // "Monday, October 5, 2026" heading. A caption ends at the next "Certiorari to", "Appeal from", "On writ",

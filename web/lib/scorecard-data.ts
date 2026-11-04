@@ -4,20 +4,24 @@ import { buildScoredCase, partitionForecasts, type ScoredCase } from "./scorecar
 import { caseKey, countingForecasts } from "./scoring";
 import { SCORED_TERM } from "./outcomes";
 import { serviceClient } from "./supabase";
-import { formatEt } from "./views";
+import type { Sitting } from "./sittings";
+import { formatEt, SITTING_COLS, sittingOf } from "./views";
 
-export type WaitingRow = { id: string; docket: string | null; title: string; phase: string; lockedAt: string | null; outcome: string | null; tally: [number, number]; review: boolean };
+export type WaitingRow = {
+  id: string; docket: string | null; title: string; phase: string; lockedAt: string | null; outcome: string | null; tally: [number, number]; review: boolean;
+  sitting: Sitting | null; argued: string | null; filed: string;
+};
 
 type Row = {
-  id: string; case_id: string; phase: string; origin: string; locked_at: string; outcome: string; majority_count: number; minority_count: number; author_pred: string | null;
-  cases: { title: string; docket: string | null; term: string; decided_before_cutoff: boolean; outcomes: { decided_at: string; outcome: string; votes: Record<string, string>; author: string | null; status: string } | null };
+  id: string; case_id: string; phase: string; origin: string; locked_at: string; created_at: string; outcome: string; majority_count: number; minority_count: number; author_pred: string | null;
+  cases: { title: string; docket: string | null; term: string; decided_before_cutoff: boolean; argued_on: string | null; sitting: string | null; sitting_start: string | null; sitting_end: string | null; outcomes: { decided_at: string; outcome: string; votes: Record<string, string>; author: string | null; status: string } | null };
   justice_votes: { justice: string; vote: string; confidence: number }[];
 };
 
 export const loadScorecard = cache(async (): Promise<{ counted: ScoredCase[]; all: ScoredCase[]; waiting: WaitingRow[] }> => {
   const { data, error } = await serviceClient()
     .from("predictions")
-    .select("id, case_id, phase, origin, locked_at, outcome, majority_count, minority_count, author_pred, cases!inner(title, docket, term, decided_before_cutoff, outcomes(decided_at, outcome, votes, author, status)), justice_votes(justice, vote, confidence)")
+    .select(`id, case_id, phase, origin, locked_at, created_at, outcome, majority_count, minority_count, author_pred, cases!inner(title, docket, term, decided_before_cutoff, ${SITTING_COLS}, outcomes(decided_at, outcome, votes, author, status)), justice_votes(justice, vote, confidence)`)
     .eq("status", "locked").eq("cases.term", SCORED_TERM).eq("cases.decided_before_cutoff", false)
     .order("locked_at");
   if (error) throw new Error(error.message);
@@ -28,6 +32,7 @@ export const loadScorecard = cache(async (): Promise<{ counted: ScoredCase[]; al
     id: r.id, docket: r.cases.docket ?? "—", title: r.cases.title, phase: r.phase, lockedAt: r.locked_at,
     predictedOutcome: r.outcome, tally: [r.majority_count, r.minority_count], author: r.author_pred, votes: r.justice_votes,
     decidedAt: r.cases.outcomes!.decided_at, outcome: r.cases.outcomes!.outcome, actualVotes: r.cases.outcomes!.votes, actualAuthor: r.cases.outcomes!.author,
+    sitting: sittingOf(r.cases), argued: r.cases.argued_on, filed: r.created_at,
   });
   const all = scoredRows.map(toCase);
   const countedIds = new Set(countingForecasts(scoredRows.map((r) => ({ id: r.id, caseId: caseKey(r.cases.docket, r.case_id), origin: r.origin, lockedAt: r.locked_at }))).map((f) => f.id));
@@ -37,6 +42,7 @@ export const loadScorecard = cache(async (): Promise<{ counted: ScoredCase[]; al
     id: r.id, docket: r.cases.docket, title: r.cases.title, phase: r.phase === "after_argument" ? "After argument" : "Before argument",
     lockedAt: formatEt(r.locked_at), outcome: r.outcome, tally: [r.majority_count, r.minority_count] as [number, number],
     review: r.cases.outcomes?.status === "needs_review",
+    sitting: sittingOf(r.cases), argued: r.cases.argued_on, filed: r.created_at,
   }));
   return { counted, all, waiting };
 });

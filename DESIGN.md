@@ -333,6 +333,10 @@ There are no cards. Two framed objects exist, both 1px borders with no fill: the
 - **Style:** a full-width disclosure row: 36px seat mark, name (600, 16px) over role (ink-muted, 14px), vote, a 3px confidence bar (ink on rule track) with percent, and a chevron that rotates 180° when open (0.25s). Rows are separated by `rule` hairlines.
 - **Open:** the body indents 52px to align with the name and sets the reasoning in serif at 17px, followed by a text link to full reasoning.
 
+### Sitting Group
+- **Style:** within a term, the home docket and both scorecard lists fold by Court sitting. Each sitting is a full-width disclosure row: name (650, 15.5px, "November sitting"), span and case count (ink-muted, 14px, "Nov 2–10", "2 cases"), and the `.terms` chevron in green-ink at the right, over a `rule` hairline. Native `<details>`, so it works before scripts and find-in-page opens it.
+- **Order and default:** newest sitting first, cases in argument order; cases with no sitting last as "Filed on this site", newest filed first. Only the page's newest sitting starts open (on the scorecard, each list's newest); picking a seat on the scorecard opens every scored sitting. Rows add "Argued Nov 3" (12.5px) under the docket number or in the ledger dates.
+
 ### Citation Chip
 Inline in serif prose: Public Sans 650 at 12.5px, green-ink on cite-wash, 2px 6px padding, 2px radius, never wraps.
 

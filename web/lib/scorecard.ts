@@ -4,6 +4,7 @@ import type { Vote } from "./clerk-rules";
 import { justices } from "./court";
 import type { Judgment } from "./decisions";
 import { lockedBeforeDecision, scoreForecast } from "./scoring";
+import type { Sitting } from "./sittings";
 
 export type Disposition = "Affirm" | "Reverse" | "Vacate" | "Other";
 export type ScoredVote = { slug: string; confidence: number; voteRight: boolean; majorityRight: boolean };
@@ -12,11 +13,13 @@ export type ScoredCase = {
   predicted: { disposition: Disposition; tally: [number, number]; author: string | null; votes: Record<string, { side: Disposition; confidence: number }> };
   actual: { disposition: Disposition; tally: [number, number]; author: string | null };
   outcomeRight: boolean; authorRight: boolean | null; votes: ScoredVote[];
+  sitting: Sitting | null; argued: string | null; filed: string;
 };
 export type ScoredInput = {
   id: string; docket: string; title: string; phase: string; lockedAt: string; predictedOutcome: string; tally: [number, number];
   author: string | null; votes: { justice: string; vote: string; confidence: number }[];
   decidedAt: string; outcome: string; actualVotes: Record<string, string>; actualAuthor: string | null;
+  sitting: Sitting | null; argued: string | null; filed: string;
 };
 
 const SENIORITY = Object.fromEntries(justices.map((j) => [j.slug, j.seniority]));
@@ -46,6 +49,7 @@ export function buildScoredCase(i: ScoredInput): ScoredCase {
     actual: { disposition: actualDisposition, tally: [withJudgment, Object.keys(i.actualVotes).length - withJudgment], author: i.actualAuthor },
     outcomeRight: s.outcomeCorrect, authorRight: s.authorCorrect,
     votes: s.justices.map((j) => ({ slug: j.slug, confidence: j.confidence ?? 0, voteRight: j.voteRight, majorityRight: j.majorityRight })),
+    sitting: i.sitting, argued: i.argued, filed: i.filed,
   };
 }
 
