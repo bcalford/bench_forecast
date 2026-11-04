@@ -1,10 +1,10 @@
 # Bench Forecast — progress and handoff
 
-Last updated: 2026-10-30. Read this first when resuming.
+Last updated: 2026-11-04. Read this first when resuming.
 
 ## Where things stand
 - **The live app is `web/`** (Next.js on Vercel, Supabase, Inngest): https://bench-forecast.vercel.app. Phases 1–7 are done; the per-phase notes start at "Backend" below, newest work at the end of Phase 7.
-- **Next:** all 6 October cases are locked. November sitting is 7 cases, Nov 2–10 (`npm run docket -- schedule` lists them as upcoming): run `npm run docket -- forecast --max-spend N` (try `--dry-run` first) after Nov 4 for the first four and after Nov 10 for the last three. First decisions ~December; after each decision day run `npm run outcomes -- review`.
+- **Next:** all 6 October cases are locked. November sitting is 7 cases, Nov 2–10. Filed 2026-11-04: 25-352 Younge and 25-581 St. Mary Catholic Parish. Still waiting: 25-5930 (respondents' merits brief not found) and 25-1003 (no transcript yet); re-run `npm run docket -- forecast --max-spend 30 --dry-run` for them, and after Nov 10 for the last three. First decisions ~December; after each decision day run `npm run outcomes -- review`.
 - **`web-1/` is the frozen design prototype** (React 18 + Vite, sample data only). The UI was ported from it in phase 5; it stays as the design reference and is not deployed. Its history is in the next section.
 - Visual world: **"The Bench"**. Nine seats in true bench order, vote by shape not hue, brass only for the opinion author and the lock seal, bench-green band, Public Sans + Source Serif 4.
 - Product truth: `PRODUCT.md`. Design rules: `DESIGN.md` + `.impeccable/design.json`. Spec and decisions: `spec.md`, `decisions.md`. Operations: `docs/scorecard-ops.md`, `docs/deploy.md`.
@@ -128,7 +128,8 @@ Phase 7 — docket forecasts, decisions and the scorecard (2026-10-11):
 - Scoring fixes (branch `scoring-fixes`): `outcomes confirm` checks its save, needs a vote for every justice not named in `--recused`, and refuses a judgment in part or several judgments; scoring treats "in part" as other; rescoring clears stale scores; a forecast locked on its decision day is in neither scorecard list from the moment the decision date is known; "in which all other Members joined" reads clean.
 - Docket hardening (2026-10-20): each case is budgeted at the costliest of the last 20 locked runs (at least $2.50); court fetches retry network errors, 429 and 5xx, and only a 404 ends the hearing-list scan; dockets match however they're typed (`normalizeDocket`), one forecast run at a time (`web/.docket-forecast.lock`, stale locks cleared), and each case is re-checked just before filing.
 - All six October cases locked: Beaird (25-5343) Vacated and remanded 6–3; Salazar (25-459) Vacated and remanded 6–3, $1.82.
-- ⏭ Next: November sitting once its hearing list is published (`--max-spend` per sitting); `npm run outcomes -- review` after decision days from December.
+- November filings (2026-11-04): 25-352 and 25-581 started ($5.00 budgeted); 25-5930 skipped (respondents' merits brief not found), 25-1003 skipped (no transcript yet).
+- ⏭ Next: re-run the docket for 25-5930 and 25-1003, then the last three November cases after Nov 10; `npm run outcomes -- review` after decision days from December.
 
 Phase 4 (pipeline) — written ahead of phase 3; all typecheck; `npm test` 15/15.
 - `lib/clerk-rules.ts` (+tests), `lib/schemas.ts` (+citation checker, tests), `lib/models.ts` (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10), `lib/claude.ts` (streamed structured output with `betaZodOutputFormat`, server-side refusal fallbacks, cost per call, stream-started hook), `lib/briefs.ts` (local text extraction; decisions.md Q22), `lib/agents/{summarizer,justice,clerk}.ts`, `lib/retrieval.ts`, `lib/embedding.ts`.
